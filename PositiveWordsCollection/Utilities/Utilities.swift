@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 
-// delete
 final class Utilities {
     static let shared = Utilities()
     private init() {}

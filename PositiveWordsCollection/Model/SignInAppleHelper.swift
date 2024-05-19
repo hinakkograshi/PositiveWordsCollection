@@ -5,6 +5,7 @@
 //  Created by Hina on 2024/05/19.
 //
 
+import Foundation
 import SwiftUI
 import CryptoKit
 import AuthenticationServices
@@ -33,6 +34,21 @@ final class SignInAppleHelper: NSObject {
 
     private var currentNonce: String?
     private var completionHandler: ((Result<SignInAppleResult, Error>) -> Void)? = nil
+
+    func startSignInWithAppleFlow() async throws -> SignInAppleResult {
+        try await withCheckedThrowingContinuation { continuation in
+            self.startSignInWithAppleFlow { result in
+                switch result {
+                case .success(let signInAppleResult):
+                    continuation.resume(returning: signInAppleResult)
+                    return
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                    return
+                }
+            }
+        }
+    }
 
     func startSignInWithAppleFlow(completion: @escaping (Result<SignInAppleResult, Error>) -> Void) {
         guard let topVC = Utilities.shared.topViewController() else {

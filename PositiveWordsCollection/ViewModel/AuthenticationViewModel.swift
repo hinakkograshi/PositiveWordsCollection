@@ -11,7 +11,6 @@ import GoogleSignIn
 @MainActor
 final class AuthenticationViewModel: ObservableObject {
 
-    @Published var didSignInWithApple: Bool = false
     let signInAppleHelper = SignInAppleHelper()
 
     func signInGoogle() async throws {
@@ -22,21 +21,8 @@ final class AuthenticationViewModel: ObservableObject {
     }
 
     func signInApple() async throws {
-        signInAppleHelper.startSignInWithAppleFlow { result in
-            switch result {
-            case .success(let signInAppleResult):
-                Task {
-                    do {
-                        try await AuthenticationManager.shared.signInWithApple(tokens: signInAppleResult)
-                        self.didSignInWithApple = true
-                    } catch {
-                        print("SignInAppleError")
-
-                    }
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
+        let helper = SignInAppleHelper()
+        let tokens = try await helper.startSignInWithAppleFlow()
+        try await AuthenticationManager.shared.signInWithApple(tokens: tokens)
     }
 }
