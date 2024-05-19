@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		533D40A02BF9E408005C684A /* SignInAppleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533D409F2BF9E408005C684A /* SignInAppleHelper.swift */; };
 		5341E8AA2BF89FEC0001D709 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5341E8A92BF89FEC0001D709 /* AuthenticationManager.swift */; };
 		535C7F8C2BF8239C00BA33D1 /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535C7F8B2BF8239C00BA33D1 /* AuthenticationView.swift */; };
 		535C7F912BF8289700BA33D1 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 535C7F902BF8289700BA33D1 /* GoogleSignIn */; };
@@ -30,6 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		533D409F2BF9E408005C684A /* SignInAppleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInAppleHelper.swift; sourceTree = "<group>"; };
 		5341E8A92BF89FEC0001D709 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		535C7F8B2BF8239C00BA33D1 /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		535C7F942BF8293000BA33D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				535C7F9C2BF8347900BA33D1 /* AuthDataResultModel.swift */,
 				5341E8A92BF89FEC0001D709 /* AuthenticationManager.swift */,
 				53C157C22BF90997003776CB /* SignInGoogleHelper.swift */,
+				533D409F2BF9E408005C684A /* SignInAppleHelper.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -266,6 +269,7 @@
 				535C7F8C2BF8239C00BA33D1 /* AuthenticationView.swift in Sources */,
 				53A655592BF787D200D915B5 /* PositiveWordsCollectionApp.swift in Sources */,
 				53EE21272BF8FC240067CF40 /* Utilities.swift in Sources */,
+				533D40A02BF9E408005C684A /* SignInAppleHelper.swift in Sources */,
 				535C7F9D2BF8347900BA33D1 /* AuthDataResultModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -411,6 +415,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -443,6 +448,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

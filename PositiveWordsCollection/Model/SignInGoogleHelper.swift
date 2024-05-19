@@ -20,10 +20,10 @@ struct GoogleSignInResultModel {
 final class SignInGoogleHelper {
     @MainActor
     func signIn() async throws -> GoogleSignInResultModel {
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = windowScene.windows.first, let rootViewController = window.rootViewController else {
+        guard let topVC = Utilities.shared.topViewController() else {
             throw URLError(.cannotFindHost)
-      }
-        let gidSignInReault = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootViewController)
+        }
+        let gidSignInReault = try await GIDSignIn.sharedInstance.signIn(withPresenting: topVC)
 
         guard let idToken = gidSignInReault.user.idToken?.tokenString else {
             throw URLError(.badServerResponse)
