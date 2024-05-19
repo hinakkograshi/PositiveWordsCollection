@@ -58,6 +58,7 @@ struct AuthenticationView: View {
                 Task {
                     do {
                         try await viewModel.signInApple()
+                        showSignInView = false
                     } catch {
                         print(error)
                     }
@@ -67,11 +68,6 @@ struct AuthenticationView: View {
                     .allowsHitTesting(false)
             })
             .frame(height: 50)
-            .onChange(of: viewModel.didSignInWithApple, perform: { newValue in
-                if newValue {
-                    showSignInView = false
-                }
-            })
         }
         .padding()
         }
