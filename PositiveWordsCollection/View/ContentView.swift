@@ -8,10 +8,19 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var showSignInView: Bool = false
     var body: some View {
         TabView {
             NavigationStack {
-                Text("View1")
+                Button(action: {
+                    do {
+                        try AuthenticationManager.shared.signOut()
+                    } catch {
+                        print(error)
+                    }
+                }, label: {
+                    Text("Button")
+                })
             }
             .tabItem {
                 Image(systemName: "house.fill")
@@ -32,13 +41,22 @@ struct ContentView: View {
                 Text("Notice")
             }
             NavigationStack {
-                Text("View4")
+                SettingsView(showSignInView: $showSignInView)
             }
             .tabItem {
                 Image(systemName: "gearshape")
-                Text("Feed")
+                Text("Settings")
             }
         }
+        .onAppear {
+            let authUser = try? AuthenticationManager.shared.getAuthenticatedUser()
+            self.showSignInView = authUser == nil ? true : false
+//            try? AuthenticationManager.shared.getProvider()
+        }
+        // trueであれば,AuthenticationView
+        .fullScreenCover(isPresented: $showSignInView, content: {
+            AuthenticationView(showSignInView: $showSignInView)
+        })
     }
 }
 
