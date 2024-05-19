@@ -8,11 +8,12 @@
 import Foundation
 import UIKit
 import FirebaseAuth
+import AuthenticationServices
 
-//enum AuthProviderOption: String {
-//    case google = "google.com"
-//    case apple = "apple"
-//}
+enum AuthProviderOption: String {
+    case google = "google.com"
+    case apple = "apple.com"
+}
 
 final class AuthenticationManager {
     // シングルトン
@@ -49,6 +50,15 @@ extension AuthenticationManager {
     @discardableResult
     func signInWithGoogle(tokens: GoogleSignInResultModel) async throws -> AuthDataResultModel {
         let credential = GoogleAuthProvider.credential(withIDToken: tokens.idToken, accessToken: tokens.accessToken)
+        return try await signIn(credential: credential)
+    }
+
+    @discardableResult
+    func signInWithApple(tokens: SignInAppleResult) async throws -> AuthDataResultModel {
+
+        let credential = OAuthProvider.appleCredential(withIDToken: tokens.token,
+                                                       rawNonce: tokens.nonce,
+                                                       fullName: tokens.fullName)
         return try await signIn(credential: credential)
     }
 

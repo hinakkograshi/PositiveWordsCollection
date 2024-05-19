@@ -8,6 +8,7 @@
 import SwiftUI
 import GoogleSignIn
 import GoogleSignInSwift
+import _AuthenticationServices_SwiftUI
 
 struct AuthenticationView: View {
     @StateObject private var viewModel = AuthenticationViewModel()
@@ -40,15 +41,7 @@ struct AuthenticationView: View {
                 .multilineTextAlignment(.center)
             //                .foregroundStyle(Color.MyTheme.purpleColor)
 
-            // MARK: Sign in with Apple
-            Button(action: {
-                //                SignInWithApple.instance.startSignInWithAppleFlow(view: self)
-            },
-                   label: {
-                //                SignInWithAppleButtonCustom()
-                //                    .frame(height: 60)
-                //                    .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
-            })
+            // MARK: Sign in with Google
             GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .light, style: .wide, state: .normal)) {
                 Task {
                     do {
@@ -60,9 +53,27 @@ struct AuthenticationView: View {
                     }
                 }
             }
-            .padding()
-            // MARK: Sign in with Google
+            // MARK: Sign in with Apple
+            Button(action: {
+                Task {
+                    do {
+                        try await viewModel.signInApple()
+                    } catch {
+                        print(error)
+                    }
+                }
+            }, label: {
+                SignInWithAppleButtonViewRepresentable(type: .default, style: .black)
+                    .allowsHitTesting(false)
+            })
+            .frame(height: 50)
+            .onChange(of: viewModel.didSignInWithApple, perform: { newValue in
+                if newValue {
+                    showSignInView = false
+                }
+            })
         }
+        .padding()
         }
 }
 
