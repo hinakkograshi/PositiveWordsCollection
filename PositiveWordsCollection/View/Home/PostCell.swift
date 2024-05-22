@@ -42,6 +42,24 @@ struct PostCell: View {
                     .padding(.leading, 20)
                 Spacer()
             }
+            HStack(alignment: .center, spacing: 20) {
+                Image(systemName: "heart")
+                    .font(.title3)
+                // MARK: Comment Icon
+                HStack {
+                    NavigationLink (
+                        destination: CommentsView(post: $post),
+                        label: {
+                            Image(systemName: "bubble.middle.bottom")
+                                .font(.title3)
+                                .tint(.primary)
+                        })
+                    Text("0")
+                    .font(.subheadline)                }
+                Image(systemName: "paperplane")
+                    .font(.title3)
+                Spacer()
+            }
         }
     }
 }

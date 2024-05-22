@@ -26,6 +26,8 @@
 		539DD11A2BFE299900D6BCBC /* PostArrayObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539DD1192BFE299900D6BCBC /* PostArrayObject.swift */; };
 		539DD11C2BFE2EB300D6BCBC /* CommentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539DD11B2BFE2EB300D6BCBC /* CommentModel.swift */; };
 		539DD11F2BFE2F1700D6BCBC /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539DD11E2BFE2F1700D6BCBC /* Extension.swift */; };
+		539DD1242BFE378400D6BCBC /* CommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539DD1232BFE378400D6BCBC /* CommentsView.swift */; };
+		539DD1272BFE383500D6BCBC /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539DD1262BFE383500D6BCBC /* MessageView.swift */; };
 		53A655592BF787D200D915B5 /* PositiveWordsCollectionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53A655582BF787D200D915B5 /* PositiveWordsCollectionApp.swift */; };
 		53A6555B2BF787D200D915B5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53A6555A2BF787D200D915B5 /* ContentView.swift */; };
 		53A6555D2BF787D400D915B5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53A6555C2BF787D400D915B5 /* Assets.xcassets */; };
@@ -49,6 +51,8 @@
 		539DD1192BFE299900D6BCBC /* PostArrayObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostArrayObject.swift; sourceTree = "<group>"; };
 		539DD11B2BFE2EB300D6BCBC /* CommentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentModel.swift; sourceTree = "<group>"; };
 		539DD11E2BFE2F1700D6BCBC /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
+		539DD1232BFE378400D6BCBC /* CommentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsView.swift; sourceTree = "<group>"; };
+		539DD1262BFE383500D6BCBC /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		53A655552BF787D200D915B5 /* PositiveWordsCollection.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PositiveWordsCollection.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53A655582BF787D200D915B5 /* PositiveWordsCollectionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveWordsCollectionApp.swift; sourceTree = "<group>"; };
 		53A6555A2BF787D200D915B5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -85,8 +89,7 @@
 			children = (
 				53A6555A2BF787D200D915B5 /* ContentView.swift */,
 				535C7F8B2BF8239C00BA33D1 /* AuthenticationView.swift */,
-				533D40A32BFA01D2005C684A /* HomeView.swift */,
-				535315A62BFCDD3D00D5767A /* PostCell.swift */,
+				539DD1252BFE37C000D6BCBC /* Home */,
 				53C157C42BF91494003776CB /* SettingsView.swift */,
 			);
 			path = View;
@@ -127,6 +130,17 @@
 				539DD11E2BFE2F1700D6BCBC /* Extension.swift */,
 			);
 			path = Helper;
+			sourceTree = "<group>";
+		};
+		539DD1252BFE37C000D6BCBC /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				533D40A32BFA01D2005C684A /* HomeView.swift */,
+				535315A62BFCDD3D00D5767A /* PostCell.swift */,
+				539DD1232BFE378400D6BCBC /* CommentsView.swift */,
+				539DD1262BFE383500D6BCBC /* MessageView.swift */,
+			);
+			path = Home;
 			sourceTree = "<group>";
 		};
 		53A6554C2BF787D200D915B5 = {
@@ -289,6 +303,7 @@
 			files = (
 				53C157C32BF90997003776CB /* SignInGoogleHelper.swift in Sources */,
 				535C7F972BF82C3200BA33D1 /* AuthenticationViewModel.swift in Sources */,
+				539DD1242BFE378400D6BCBC /* CommentsView.swift in Sources */,
 				53A6555B2BF787D200D915B5 /* ContentView.swift in Sources */,
 				53C157C52BF91494003776CB /* SettingsView.swift in Sources */,
 				539DD11A2BFE299900D6BCBC /* PostArrayObject.swift in Sources */,
@@ -298,6 +313,7 @@
 				539DD11C2BFE2EB300D6BCBC /* CommentModel.swift in Sources */,
 				535C7F8C2BF8239C00BA33D1 /* AuthenticationView.swift in Sources */,
 				53A655592BF787D200D915B5 /* PositiveWordsCollectionApp.swift in Sources */,
+				539DD1272BFE383500D6BCBC /* MessageView.swift in Sources */,
 				53EE21272BF8FC240067CF40 /* Utilities.swift in Sources */,
 				539DD1182BFE0E1A00D6BCBC /* PostModel.swift in Sources */,
 				533D40A02BF9E408005C684A /* SignInAppleHelper.swift in Sources */,
