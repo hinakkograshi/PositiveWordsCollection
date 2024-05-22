@@ -13,13 +13,7 @@ import _AuthenticationServices_SwiftUI
 struct AuthenticationView: View {
     @StateObject private var viewModel = AuthenticationViewModel()
     @Binding var showSignInView: Bool
-//    @Environment(\.presentationMode) var presentationMode
-//    @State var displayNama: String = ""
-//    @State var email: String = ""
-//    @State var providerID: String = ""
-//    @State var provider: String = ""
-//    @State var showNameOnboarding: Bool = false
-//    @State var showError: Bool = false
+
     var body: some View {
         VStack(spacing: 10) {
             Text("ポジティブワード")

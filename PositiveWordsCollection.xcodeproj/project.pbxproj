@@ -8,7 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		533D40A02BF9E408005C684A /* SignInAppleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533D409F2BF9E408005C684A /* SignInAppleHelper.swift */; };
+		533D40A42BFA01D2005C684A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533D40A32BFA01D2005C684A /* HomeView.swift */; };
 		5341E8AA2BF89FEC0001D709 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5341E8A92BF89FEC0001D709 /* AuthenticationManager.swift */; };
+		535315A72BFCDD3D00D5767A /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535315A62BFCDD3D00D5767A /* PostCell.swift */; };
 		535C7F8C2BF8239C00BA33D1 /* AuthenticationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535C7F8B2BF8239C00BA33D1 /* AuthenticationView.swift */; };
 		535C7F912BF8289700BA33D1 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 535C7F902BF8289700BA33D1 /* GoogleSignIn */; };
 		535C7F932BF8289700BA33D1 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 535C7F922BF8289700BA33D1 /* GoogleSignInSwift */; };
@@ -20,6 +22,10 @@
 		5361CF822BF7B1E900A35948 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5361CF812BF7B1E900A35948 /* FirebaseAnalyticsSwift */; };
 		5361CF842BF7B1E900A35948 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 5361CF832BF7B1E900A35948 /* FirebaseAnalyticsWithoutAdIdSupport */; };
 		5361CF862BF7B1E900A35948 /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 5361CF852BF7B1E900A35948 /* FirebaseAppCheck */; };
+		539DD1182BFE0E1A00D6BCBC /* PostModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539DD1172BFE0E1A00D6BCBC /* PostModel.swift */; };
+		539DD11A2BFE299900D6BCBC /* PostArrayObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539DD1192BFE299900D6BCBC /* PostArrayObject.swift */; };
+		539DD11C2BFE2EB300D6BCBC /* CommentModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539DD11B2BFE2EB300D6BCBC /* CommentModel.swift */; };
+		539DD11F2BFE2F1700D6BCBC /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539DD11E2BFE2F1700D6BCBC /* Extension.swift */; };
 		53A655592BF787D200D915B5 /* PositiveWordsCollectionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53A655582BF787D200D915B5 /* PositiveWordsCollectionApp.swift */; };
 		53A6555B2BF787D200D915B5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53A6555A2BF787D200D915B5 /* ContentView.swift */; };
 		53A6555D2BF787D400D915B5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53A6555C2BF787D400D915B5 /* Assets.xcassets */; };
@@ -32,11 +38,17 @@
 
 /* Begin PBXFileReference section */
 		533D409F2BF9E408005C684A /* SignInAppleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInAppleHelper.swift; sourceTree = "<group>"; };
+		533D40A32BFA01D2005C684A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		5341E8A92BF89FEC0001D709 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
+		535315A62BFCDD3D00D5767A /* PostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
 		535C7F8B2BF8239C00BA33D1 /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
 		535C7F942BF8293000BA33D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		535C7F962BF82C3200BA33D1 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		535C7F9C2BF8347900BA33D1 /* AuthDataResultModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthDataResultModel.swift; sourceTree = "<group>"; };
+		539DD1172BFE0E1A00D6BCBC /* PostModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostModel.swift; sourceTree = "<group>"; };
+		539DD1192BFE299900D6BCBC /* PostArrayObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostArrayObject.swift; sourceTree = "<group>"; };
+		539DD11B2BFE2EB300D6BCBC /* CommentModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentModel.swift; sourceTree = "<group>"; };
+		539DD11E2BFE2F1700D6BCBC /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		53A655552BF787D200D915B5 /* PositiveWordsCollection.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PositiveWordsCollection.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53A655582BF787D200D915B5 /* PositiveWordsCollectionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveWordsCollectionApp.swift; sourceTree = "<group>"; };
 		53A6555A2BF787D200D915B5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -73,6 +85,8 @@
 			children = (
 				53A6555A2BF787D200D915B5 /* ContentView.swift */,
 				535C7F8B2BF8239C00BA33D1 /* AuthenticationView.swift */,
+				533D40A32BFA01D2005C684A /* HomeView.swift */,
+				535315A62BFCDD3D00D5767A /* PostCell.swift */,
 				53C157C42BF91494003776CB /* SettingsView.swift */,
 			);
 			path = View;
@@ -100,8 +114,19 @@
 				5341E8A92BF89FEC0001D709 /* AuthenticationManager.swift */,
 				53C157C22BF90997003776CB /* SignInGoogleHelper.swift */,
 				533D409F2BF9E408005C684A /* SignInAppleHelper.swift */,
+				539DD1172BFE0E1A00D6BCBC /* PostModel.swift */,
+				539DD1192BFE299900D6BCBC /* PostArrayObject.swift */,
+				539DD11B2BFE2EB300D6BCBC /* CommentModel.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		539DD11D2BFE2EFA00D6BCBC /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				539DD11E2BFE2F1700D6BCBC /* Extension.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 		53A6554C2BF787D200D915B5 = {
@@ -125,8 +150,9 @@
 			isa = PBXGroup;
 			children = (
 				53C0E0332BF994B9008CE2AF /* PositiveWordsCollection.entitlements */,
-				53EE21252BF8FC020067CF40 /* Utilities */,
 				53A655582BF787D200D915B5 /* PositiveWordsCollectionApp.swift */,
+				539DD11D2BFE2EFA00D6BCBC /* Helper */,
+				53EE21252BF8FC020067CF40 /* Utilities */,
 				535C7F9B2BF8341200BA33D1 /* Model */,
 				535C7F952BF82BFE00BA33D1 /* ViewModel */,
 				5341E8AB2BF8CC740001D709 /* View */,
@@ -265,12 +291,18 @@
 				535C7F972BF82C3200BA33D1 /* AuthenticationViewModel.swift in Sources */,
 				53A6555B2BF787D200D915B5 /* ContentView.swift in Sources */,
 				53C157C52BF91494003776CB /* SettingsView.swift in Sources */,
+				539DD11A2BFE299900D6BCBC /* PostArrayObject.swift in Sources */,
 				5341E8AA2BF89FEC0001D709 /* AuthenticationManager.swift in Sources */,
+				533D40A42BFA01D2005C684A /* HomeView.swift in Sources */,
+				539DD11F2BFE2F1700D6BCBC /* Extension.swift in Sources */,
+				539DD11C2BFE2EB300D6BCBC /* CommentModel.swift in Sources */,
 				535C7F8C2BF8239C00BA33D1 /* AuthenticationView.swift in Sources */,
 				53A655592BF787D200D915B5 /* PositiveWordsCollectionApp.swift in Sources */,
 				53EE21272BF8FC240067CF40 /* Utilities.swift in Sources */,
+				539DD1182BFE0E1A00D6BCBC /* PostModel.swift in Sources */,
 				533D40A02BF9E408005C684A /* SignInAppleHelper.swift in Sources */,
 				535C7F9D2BF8347900BA33D1 /* AuthDataResultModel.swift in Sources */,
+				535315A72BFCDD3D00D5767A /* PostCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
