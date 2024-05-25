@@ -19,7 +19,7 @@ struct ContentView: View {
                 Text("Home")
             }
             NavigationStack {
-                Text("View2")
+                SignInProfileView()
             }
             .tabItem {
                 Image(systemName: "bell.fill")

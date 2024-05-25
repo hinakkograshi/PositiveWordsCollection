@@ -10,25 +10,35 @@ import SwiftUI
 struct EditProfileView: View {
     @State var nameText = ""
     @State var bioText = ""
+    @Binding var profileImage: UIImage
+    @State var selectedImage: UIImage
+    @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
+    @Environment (\.presentationMode) var presentationMode
+    @State var showImagePicker: Bool = false
     var body: some View {
         NavigationStack {
             VStack {
                 Button(action: {
-
+                    showImagePicker.toggle()
                 }, label: {
-                    Image("hiyoko")
+                    Image(uiImage: selectedImage)
                         .resizable()
+                        .scaledToFill()
                         .frame(width: 150, height: 150)
-                        .opacity(0.8)
+                        .clipShape(RoundedRectangle(cornerRadius: 75))
                         .overlay {
-                            Image(systemName: "camera")
-                                .resizable()
-                                .frame(width: 50, height: 50)
-                            Circle()
-                                .stroke(Color.gray, lineWidth: 2)
-                                .frame(width: 150, height: 150)
+                            RoundedRectangle(cornerRadius: 75)
+                                .stroke(Color.orange, lineWidth: 3.0)
                         }
                 })
+                Button(action: {
+                    showImagePicker.toggle()
+                }, label: {
+                    Text("ライブラリから画像を選択")
+                })
+                .sheet(isPresented: $showImagePicker) {
+                    ImagePicker(imageSelection: $selectedImage, sourceType: $sourceType)
+                }
                 .padding(.bottom, 50)
                 Divider()
                 HStack {
@@ -84,5 +94,6 @@ struct EditProfileView: View {
 }
 
 #Preview {
-    EditProfileView()
+    @State var image = UIImage(named: "hiyoko")!
+    return EditProfileView(profileImage: $image, selectedImage: image)
 }

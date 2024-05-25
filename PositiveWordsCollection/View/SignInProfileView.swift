@@ -11,30 +11,38 @@ struct SignInProfileView: View {
     @Environment (\.dismiss) private var dismiss
     @State var nameText = ""
     @State var bioText = ""
+    @State var selectedImage: UIImage = UIImage(named: "hiyoko")!
+    @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
+    @Environment (\.presentationMode) var presentationMode
+    @State var showImagePicker: Bool = false
     var body: some View {
         NavigationStack {
             HStack {
                 VStack {
-                    Image("hiyoko")
-                        .resizable()
-                        .frame(width: 150, height: 150)
-                        .opacity(0.8)
-                        .overlay {
-                            Image(systemName: "camera")
-                                .resizable()
-                                .frame(width: 50, height: 50)
-                                .foregroundStyle(.gray)
-                            Circle()
-                                .stroke(Color.gray, lineWidth: 2)
-                                .frame(width: 150, height: 150)
-                        }
-                        .padding(.bottom, 30)
+                    Text("プロフィール画像")
+                        .font(.title2)
+                        .fontWeight(.bold)
                     Button(action: {
-
+                        showImagePicker.toggle()
                     }, label: {
-                        Text("プロフィール画像選択")
+                        Image(uiImage: selectedImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 150, height: 150)
+                            .clipShape(RoundedRectangle(cornerRadius: 75))
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 75)
+                                    .stroke(Color.orange, lineWidth: 3.0)
+                            }
                     })
-
+                    Button(action: {
+                        showImagePicker.toggle()
+                    }, label: {
+                        Text("ライブラリから画像を選択")
+                    })
+                    .sheet(isPresented: $showImagePicker) {
+                        ImagePicker(imageSelection: $selectedImage, sourceType: $sourceType)
+                    }
                     Divider()
                     HStack {
                         Text("名前")
@@ -59,29 +67,11 @@ struct SignInProfileView: View {
                     }
                 }
             }
-
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(action: {
-                        dismiss()
-                    }, label: {
-                        Text("キャンセル")
-                            .tint(.primary)
-                    })
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-
-                    }, label: {
-                        Text("保存")
-                            .tint(.primary)
-                    })
-                }
-            }
         }
     }
 }
 
 #Preview {
-    SignInProfileView()
+    @State var selectedImage = UIImage(named: "hiyoko")!
+    return SignInProfileView(selectedImage: selectedImage)
 }
