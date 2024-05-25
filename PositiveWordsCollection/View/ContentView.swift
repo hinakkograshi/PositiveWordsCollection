@@ -12,36 +12,28 @@ struct ContentView: View {
     var body: some View {
         TabView {
             NavigationStack {
-                Button(action: {
-                    do {
-                        try AuthenticationManager.shared.signOut()
-                    } catch {
-                        print(error)
-                    }
-                }, label: {
-                    Text("Button")
-                })
+                HomeView(posts: PostArrayObject())
             }
             .tabItem {
                 Image(systemName: "house.fill")
                 Text("Home")
             }
             NavigationStack {
-                Text("View3")
-            }
-            .tabItem {
-                Image(systemName: "book.fill")
-                Text("Collection")
-            }
-            NavigationStack {
-                Text("View2")
+                Text("NoticeView")
             }
             .tabItem {
                 Image(systemName: "bell.fill")
                 Text("Notice")
             }
             NavigationStack {
-                SettingsView(showSignInView: $showSignInView)
+                ProfileView(isMyProfile: true, profileDisplayName: "userName", profileUserID: "userID")
+            }
+            .tabItem {
+                Image(systemName: "person.fill")
+                Text("Profile")
+            }
+            NavigationStack {
+                SettingsView()
             }
             .tabItem {
                 Image(systemName: "gearshape")
@@ -53,10 +45,10 @@ struct ContentView: View {
             self.showSignInView = authUser == nil ? true : false
 //            try? AuthenticationManager.shared.getProvider()
         }
-        // trueであれば,AuthenticationView
         .fullScreenCover(isPresented: $showSignInView, content: {
             AuthenticationView(showSignInView: $showSignInView)
         })
+//        if showSignInView == false, 
     }
 }
 
