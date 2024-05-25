@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct SignInProfileView: View {
-    @Environment (\.dismiss) private var dismiss
     @State var nameText = ""
     @State var bioText = ""
     @State var selectedImage: UIImage = UIImage(named: "hiyoko")!

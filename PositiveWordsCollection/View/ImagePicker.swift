@@ -32,7 +32,7 @@ struct ImagePicker: UIViewControllerRepresentable {
         init(parent: ImagePicker) {
             self.parent = parent
         }
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
             if let image = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage {
                 parent.imageSelection = image
                 parent.presentationMode.wrappedValue.dismiss()
@@ -41,4 +41,3 @@ struct ImagePicker: UIViewControllerRepresentable {
         }
     }
 }
-
