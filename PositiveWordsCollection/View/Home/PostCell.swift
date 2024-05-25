@@ -116,7 +116,7 @@ struct PostCell: View {
         self.post = updatePost
 
     }
-    // MARK:24.メソッド数個省略
+    // MARK: 24.メソッド数個省略
     // X等にコピーする内容
     func sharePost() {
         let message = "Check out this post on DogGram"
@@ -130,6 +130,6 @@ struct PostCell: View {
 }
 
 #Preview {
-    let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption",dateCreated: Date(), likeCount: 0, likedByUser: false)
+    let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false)
     return PostCell(post: post)
 }

@@ -63,7 +63,7 @@ struct CommentsView: View {
 
 #Preview {
     NavigationStack {
-        @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption",dateCreated: Date(), likeCount: 0, likedByUser: false)
+        @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false)
         CommentsView(post: $post)
     }
 }
