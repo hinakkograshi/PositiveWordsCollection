@@ -19,14 +19,14 @@ final class SettingsViewModel: ObservableObject {
 }
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
-    @Binding var showSignInView: Bool
+//    @Binding var showSignInView: Bool
     var body: some View {
         List {
             Button("Log out") {
                 Task {
                     do {
                         try viewModel.signOut()
-                        showSignInView = true
+//                        showSignInView = true
                     } catch {
                         print(error)
                     }
@@ -36,7 +36,7 @@ struct SettingsView: View {
                 Task {
                     do {
                         try await viewModel.deleteAccount()
-                        showSignInView = true
+//                        showSignInView = true
                     } catch {
                         print(error)
                     }
@@ -49,6 +49,5 @@ struct SettingsView: View {
 }
 
 #Preview {
-    @State var showSignInView = false
-    return SettingsView(showSignInView: $showSignInView)
+    return SettingsView()
 }

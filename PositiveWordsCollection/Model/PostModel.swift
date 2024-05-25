@@ -14,11 +14,11 @@ struct PostModel: Identifiable, Hashable {
     var username: String // ユーザーとデータベースのユーザー名
     var caption: String? // オプションの文字列
     var dateCreated: Date // 投稿が作成された日付
-    var likeCount: Int //いいね数
-    var likedByUser: Bool //ユーザーに気に入られているか
+    var likeCount: Int // いいね数
+    var likedByUser: Bool // ユーザーに気に入られているか
 
-    //MARK: HashTable完成
-    //この関数でIDとハッシュを持つことで、識別が可能
+    // MARK: HashTable完成
+    // この関数でIDとハッシュを持つことで、識別が可能
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
