@@ -14,6 +14,8 @@ struct ProfileView: View {
     var posts = PostArrayObject()
     @State var showSettings: Bool = false
     @Environment(\.colorScheme) var colorScheme
+    var userProfilePicture = UIImage(named: "hiyoko")!
+    @State var image = UIImage(named: "hiyoko")!
     var body: some View {
 
         ProfileHeaderView(profileDisplayName: $profileDisplayName)
@@ -41,7 +43,7 @@ struct ProfileView: View {
                                     .opacity(isMyProfile ? 1.0 : 0.0)
                             }
         .sheet(isPresented: $showSettings, content: {
-            EditProfileView()
+            EditProfileView(profileImage: $image, selectedImage: userProfilePicture)
             //　なくてもdarkモード対応できそう
                 .preferredColorScheme(colorScheme)
         })
@@ -49,7 +51,8 @@ struct ProfileView: View {
 }
 
 #Preview {
-    NavigationStack {
+    @State var selectedImage = UIImage(named: "hiyoko")!
+    return NavigationStack {
         ProfileView(isMyProfile: true, profileDisplayName: "hina", profileUserID: "")
     }
 }
