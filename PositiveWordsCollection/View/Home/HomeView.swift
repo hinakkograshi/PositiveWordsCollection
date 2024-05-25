@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject var posts: PostArrayObject
+    @State var showCreatePostView = false
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack {
@@ -19,7 +20,7 @@ struct HomeView: View {
         }
         .overlay(alignment: .bottomTrailing) {
             Button(action: {
-
+                showCreatePostView.toggle()
             }, label: {
                 Image(systemName: "plus")
                     .foregroundStyle(.white)
@@ -28,6 +29,9 @@ struct HomeView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 100))
             })
             .padding(10)
+        }
+        .sheet(isPresented: $showCreatePostView) {
+            CreatePostView()
         }
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)

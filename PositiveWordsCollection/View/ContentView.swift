@@ -26,14 +26,14 @@ struct ContentView: View {
                 Text("Notice")
             }
             NavigationStack {
-                Text("View3")
+                ProfileView(isMyProfile: true, profileDisplayName: "userName", profileUserID: "userID")
             }
             .tabItem {
                 Image(systemName: "person.fill")
                 Text("Profile")
             }
             NavigationStack {
-                SettingsView(showSignInView: $showSignInView)
+                SettingsView()
             }
             .tabItem {
                 Image(systemName: "gearshape")
@@ -48,6 +48,7 @@ struct ContentView: View {
         .fullScreenCover(isPresented: $showSignInView, content: {
             AuthenticationView(showSignInView: $showSignInView)
         })
+//        if showSignInView == false, 
     }
 }
 

@@ -13,6 +13,7 @@ import _AuthenticationServices_SwiftUI
 struct AuthenticationView: View {
     @StateObject private var viewModel = AuthenticationViewModel()
     @Binding var showSignInView: Bool
+    @State var showProfileView: Bool = false
 
     var body: some View {
         VStack(spacing: 10) {
@@ -42,6 +43,7 @@ struct AuthenticationView: View {
                         try await viewModel.signInGoogle()
                         // Success
                         showSignInView = false
+
                     } catch {
                         print(error)
                     }
