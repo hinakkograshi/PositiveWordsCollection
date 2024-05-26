@@ -10,6 +10,9 @@ import SwiftUI
 
 extension Color {
     struct MyTheme {
+        static var iconColor: Color {
+            return Color("ColorIcon")
+        }
         static var purpleColor: Color {
             return Color("ColorPurple")
         }

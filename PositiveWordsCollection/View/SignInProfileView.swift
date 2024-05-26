@@ -8,11 +8,13 @@
 import SwiftUI
 
 struct SignInProfileView: View {
+    @ObservedObject var viewModel: AuthenticationViewModel
+
     @State var nameText = ""
     @State var bioText = ""
     @State var selectedImage: UIImage = UIImage(named: "hiyoko")!
     @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
-    @Environment (\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @State var showImagePicker: Bool = false
     var body: some View {
         NavigationStack {
@@ -47,11 +49,12 @@ struct SignInProfileView: View {
                         Text("名前")
                             .fontWeight(.bold)
                             .padding()
-                        TextField("名前", text: $nameText)
+                        TextField("名前", text: $viewModel.displayName)
                             .textFieldStyle(.roundedBorder)
                     }
                     Button {
-
+                        createProfile()
+                        dismiss()
                     } label: {
                         Text("登録")
                             .font(.headline)
@@ -68,9 +71,19 @@ struct SignInProfileView: View {
             }
         }
     }
+    // MARK: Function
+    func createProfile() {
+        print("Create profile now")
+        Task {
+            do {
+                try await AuthService.instance.createNewUserInDatabase(name: viewModel.displayName, email: viewModel.email, providerID: viewModel.providerID, provider: viewModel.provider, profileImage: selectedImage, bio: bioText)
+            } catch {
+                print("createProfile Error\(error)")
+            }
+        }
+    }
 }
-
-#Preview {
-    @State var selectedImage = UIImage(named: "hiyoko")!
-    return SignInProfileView(selectedImage: selectedImage)
-}
+// #Preview {
+//    @State var selectedImage = UIImage(named: "hiyoko")!
+//    return SignInProfileView(viewModel: viewModel, selectedImage: selectedImage)
+// }

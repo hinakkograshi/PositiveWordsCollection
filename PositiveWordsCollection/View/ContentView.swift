@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var showSignInView: Bool = false
+    @State private var showSignInProfileView: Bool = false
     var body: some View {
         TabView {
             NavigationStack {
@@ -41,14 +42,17 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            let authUser = try? AuthenticationManager.shared.getAuthenticatedUser()
+            let authUser = try? AuthenticationManager.instance.getAuthenticatedUser()
             self.showSignInView = authUser == nil ? true : false
-//            try? AuthenticationManager.shared.getProvider()
         }
         .fullScreenCover(isPresented: $showSignInView, content: {
             AuthenticationView(showSignInView: $showSignInView)
         })
-//        if showSignInView == false, 
+//        .fullScreenCover(
+//            isPresented: $showSignInView,
+//            onDismiss: { showSignInProfileView = true },
+//            content: { AuthenticationView(showSignInView: $showSignInView) }
+//        )
     }
 }
 

@@ -10,11 +10,11 @@ import SwiftUI
 @MainActor
 final class SettingsViewModel: ObservableObject {
     func signOut() throws {
-        try AuthenticationManager.shared.signOut()
+        try AuthenticationManager.instance.signOut()
     }
 
     func deleteAccount() async throws {
-        try await AuthenticationManager.shared.deleteUser()
+        try await AuthenticationManager.instance.deleteUser()
     }
 }
 struct SettingsView: View {
