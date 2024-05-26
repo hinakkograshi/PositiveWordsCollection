@@ -27,6 +27,7 @@ struct SignInAppleResult {
     let token: String
     let nonce: String
     let fullName: PersonNameComponents?
+    let email: String
 }
 
 @MainActor
@@ -55,7 +56,14 @@ final class SignInAppleHelper: NSObject {
             completion(.failure(URLError(.badURL)))
             return
         }
-      let nonce = randomNonceString()
+//        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+//              let window = windowScene.windows.first,
+//              let rootViewController = window.rootViewController else {
+//        print("There is no root view controller!")
+//        return
+//      }
+//        let topVC = rootViewController
+        let nonce = randomNonceString()
       currentNonce = nonce
         completionHandler = completion
       let appleIDProvider = ASAuthorizationAppleIDProvider()
@@ -112,7 +120,7 @@ extension SignInAppleHelper: ASAuthorizationControllerDelegate {
           completionHandler?(.failure(URLError(.badServerResponse)))
           return
       }
-      let result = SignInAppleResult(token: idTokenString, nonce: nonce, fullName: appleIDCredential.fullName)
+      let result = SignInAppleResult(token: idTokenString, nonce: nonce, fullName: appleIDCredential.fullName, email: appleIDCredential.email ?? "")
       completionHandler?(.success(result))
   }
 
