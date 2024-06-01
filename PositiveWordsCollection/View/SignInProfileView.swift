@@ -90,10 +90,16 @@ struct SignInProfileView: View {
         print("Create profile now")
         Task {
             do {
-                try await AuthService.instance.createNewUserInDatabase(name: viewModel.displayName, email: viewModel.email, providerID: viewModel.providerID, provider: viewModel.provider, profileImage: selectedImage, bio: viewModel.bio)
+                let returnedID = try await AuthService.instance.createNewUserInDatabase(name: viewModel.displayName, email: viewModel.email, providerID: viewModel.providerID, provider: viewModel.provider, profileImage: selectedImage, bio: viewModel.bio)
+                guard let userID = returnedID else {
+                    print("returnedID nil")
+                    return
+                }
                 print("createProfile Success")
+                try await AuthService.instance.logInUserToApp(userID: userID)
             } catch {
                 print("createProfile Error\(error)")
+                throw AsyncError(message: "createProfile Error")
             }
         }
     }
