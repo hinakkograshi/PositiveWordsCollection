@@ -8,7 +8,18 @@
 import Foundation
 import UIKit
 import FirebaseAuth
-
+struct AuthDataResultModel {
+    let uid: String
+    // 別の方法いらない
+    let email: String?
+    let photoURL: String?
+// 構造体があり、別のところから初期化する
+    init(user: User) {
+        self.uid = user.uid
+        self.email = user.email
+        self.photoURL = user.photoURL?.absoluteString
+    }
+}
 final class AuthenticationManager {
     // シングルトン
     static let instance = AuthenticationManager()

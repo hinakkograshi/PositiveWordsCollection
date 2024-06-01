@@ -10,6 +10,10 @@ import GoogleSignIn
 import FirebaseAuth
 import FirebaseCore
 
+struct AsyncError: Error {
+    let message: String
+}
+
 @MainActor
 final class AuthenticationViewModel: ObservableObject {
     @Published var displayName: String = ""
@@ -18,9 +22,9 @@ final class AuthenticationViewModel: ObservableObject {
     @Published var provider: String = ""
     @Published var bio: String = ""
     @Published var showSignInProfileView: Bool = false
-    @Published var showError: Bool = false
+    @Published var hadSignInUser = false
     let signInAppleHelper = SignInAppleHelper()
-    
+
     func signInGoogle() async throws {
         let helper = SignInGoogleHelper()
         let tokens = try await helper.signIn()
@@ -28,7 +32,7 @@ final class AuthenticationViewModel: ObservableObject {
         let firebaseUser = authDataResult.user
         guard let fullName = firebaseUser.displayName,
               let email = firebaseUser.email else { return }
-        try await connectToFirebase(name: fullName, email: email, provider: "google", credential: credential)
+            try await connectToFirebase(name: fullName, email: email, provider: "google", credential: credential)
     }
 
     func signInApple() async throws {
@@ -56,27 +60,32 @@ final class AuthenticationViewModel: ObservableObject {
                     self.showSignInProfileView = true
                 } else {
                     print("Error getting provider ID from log in user to Firebase")
-                     self.showError = true
+                    throw AsyncError(message: "Error getting provider ID")
+//                     self.showError = true
                 }
             } else {
                 // userIDがすでに存在している場合
                 if let userID = logInUser.userID {
                     do {
                         try await AuthService.instance.logInUserToApp(userID: userID)
-                        // dismiss()
+                        hadSignInUser = true
+//                        dismiss()
                     } catch {
-                         self.showError = true
+                        throw AsyncError(message: "logInUserToApp Error")
+//                         self.showError = true
                     }
                 } else {
                     // Error
                     print("Error getting user ID from log in user to Firebase")
-                     self.showError = true
+                    throw AsyncError(message: "Error getting user ID from log in user to Firebase")
+//                     self.showError = true
                 }
             }
         } else {
             // Error
             print("Error getting into from log in user to Firebase")
-            self.showError = true
+            throw AsyncError(message: "Error getting into from log in user to Firebase")
+//            self.showError = true
         }
     }
 }
