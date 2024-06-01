@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var showSignInView: Bool = false
     @State private var showSignInProfileView: Bool = false
-    var currentUserID: String? = nil
+    @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     var body: some View {
         TabView {
             NavigationStack {
@@ -43,9 +43,9 @@ struct ContentView: View {
             }
         }
         .onAppear {
-//            self.showSignInView = currentUserID == nil ? true : false
-            let authUser = try? AuthenticationManager.instance.getAuthenticatedUser()
-            self.showSignInView = authUser == nil ? true : false
+            self.showSignInView = currentUserID == nil ? true : false
+//            let authUser = try? AuthenticationManager.instance.getAuthenticatedUser()
+//            self.showSignInView = authUser == nil ? true : false
         }
         .fullScreenCover(isPresented: $showSignInView, content: {
             AuthenticationView(showSignInView: $showSignInView)

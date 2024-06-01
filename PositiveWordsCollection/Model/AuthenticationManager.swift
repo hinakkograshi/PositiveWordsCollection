@@ -23,8 +23,6 @@ struct AuthDataResultModel {
 final class AuthenticationManager {
     // シングルトン
     static let instance = AuthenticationManager()
-    private init() { }
-    //
 
     func getAuthenticatedUser() throws -> AuthDataResultModel {
         guard let user = Auth.auth().currentUser else {
@@ -70,49 +68,3 @@ extension AuthenticationManager {
         return authDataResult
     }
 }
-    // struct DBUser: Codable {
-    //    let userID: String
-    //    let displayName: String?
-    //    let email: String?
-    //    let providerID: String?
-    //    let provider: String?
-    //    let bio: String?
-    //    let dateCreated: Date?
-    // }
-//    private let encoder: Firestore.Encoder = {
-//        let encoder = Firestore.Encoder()
-//        encoder.keyEncodingStrategy = .convertToSnakeCase
-//        return encoder
-//    }()
-//
-//    private let decoder: Firestore.Decoder = {
-//        let decoder = Firestore.Decoder()
-//        decoder.keyDecodingStrategy = .convertFromSnakeCase
-//        return decoder
-//    }()
-//
-//    func createNewUser(user: DBUser) async throws {
-//        try userDocument(userId: user.userID).setData(from: user, merge: false, encoder: encoder)
-//    }
-//
-//    func getUserInfo(userId: String) async throws -> DBUser {
-//        try await userDocument(userId: userId).getDocument(as: DBUser.self, decoder: decoder)
-//    }
-
-//    func signInWithGoogle(tokens: GoogleSignInResultModel) async throws -> AuthDataResultModel {
-//        let credential = GoogleAuthProvider.credential(withIDToken: tokens.idToken, accessToken: tokens.accessToken)
-//        return try await signIn(credential: credential)
-//    }
-//
-//    func signInWithApple(tokens: SignInAppleResult) async throws -> AuthDataResultModel {
-//
-//        let credential = OAuthProvider.appleCredential(withIDToken: tokens.token,
-//                                                       rawNonce: tokens.nonce,
-//                                                       fullName: tokens.fullName)
-//        return try await signIn(credential: credential)
-//    }
-
-//    func signIn(credential: AuthCredential) async throws -> AuthDataResultModel {
-//        let authDataResult =  try await Auth.auth().signIn(with: credential)
-//        return AuthDataResultModel(user: authDataResult.user)
-//    }

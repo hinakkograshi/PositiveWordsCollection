@@ -8,7 +8,6 @@
 import Foundation
 import GoogleSignIn
 import FirebaseAuth
-import FirebaseCore
 
 struct AsyncError: Error {
     let message: String
@@ -47,7 +46,7 @@ final class AuthenticationViewModel: ObservableObject {
         try await connectToFirebase(name: name, email: signInAppleResult.email, provider: "apple", credential: credential)
     }
 
-    func connectToFirebase(name: String, email: String, provider: String, credential: AuthCredential) async throws {
+    private func connectToFirebase(name: String, email: String, provider: String, credential: AuthCredential) async throws {
         let logInUser = try await AuthService.instance.asyncLogInUserToFirebase(credential: credential)
         if let newUser = logInUser.isNewUser {
             if newUser {

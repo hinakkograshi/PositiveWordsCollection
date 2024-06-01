@@ -9,11 +9,6 @@ import Foundation
 import FirebaseFirestore
 import FirebaseAuth
 
-struct CurrentUserDefaults {
-    static let displayName = "display_name"
-    static let bio = "bio"
-    static let userID = "user_id"
-}
 struct LogInUser {
     let providerID: String?
     let isError: Bool
@@ -39,7 +34,6 @@ class AuthService {
     func logInUserToFirebase(credential: AuthCredential, handler: @escaping (_ providerID: String?, _ isError: Bool, _ isNewUser: Bool?, _ userID: String?) -> ()) {
         Auth.auth().signIn(with: credential) { result, error in
             if error != nil {
-
                 print("Errir login in to Firebase\(error)")
                 handler(nil, true, nil, nil)
                 return
@@ -74,17 +68,29 @@ class AuthService {
             }
         }
     }
-
+// UserDefault保存
     func logInUserToApp(userID: String) async throws {
-        let (returnedName, returnBio) = try await getUserInfo(userID: userID)
-        DispatchQueue.main.asyncAfterUnsafe(deadline: .now() + 1.0) {
-            UserDefaults.standard.set(userID, forKey: CurrentUserDefaults.userID)
-            UserDefaults.standard.set(returnedName, forKey: CurrentUserDefaults.displayName)
-            UserDefaults.standard.set(returnBio, forKey: CurrentUserDefaults.bio)
+        do {
+            // get user ID
+            let (returnedName, returnBio) = try await getUserInfo(userID: userID)
+            // UserDefault保存
+                UserDefaults.standard.set(userID, forKey: CurrentUserDefaults.userID)
+                UserDefaults.standard.set(returnedName, forKey: CurrentUserDefaults.displayName)
+                UserDefaults.standard.set(returnBio, forKey: CurrentUserDefaults.bio)
+        } catch {
+            print("Error getting lohInUser Info")
+            throw AsyncError(message: "Error getting lohInUser Info")
         }
     }
 
-    func createNewUserInDatabase(name: String, email: String, providerID: String, provider: String, profileImage: UIImage, bio: String) async throws {
+    func getUserInfo(userID: String) async throws -> (name: String, bio: String) {
+        let snapshot = try await userDocument(userId: userID).getDocument()
+        guard let name = snapshot.get(DatabaseUserField.displayName) as? String, let bio = snapshot.get(DatabaseUserField.bio) as? String else { throw URLError(.cannotFindHost)}
+        print("Success getting user info")
+        return (name, bio)
+    }
+
+    func createNewUserInDatabase(name: String, email: String, providerID: String, provider: String, profileImage: UIImage, bio: String) async throws -> (String?) {
         // document作成
         let document = userCollection.document()
         let userID = document.documentID
@@ -107,11 +113,6 @@ class AuthService {
         ]
         // documentにデータを追加
         try await document.setData(userData)
-    }
-
-    func getUserInfo(userID: String) async throws -> (name: String, bio: String) {
-        let snapshot = try await userDocument(userId: userID).getDocument()
-        guard let name = snapshot.get(DatabaseUserField.displayName) as? String, let bio = snapshot.get(DatabaseUserField.bio) as? String else { throw URLError(.cannotFindHost)}
-        return (name, bio)
+        return userID
     }
 }
