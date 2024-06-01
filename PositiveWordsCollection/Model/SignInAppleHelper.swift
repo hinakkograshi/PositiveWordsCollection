@@ -91,7 +91,6 @@ final class SignInAppleHelper: NSObject {
       return String(nonce)
     }
 
-    @available(iOS 13, *)
     private func sha256(_ input: String) -> String {
       let inputData = Data(input.utf8)
       let hashedData = SHA256.hash(data: inputData)
@@ -122,7 +121,6 @@ extension SignInAppleHelper: ASAuthorizationControllerDelegate {
     print("Sign in with Apple errored: \(error)")
       completionHandler?(.failure(URLError(.cannotFindHost)))
   }
-
 }
 
 extension UIViewController: ASAuthorizationControllerPresentationContextProviding {

@@ -14,6 +14,7 @@ struct AuthenticationView: View {
     @StateObject private var viewModel = AuthenticationViewModel()
     @Binding var showSignInView: Bool
     @State var showProfileView: Bool = false
+    @State var showError: Bool = false
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -42,11 +43,11 @@ struct AuthenticationView: View {
                 GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .light, style: .wide, state: .normal)) {
                     Task {
                         do {
-
                             try await viewModel.signInGoogle()
                             // Success
 //                            showSignInView = false
                         } catch {
+                            showError = true
                             print(error)
                         }
                     }
@@ -60,6 +61,7 @@ struct AuthenticationView: View {
                             // Success
 //                            showSignInView = false
                         } catch {
+                            showError = true
                             print(error)
                         }
                     }
@@ -71,10 +73,14 @@ struct AuthenticationView: View {
             }
             .padding()
         }
+
         .fullScreenCover(isPresented: $viewModel.showSignInProfileView, onDismiss: {
             dismiss()
         }, content: {
             SignInProfileView(viewModel: viewModel)
+        })
+        .alert(isPresented: $showError, content: {
+            return Alert(title: Text("サインインに失敗しました。"))
         })
     }
 }
