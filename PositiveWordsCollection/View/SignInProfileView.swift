@@ -9,9 +9,6 @@ import SwiftUI
 
 struct SignInProfileView: View {
     @ObservedObject var viewModel: AuthenticationViewModel
-
-    @State var nameText = ""
-    @State var bioText = ""
     @State var selectedImage: UIImage = UIImage(named: "hiyoko")!
     @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
     @Environment(\.dismiss) private var dismiss
@@ -52,6 +49,23 @@ struct SignInProfileView: View {
                         TextField("名前", text: $viewModel.displayName)
                             .textFieldStyle(.roundedBorder)
                     }
+                    VStack(alignment: .leading) {
+                        ZStack(alignment: .topLeading) {
+                            TextEditor(text: $viewModel.bio)
+                                .frame(height: 100)
+                                .padding(5)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(Color.blue, lineWidth: 2)
+                                }
+                            if viewModel.bio.isEmpty {
+                                Text("自己紹介").foregroundStyle(Color(uiColor: .placeholderText))
+                                    .padding(8)
+                                    .allowsHitTesting(false)
+                            }
+
+                        }
+                    }
                     Button {
                         createProfile()
                         dismiss()
@@ -76,7 +90,8 @@ struct SignInProfileView: View {
         print("Create profile now")
         Task {
             do {
-                try await AuthService.instance.createNewUserInDatabase(name: viewModel.displayName, email: viewModel.email, providerID: viewModel.providerID, provider: viewModel.provider, profileImage: selectedImage, bio: bioText)
+                try await AuthService.instance.createNewUserInDatabase(name: viewModel.displayName, email: viewModel.email, providerID: viewModel.providerID, provider: viewModel.provider, profileImage: selectedImage, bio: viewModel.bio)
+                print("createProfile Success")
             } catch {
                 print("createProfile Error\(error)")
             }

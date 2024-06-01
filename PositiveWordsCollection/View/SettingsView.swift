@@ -9,6 +9,7 @@ import SwiftUI
 
 @MainActor
 final class SettingsViewModel: ObservableObject {
+    @Published var showSignInView = false
     func signOut() throws {
         try AuthenticationManager.instance.signOut()
     }
@@ -26,7 +27,7 @@ struct SettingsView: View {
                 Task {
                     do {
                         try viewModel.signOut()
-//                        showSignInView = true
+                        viewModel.showSignInView = true
                     } catch {
                         print(error)
                     }
@@ -36,7 +37,7 @@ struct SettingsView: View {
                 Task {
                     do {
                         try await viewModel.deleteAccount()
-//                        showSignInView = true
+                        viewModel.showSignInView = true
                     } catch {
                         print(error)
                     }
@@ -45,6 +46,9 @@ struct SettingsView: View {
                 Text("Delete account")
             }
         }
+        .fullScreenCover(isPresented: $viewModel.showSignInView, content: {
+            AuthenticationView(showSignInView: $viewModel.showSignInView)
+        })
     }
 }
 

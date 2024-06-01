@@ -45,7 +45,6 @@ struct CreatePostView: View {
                         }
 
                     }
-
                 }
                 Divider()
                 Spacer()
