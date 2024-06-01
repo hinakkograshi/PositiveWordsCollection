@@ -56,14 +56,7 @@ final class SignInAppleHelper: NSObject {
             completion(.failure(URLError(.badURL)))
             return
         }
-//        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-//              let window = windowScene.windows.first,
-//              let rootViewController = window.rootViewController else {
-//        print("There is no root view controller!")
-//        return
-//      }
-//        let topVC = rootViewController
-        let nonce = randomNonceString()
+      let nonce = randomNonceString()
       currentNonce = nonce
         completionHandler = completion
       let appleIDProvider = ASAuthorizationAppleIDProvider()
@@ -76,7 +69,7 @@ final class SignInAppleHelper: NSObject {
       authorizationController.presentationContextProvider = topVC
       authorizationController.performRequests()
     }
-
+    
     private func randomNonceString(length: Int = 32) -> String {
       precondition(length > 0)
       var randomBytes = [UInt8](repeating: 0, count: length)

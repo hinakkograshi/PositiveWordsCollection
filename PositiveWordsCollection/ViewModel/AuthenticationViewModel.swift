@@ -16,6 +16,7 @@ final class AuthenticationViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var providerID: String = ""
     @Published var provider: String = ""
+    @Published var bio: String = ""
     @Published var showSignInProfileView: Bool = false
     @Published var showError: Bool = false
     let signInAppleHelper = SignInAppleHelper()
