@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct SelectStampCell: View {
-    @Binding var postStamp: UIImage!
+    @Binding var postStamp: UIImage
     @Binding var showSelectStampView: Bool
     var items = [
-            "stamp1", "stamp2", "stamp3", "hiyoko",
-            "hiyo", "loading"
+            "stamp1", "stamp2", "stamp3", "stamp4", "stamp5", "stamp6"
         ]
     var body: some View {
         VStack {
@@ -39,7 +38,7 @@ struct SelectStampCell: View {
 }
 
 #Preview {
-    @State var image = UIImage(named: "hiyo")
+    @State var image = UIImage(named: "hiyo")!
     @State var bool = true
     return SelectStampCell(postStamp: $image, showSelectStampView: $bool)
 }

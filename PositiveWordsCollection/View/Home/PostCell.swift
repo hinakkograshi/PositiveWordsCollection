@@ -9,17 +9,19 @@ import SwiftUI
 
 struct PostCell: View {
     @State var post: PostModel
-    @State var postStamp: UIImage = UIImage(named: "hiyo")!
+//    @State var postStamp: UIImage = UIImage(named: "hiyo")!
     @State var animateLike: Bool = false
     @State var showActionSheet: Bool = false
+    @State var profileImage = UIImage(named: "loading")!
+    @State var postImage = UIImage(named: "loading")!
     var body: some View {
         VStack {
             // header
             HStack {
                 NavigationLink(destination: {
-                    ProfileView(isMyProfile: false, profileDisplayName: post.username, profileUserID: post.userID)
+                    ProfileView(isMyProfile: false, profileDisplayName: post.username, profileUserID: post.userID, posts: PostArrayObject(userID: post.userID))
                 }, label: {
-                    Image("hiyoko")
+                    Image(uiImage: profileImage)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 40, height: 40, alignment: .center)
@@ -57,12 +59,12 @@ struct PostCell: View {
             // Content
             HStack {
                 // stamp Image
-                Image(uiImage: postStamp)
+                Image(uiImage: postImage)
                     .resizable()
                     .scaledToFill()
                     .frame(width: 80, height: 80, alignment: .center)
                 // post caption
-                Text("今日は仕事頑張った!先輩にいつも前向きに頑張っててえらいね！と言われた！\n先輩の方こそ偉いですよって言った！")
+                Text(post.caption)
                     .font(.subheadline)
                     .padding(.leading, 20)
                 Spacer()
@@ -98,11 +100,28 @@ struct PostCell: View {
             Rectangle()
                 .frame(height: 1)
         }
+        .onAppear {
+            getImages()
+        }
     }
     // MARK: function
+    func getImages() {
+        // Get Profile image
+        ImageManager.instance.downloadProfileImage(userID: post.userID) { returnedImage in
+            if let image = returnedImage {
+                self.profileImage = image
+            }
+        }
+        // Get Post image
+        ImageManager.instance.downloadPostImage(postID: post.postID) { returnedImage in
+            if let image = returnedImage {
+                self.postImage = image
+            }
+        }
+    }
     func likePost() {
         // Update the local data
-        let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, dateCreated: post.dateCreated, likeCount: post.likeCount + 1, likedByUser: true)
+        let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount + 1, likedByUser: true)
         self.post = updatePost
 
         animateLike = true
@@ -112,7 +131,7 @@ struct PostCell: View {
     }
 
     func unLikePost() {
-        let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, dateCreated: post.dateCreated, likeCount: post.likeCount - 1, likedByUser: false)
+        let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount - 1, likedByUser: false)
         self.post = updatePost
 
     }
@@ -120,12 +139,11 @@ struct PostCell: View {
     // X等にコピーする内容
     func sharePost() {
         let message = "Check out this post on DogGram"
-        let image = postStamp
+        let image = postImage
         let link = URL(string: "https://www.google.com")!
         let activityViewController =  UIActivityViewController(activityItems: [message, image, link], applicationActivities: nil)
         let viewController =  UIApplication.shared.windows.first?.rootViewController
         viewController?.present(activityViewController, animated: true, completion: nil)
-
     }
 }
 

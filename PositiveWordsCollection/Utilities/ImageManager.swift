@@ -53,6 +53,19 @@ class ImageManager {
         }
     }
 
+    func downloadPostImage(postID: String, handler: @escaping (_ image: UIImage?) -> ()) {
+        // Where the image is saved
+        let path = getPostImagePath(postID: postID)
+        // Download image path
+        DispatchQueue.global(qos: .userInteractive).async {
+            self.downloadImage(path: path) { returnedImage in
+                DispatchQueue.main.async {
+                    handler(returnedImage)
+                }
+            }
+        }
+    }
+
     private func downloadImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
         // キャッシュされていたらそれを使用
         if let cachedImage = imageCache.object(forKey: path) {
