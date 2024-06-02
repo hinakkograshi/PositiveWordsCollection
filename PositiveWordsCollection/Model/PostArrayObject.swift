@@ -17,11 +17,10 @@ class PostArrayObject: ObservableObject {
         self.dataArray.append(post)
     }
 
-    /// USERがProfilrの投稿を取得するために使用
+    /// USERがMyProfileの投稿を取得するために使用
     init(userID: String) {
         Task {
             print("get posts for user ID \(userID)")
-            do {
                 let returnedposts = try await DataService.instance.downloadPostForUser(userID: userID)
                 // 最新の日付
                 let sortedPosts = returnedposts.sorted { (post1, post2) -> Bool in
@@ -29,22 +28,14 @@ class PostArrayObject: ObservableObject {
                 }
                 self.dataArray.append(contentsOf: sortedPosts)
                 self.updateCounts()
-            } catch {
-                print("get posts for user Error")
-
-            }
         }
     }
-    // User for Feed
-    init(shuffled: Bool) {
-        print("Get Post Fpr Feed. Shuffle \(shuffled)")
-        DataService.instance.downloadPostsForFeed { returnedPosts in
-            if shuffled {
-                let shuffledPosts = returnedPosts.shuffled()
-                self.dataArray.append(contentsOf: shuffledPosts)
-            } else {
-                self.dataArray.append(contentsOf: returnedPosts)
-            }
+    // All User Post
+    init() {
+        print("Get All User Post Home")
+        Task {
+            let returnedPosts = try await DataService.instance.downloadPostsForFeed()
+            self.dataArray.append(contentsOf: returnedPosts)
         }
     }
 
@@ -57,18 +48,5 @@ class PostArrayObject: ObservableObject {
         let sumOfLikeCountArray = likeCountArray.reduce(0, +)
         self.likeCountString = "\(sumOfLikeCountArray)"
         print(likeCountString)
-    }
-
-    init() {
-        print("データベースから投稿をfetch")
-        let post1 = PostModel(postID: "", userID: "", username: "hinakko", caption: "", dateCreated: Date(), likeCount: 0, likedByUser: false)
-        let post2 = PostModel(postID: "", userID: "", username: "hinakko", caption: "", dateCreated: Date(), likeCount: 0, likedByUser: false)
-        let post3 = PostModel(postID: "", userID: "", username: "hinakko", caption: "", dateCreated: Date(), likeCount: 0, likedByUser: false)
-        let post4 = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false)
-
-        dataArray.append(post1)
-        dataArray.append(post2)
-        dataArray.append(post3)
-        dataArray.append(post4)
     }
 }
