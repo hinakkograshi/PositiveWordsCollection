@@ -10,7 +10,7 @@ import SwiftUI
 struct CreatePostView: View {
     @State var nameText = ""
     @State var bioText = ""
-    @State var postStamp = UIImage(named: "loading")
+    @State var postStamp = UIImage(named: "loading")!
     @State var showSelectStampView = false
     @Environment(\.dismiss) private var dismiss
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
@@ -22,7 +22,7 @@ struct CreatePostView: View {
                     showSelectStampView = true
                 }, label: {
                     if postStamp != UIImage(named: "loading") {
-                        Image(uiImage: postStamp!)
+                        Image(uiImage: postStamp)
                             .resizable()
                             .scaledToFill()
                             .frame(width: 150, height: 150)
@@ -63,7 +63,6 @@ struct CreatePostView: View {
                                 .padding(8)
                                 .allowsHitTesting(false)
                         }
-                        
                     }
                 }
                 Divider()
@@ -111,7 +110,7 @@ struct CreatePostView: View {
             return
         }
         Task {
-            await DataService.instance.uploadPost(image: postStamp!, caption: bioText, displayName: displayName, userID: userID)
+            await DataService.instance.uploadPost(image: postStamp, caption: bioText, displayName: displayName, userID: userID)
         }
     }
 }

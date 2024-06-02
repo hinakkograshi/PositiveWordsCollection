@@ -12,9 +12,8 @@ struct ProfileView: View {
     @StateObject private var viewModel = ProfileViewModel()
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
     @State var profileDisplayName: String
-//    @State var profileBio: String = ""
     var profileUserID: String
-    var posts = PostArrayObject()
+    var posts: PostArrayObject
     @State var showSettings: Bool = false
     @Environment(\.colorScheme) var colorScheme
     var body: some View {
@@ -58,6 +57,6 @@ struct ProfileView: View {
 #Preview {
     @State var selectedImage = UIImage(named: "hiyoko")!
     return NavigationStack {
-        ProfileView(isMyProfile: true, profileDisplayName: "hina", profileUserID: "")
+        ProfileView(isMyProfile: true, profileDisplayName: "hina", profileUserID: "", posts: PostArrayObject(userID: ""))
     }
 }

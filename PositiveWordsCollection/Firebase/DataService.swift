@@ -76,10 +76,9 @@ class DataService {
         }
     }
     // MARK: Get functions
-    func downloadPostForUser(userID: String, handler: @escaping (_ posts: [PostModel]) -> Void) {
-        postsREF.whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments { querySnapshot, _ in
-            handler(self.getPostsFromSnapshot(querySnapshot: querySnapshot))
-        }
+    func downloadPostForUser(userID: String) async throws -> [PostModel] {
+            let querySnapshot = try await postsREF.whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
+            return getPostsFromSnapshot(querySnapshot: querySnapshot)
     }
 
     func downloadPostsForFeed(handler: @escaping (_ posts: [PostModel]) -> Void) {
@@ -95,8 +94,8 @@ class DataService {
             for document in snapshot.documents {
                 if let userID = document.get(DatabasePostField.userID) as? String,
                    let displayName = document.get(DatabasePostField.displayName)as? String,
-                   let timestamp = document.get(DatabasePostField.dateCreated) as? Timestamp {
-                    let caption = document.get(DatabasePostField.caption) as? String
+                   let timestamp = document.get(DatabasePostField.dateCreated) as? Timestamp,
+                   let caption = document.get(DatabasePostField.caption) as? String {
                     let date = timestamp.dateValue()
                     let postID = document.documentID
                     let likeCount = document.get(DatabasePostField.likeCount) as? Int ?? 0
@@ -105,6 +104,7 @@ class DataService {
                     if let userIDArray = document.get(DatabasePostField.likeBy) as? [String], let userID = currentUserID {
                         likeByUser = userIDArray.contains(userID)
                     }
+
                     // NewPost
                     let newPost = PostModel(postID: postID, userID: userID, username: displayName, caption: caption, dateCreated: date, likeCount: likeCount, likedByUser: likeByUser)
                     postArray.append(newPost)
@@ -163,13 +163,13 @@ class DataService {
         postsREF.document(postID).updateData(data)
     }
 
-    func updateDisplayNameOnPosts(userID: String, displayName: String) {
-        downloadPostForUser(userID: userID) { [self] posts in
-            for post in posts {
-                self.updatePostDisplayName(postID: post.postID, displayName: displayName)
-            }
-        }
-    }
+//    func updateDisplayNameOnPosts(userID: String, displayName: String) {
+//        downloadPostForUser(userID: userID) { [self] posts in
+//            for post in posts {
+//                self.updatePostDisplayName(postID: post.postID, displayName: displayName)
+//            }
+//        }
+//    }
 
     private func updatePostDisplayName(postID: String, displayName: String) {
         let data: [String: Any] = [
