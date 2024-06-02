@@ -11,6 +11,11 @@
 		533D40A42BFA01D2005C684A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533D40A32BFA01D2005C684A /* HomeView.swift */; };
 		5341E8AA2BF89FEC0001D709 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5341E8A92BF89FEC0001D709 /* AuthenticationManager.swift */; };
 		5345D9462C0C047E000287DF /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5345D9452C0C047E000287DF /* ProfileViewModel.swift */; };
+		5345D9482C0C32DD000287DF /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5345D9472C0C32DD000287DF /* DataService.swift */; };
+		5345D94A2C0C33CB000287DF /* DatabasePostField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5345D9492C0C33CB000287DF /* DatabasePostField.swift */; };
+		5345D94C2C0C4655000287DF /* DatabaseReportsField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5345D94B2C0C4655000287DF /* DatabaseReportsField.swift */; };
+		5345D94E2C0C46A6000287DF /* DatabaseCommentsField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5345D94D2C0C46A6000287DF /* DatabaseCommentsField.swift */; };
+		5345D9522C0C4C41000287DF /* SelectStampCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5345D9512C0C4C41000287DF /* SelectStampCell.swift */; };
 		5346CAC42BFFF054000829E1 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5346CAC32BFFF054000829E1 /* ProfileView.swift */; };
 		5346CAC62BFFF52F000829E1 /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5346CAC52BFFF52F000829E1 /* ProfileHeaderView.swift */; };
 		535315A72BFCDD3D00D5767A /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535315A62BFCDD3D00D5767A /* PostCell.swift */; };
@@ -55,6 +60,11 @@
 		533D40A32BFA01D2005C684A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		5341E8A92BF89FEC0001D709 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		5345D9452C0C047E000287DF /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		5345D9472C0C32DD000287DF /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
+		5345D9492C0C33CB000287DF /* DatabasePostField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabasePostField.swift; sourceTree = "<group>"; };
+		5345D94B2C0C4655000287DF /* DatabaseReportsField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseReportsField.swift; sourceTree = "<group>"; };
+		5345D94D2C0C46A6000287DF /* DatabaseCommentsField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseCommentsField.swift; sourceTree = "<group>"; };
+		5345D9512C0C4C41000287DF /* SelectStampCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectStampCell.swift; sourceTree = "<group>"; };
 		5346CAC32BFFF054000829E1 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		5346CAC52BFFF52F000829E1 /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
 		535315A62BFCDD3D00D5767A /* PostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
@@ -173,6 +183,7 @@
 			isa = PBXGroup;
 			children = (
 				539C802A2C01CCE70000BD44 /* AuthService.swift */,
+				5345D9472C0C32DD000287DF /* DataService.swift */,
 			);
 			path = Firebase;
 			sourceTree = "<group>";
@@ -183,6 +194,9 @@
 				539DD11E2BFE2F1700D6BCBC /* Extension.swift */,
 				539C802E2C01D50D0000BD44 /* DatabaseUserField.swift */,
 				537CB6A42C0AE71C00E3F4F0 /* CurrentUserDefaults.swift */,
+				5345D9492C0C33CB000287DF /* DatabasePostField.swift */,
+				5345D94B2C0C4655000287DF /* DatabaseReportsField.swift */,
+				5345D94D2C0C46A6000287DF /* DatabaseCommentsField.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -195,6 +209,7 @@
 				539DD1232BFE378400D6BCBC /* CommentsView.swift */,
 				539DD1262BFE383500D6BCBC /* MessageView.swift */,
 				539C80262C016DC70000BD44 /* CreatePostView.swift */,
+				5345D9512C0C4C41000287DF /* SelectStampCell.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -366,10 +381,12 @@
 				535C7F972BF82C3200BA33D1 /* AuthenticationViewModel.swift in Sources */,
 				537CB6A52C0AE71C00E3F4F0 /* CurrentUserDefaults.swift in Sources */,
 				539C80312C01D89E0000BD44 /* ImageManager.swift in Sources */,
+				5345D94A2C0C33CB000287DF /* DatabasePostField.swift in Sources */,
 				539DD1242BFE378400D6BCBC /* CommentsView.swift in Sources */,
 				5345D9462C0C047E000287DF /* ProfileViewModel.swift in Sources */,
 				53A6555B2BF787D200D915B5 /* ContentView.swift in Sources */,
 				53C157C52BF91494003776CB /* SettingsView.swift in Sources */,
+				5345D9482C0C32DD000287DF /* DataService.swift in Sources */,
 				5367F11C2C00E99700A119B7 /* SignInProfileView.swift in Sources */,
 				539C802B2C01CCE70000BD44 /* AuthService.swift in Sources */,
 				539DD11A2BFE299900D6BCBC /* PostArrayObject.swift in Sources */,
@@ -378,10 +395,13 @@
 				533D40A42BFA01D2005C684A /* HomeView.swift in Sources */,
 				539DD11F2BFE2F1700D6BCBC /* Extension.swift in Sources */,
 				539DD11C2BFE2EB300D6BCBC /* CommentModel.swift in Sources */,
+				5345D9522C0C4C41000287DF /* SelectStampCell.swift in Sources */,
 				535C7F8C2BF8239C00BA33D1 /* AuthenticationView.swift in Sources */,
 				53A655592BF787D200D915B5 /* PositiveWordsCollectionApp.swift in Sources */,
+				5345D94E2C0C46A6000287DF /* DatabaseCommentsField.swift in Sources */,
 				539C80272C016DC70000BD44 /* CreatePostView.swift in Sources */,
 				539DD1272BFE383500D6BCBC /* MessageView.swift in Sources */,
+				5345D94C2C0C4655000287DF /* DatabaseReportsField.swift in Sources */,
 				539C802F2C01D50D0000BD44 /* DatabaseUserField.swift in Sources */,
 				53EE21272BF8FC240067CF40 /* Utilities.swift in Sources */,
 				539DD1182BFE0E1A00D6BCBC /* PostModel.swift in Sources */,

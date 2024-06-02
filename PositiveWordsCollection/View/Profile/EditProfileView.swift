@@ -24,7 +24,7 @@ struct EditProfileView: View {
                     Image(uiImage: selectedImage)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 150, height: 150)
+                        .frame(width: 100, height: 100)
                         .clipShape(RoundedRectangle(cornerRadius: 75))
                         .overlay {
                             RoundedRectangle(cornerRadius: 75)

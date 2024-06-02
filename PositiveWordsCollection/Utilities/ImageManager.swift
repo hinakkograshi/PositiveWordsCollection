@@ -28,6 +28,18 @@ class ImageManager {
         return storagePath
     }
 
+    func uploadPostImage(postID: String, image: UIImage) async throws {
+        let path = getPostImagePath(postID: postID)
+        try await uploadImage(path: path, image: image)
+    }
+
+    private func getPostImagePath(postID: String) -> StorageReference {
+        // 写真が複数投稿できる場合
+        let postPath = "posts/\(postID)/1"
+        let storagePath = storageREF.reference(withPath: postPath)
+        return storagePath
+    }
+
     func downloadProfileImage(userID: String, handler: @escaping (_ image: UIImage?) -> Void) {
         // Where the image is saved
         let path = getProfileImagePath(userID: userID)
@@ -73,8 +85,8 @@ class ImageManager {
 
         // get image data
         guard var originalData = image.jpegData(compressionQuality: compression) else {
-            print("Error getting data from image")
-            return
+            print("Error getting originalData from image")
+            throw AsyncError(message: "Error getting originalData from image")
         }
         // Check maximum file size画像圧縮
         while (originalData.count > maxFileSize) && (compression > maxCompression) {
@@ -88,7 +100,7 @@ class ImageManager {
         // get image data
         guard let finalData = image.jpegData(compressionQuality: compression) else {
             print("Error getting data from image")
-            return
+            throw AsyncError(message: "Error getting data from image")
         }
         // Get photo metaData
         let metadata = StorageMetadata()
