@@ -10,8 +10,28 @@ import SwiftUI
 @MainActor
 final class SettingsViewModel: ObservableObject {
     @Published var showSignInView = false
-    func signOut() throws {
-        try AuthenticationManager.instance.signOut()
+    @Published var showSignOutError = false
+
+    func didTapLogOutButton() {
+        do {
+            try signOut()
+            showSignInView = true
+        } catch {
+            print("log out Error")
+            showSignOutError = true
+        }
+    }
+
+    private func signOut() throws {
+            try AuthenticationManager.instance.signOut()
+            print("Success Log out")
+            // All UserDefault Delete
+            let defaultDictionary = UserDefaults.standard.dictionaryRepresentation()
+            print(defaultDictionary)
+            defaultDictionary.keys.forEach { key in
+                UserDefaults.standard.removeObject(forKey: key)
+            }
+            print(defaultDictionary)
     }
 
     func deleteAccount() async throws {
@@ -24,14 +44,7 @@ struct SettingsView: View {
     var body: some View {
         List {
             Button("Log out") {
-                Task {
-                    do {
-                        try viewModel.signOut()
-                        viewModel.showSignInView = true
-                    } catch {
-                        print(error)
-                    }
-                }
+                viewModel.didTapLogOutButton()
             }
             Button(role: .destructive) {
                 Task {
@@ -48,6 +61,9 @@ struct SettingsView: View {
         }
         .fullScreenCover(isPresented: $viewModel.showSignInView, content: {
             AuthenticationView(showSignInView: $viewModel.showSignInView)
+        })
+        .alert(isPresented: $viewModel.showSignOutError, content: {
+            return Alert(title: Text("ログアウトに失敗しました。"))
         })
     }
 }

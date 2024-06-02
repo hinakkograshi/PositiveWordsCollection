@@ -11,7 +11,7 @@ struct EditProfileView: View {
     @State var nameText = ""
     @State var bioText = ""
     @Binding var profileImage: UIImage
-    @State var selectedImage: UIImage
+    @State var selectedImage = UIImage(named: "loading")!
     @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
     @Environment (\.presentationMode) var presentationMode
     @State var showImagePicker: Bool = false

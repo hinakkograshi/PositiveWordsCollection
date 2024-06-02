@@ -44,11 +44,11 @@ struct CommentsView: View {
         .navigationTitle("Comments")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: {
-            getCommrnts()
+            getComments()
         })
     }
     // MARK: FUNCTIONS
-    func getCommrnts() {
+    func getComments() {
         print("Get comments from DB")
         let comment1 = CommentModel(commentID: "", userID: "", username: "hinakko", content: "hello", dateCreated: Date())
         let comment2 = CommentModel(commentID: "", userID: "", username: "hina", content: "Yes", dateCreated: Date())

@@ -31,10 +31,10 @@ class AuthService {
         }
     }
 
-    func logInUserToFirebase(credential: AuthCredential, handler: @escaping (_ providerID: String?, _ isError: Bool, _ isNewUser: Bool?, _ userID: String?) -> ()) {
+    func logInUserToFirebase(credential: AuthCredential, handler: @escaping (_ providerID: String?, _ isError: Bool, _ isNewUser: Bool?, _ userID: String?) -> Void) {
         Auth.auth().signIn(with: credential) { result, error in
             if error != nil {
-                print("Errir login in to Firebase\(error)")
+                print("Error login in to Firebase\(error)")
                 handler(nil, true, nil, nil)
                 return
             }
@@ -47,16 +47,18 @@ class AuthService {
 
             self.checkIfUserExistsDatabase(providerID: providerID) { returnedUserID in
                 if let userID  = returnedUserID {
+                    // Userが存在
                     handler(providerID, false, false, userID)
                 } else {
+                    // Userが存在しない
                     handler(providerID, false, true, nil)
                 }
             }
         }
     }
 
-    private func checkIfUserExistsDatabase(providerID: String, handler: @escaping(_ existingUserID: String?) -> ()) {
-        userCollection.whereField(DatabaseUserField.providerID, isEqualTo: providerID).getDocuments { querySnapshot, error in
+    private func checkIfUserExistsDatabase(providerID: String, handler: @escaping(_ existingUserID: String?) -> Void) {
+        userCollection.whereField(DatabaseUserField.providerID, isEqualTo: providerID).getDocuments { querySnapshot, _ in
             if let snapshot = querySnapshot, snapshot.count > 0, let document = snapshot.documents.first {
                 // documentIDであるusrID
                 let existingUserID = document.documentID
@@ -85,7 +87,8 @@ class AuthService {
 
     func getUserInfo(userID: String) async throws -> (name: String, bio: String) {
         let snapshot = try await userDocument(userId: userID).getDocument()
-        guard let name = snapshot.get(DatabaseUserField.displayName) as? String, let bio = snapshot.get(DatabaseUserField.bio) as? String else { throw URLError(.cannotFindHost)}
+        guard let name = snapshot.get(DatabaseUserField.displayName) as? String, 
+                let bio = snapshot.get(DatabaseUserField.bio) as? String else { throw URLError(.cannotFindHost)}
         print("Success getting user info")
         return (name, bio)
     }

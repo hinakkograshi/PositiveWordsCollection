@@ -21,20 +21,22 @@ final class AuthenticationViewModel: ObservableObject {
     @Published var provider: String = ""
     @Published var bio: String = ""
     @Published var showSignInProfileView: Bool = false
-    @Published var hadSignInUser = false
+    @Published var showError = false
     let signInAppleHelper = SignInAppleHelper()
 
-    func signInGoogle() async throws {
+    func signInGoogle(dissmisAction: () -> Void) async throws {
         let helper = SignInGoogleHelper()
         let tokens = try await helper.signIn()
         let (credential, authDataResult) = try await AuthenticationManager.instance.signInWithGoogle(tokens: tokens)
         let firebaseUser = authDataResult.user
         guard let fullName = firebaseUser.displayName,
               let email = firebaseUser.email else { return }
-            try await connectToFirebase(name: fullName, email: email, provider: "google", credential: credential)
+        try await connectToFirebase(name: fullName, email: email, provider: "google", credential: credential, completion: dissmisAction)
     }
 
-    func signInApple() async throws {
+    /// Appleにサインイン
+    /// - Parameter dissmisAction: 画面を閉じる
+    func signInApple(dissmisAction: () -> Void) async throws {
         let helper = SignInAppleHelper()
         let signInAppleResult = try await helper.startSignInWithAppleFlow()
         let credential = try await AuthenticationManager.instance.signInWithApple(tokens: signInAppleResult)
@@ -43,10 +45,11 @@ final class AuthenticationViewModel: ObservableObject {
             let formatter = PersonNameComponentsFormatter()
             name = formatter.string(from: fullName)
         }
-        try await connectToFirebase(name: name, email: signInAppleResult.email, provider: "apple", credential: credential)
+        try await connectToFirebase(name: name, email: signInAppleResult.email, provider: "apple", credential: credential, completion: dissmisAction)
     }
+    // connectToFirebaseをView内で呼ばず、signInAppleで呼ぶ！
 
-    private func connectToFirebase(name: String, email: String, provider: String, credential: AuthCredential) async throws {
+    private func connectToFirebase(name: String, email: String, provider: String, credential: AuthCredential, completion: () -> Void) async throws {
         let logInUser = try await AuthService.instance.asyncLogInUserToFirebase(credential: credential)
         if let newUser = logInUser.isNewUser {
             if newUser {
@@ -58,33 +61,32 @@ final class AuthenticationViewModel: ObservableObject {
                     self.provider = provider
                     self.showSignInProfileView = true
                 } else {
+                    self.showError = true
                     print("Error getting provider ID from log in user to Firebase")
                     throw AsyncError(message: "Error getting provider ID")
-//                     self.showError = true
                 }
             } else {
-                // userIDがすでに存在している場合
+                // Exist User
                 if let userID = logInUser.userID {
                     do {
                         try await AuthService.instance.logInUserToApp(userID: userID)
-                        hadSignInUser = true
-//                        dismiss()
+                        completion()
                     } catch {
+                        self.showError = true
                         throw AsyncError(message: "logInUserToApp Error")
-//                         self.showError = true
                     }
                 } else {
                     // Error
+                    self.showError = true
                     print("Error getting user ID from log in user to Firebase")
                     throw AsyncError(message: "Error getting user ID from log in user to Firebase")
-//                     self.showError = true
                 }
             }
         } else {
             // Error
             print("Error getting into from log in user to Firebase")
             throw AsyncError(message: "Error getting into from log in user to Firebase")
-//            self.showError = true
+            self.showError = true
         }
     }
 }

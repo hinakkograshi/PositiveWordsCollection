@@ -10,7 +10,9 @@ import SwiftUI
 struct ContentView: View {
     @State private var showSignInView: Bool = false
     @State private var showSignInProfileView: Bool = false
+
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
+    @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
     var body: some View {
         TabView {
             NavigationStack {
@@ -28,7 +30,9 @@ struct ContentView: View {
                 Text("Notice")
             }
             NavigationStack {
-                ProfileView(isMyProfile: true, profileDisplayName: "userName", profileUserID: "userID")
+                if let userID = currentUserID, let displayName = currentUserName {
+                    ProfileView(isMyProfile: true, profileDisplayName: displayName, profileUserID: userID)
+                }
             }
             .tabItem {
                 Image(systemName: "person.fill")
@@ -44,17 +48,17 @@ struct ContentView: View {
         }
         .onAppear {
             self.showSignInView = currentUserID == nil ? true : false
-//            let authUser = try? AuthenticationManager.instance.getAuthenticatedUser()
-//            self.showSignInView = authUser == nil ? true : false
+            //            let authUser = try? AuthenticationManager.instance.getAuthenticatedUser()
+            //            self.showSignInView = authUser == nil ? true : false
         }
         .fullScreenCover(isPresented: $showSignInView, content: {
             AuthenticationView(showSignInView: $showSignInView)
         })
-//        .fullScreenCover(
-//            isPresented: $showSignInView,
-//            onDismiss: { showSignInProfileView = true },
-//            content: { AuthenticationView(showSignInView: $showSignInView) }
-//        )
+        //        .fullScreenCover(
+        //            isPresented: $showSignInView,
+        //            onDismiss: { showSignInProfileView = true },
+        //            content: { AuthenticationView(showSignInView: $showSignInView) }
+        //        )
     }
 }
 
