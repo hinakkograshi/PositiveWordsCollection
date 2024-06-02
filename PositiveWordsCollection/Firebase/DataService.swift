@@ -81,11 +81,11 @@ class DataService {
             return getPostsFromSnapshot(querySnapshot: querySnapshot)
     }
 
-    func downloadPostsForFeed(handler: @escaping (_ posts: [PostModel]) -> Void) {
+    // 最新の50個のポスト取得
+    func downloadPostsForFeed() async throws -> [PostModel] {
         // 最新の50個しか取得しない
-        postsREF.order(by: DatabasePostField.dateCreated, descending: true).limit(to: 50).getDocuments { querySnapshot, _ in
-            handler(self.getPostsFromSnapshot(querySnapshot: querySnapshot))
-        }
+            let querySnapshot = try await postsREF.order(by: DatabasePostField.dateCreated, descending: true).limit(to: 50).getDocuments()
+            return getPostsFromSnapshot(querySnapshot: querySnapshot)
     }
 
     private func getPostsFromSnapshot(querySnapshot: QuerySnapshot?) -> [PostModel] {
@@ -162,14 +162,13 @@ class DataService {
         ]
         postsREF.document(postID).updateData(data)
     }
-
-//    func updateDisplayNameOnPosts(userID: String, displayName: String) {
-//        downloadPostForUser(userID: userID) { [self] posts in
-//            for post in posts {
-//                self.updatePostDisplayName(postID: post.postID, displayName: displayName)
-//            }
-//        }
-//    }
+    
+    func updateDisplayNameOnPosts(userID: String, displayName: String) async throws {
+        let posts = try await downloadPostForUser(userID: userID)
+        for post in posts {
+            self.updatePostDisplayName(postID: post.postID, displayName: displayName)
+        }
+    }
 
     private func updatePostDisplayName(postID: String, displayName: String) {
         let data: [String: Any] = [
