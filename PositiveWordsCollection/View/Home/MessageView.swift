@@ -33,6 +33,6 @@ struct MessageView: View {
 }
 
 #Preview(traits: .sizeThatFitsLayout) {
-    var comment = CommentModel(commentID: "", userID: "", username: "hinakko", content: "This photo is really cool. haha", dateCreated: Date())
+    let comment = CommentModel(commentID: "", userID: "", username: "hinakko", content: "This photo is really cool. haha", dateCreated: Date())
    return MessageView(comment: comment)
 }

@@ -9,23 +9,26 @@ import SwiftUI
 
 struct ProfileHeaderView: View {
     @Binding var profileDisplayName: String
+    @Binding var profileImage: UIImage
+//    @ObservedObject var postArray: PostArrayObject
+    var profileBio: String
     var body: some View {
         VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 10, content: {
             // MARK: PROFILE PICTURE
             HStack(alignment: .center, spacing: 20, content: {
-                Image("hiyoko")
+                Image(uiImage: profileImage)
                     .resizable()
                     .scaledToFill()
                     .frame(width: 120, height: 120, alignment: .leading)
                     .clipShape(RoundedRectangle(cornerRadius: 60))
                 // MARK: USER NAME
-                Text("Hinakko")
+                Text(profileDisplayName)
                     .font(.largeTitle)
                     .fontWeight(.bold)
             })
 
             // MARK: BIO
-            Text("This is the area where th user can add a bio to their profile!")
+            Text(profileBio)
                 .font(.body)
                 .fontWeight(.regular)
                 .multilineTextAlignment(.center)
@@ -66,5 +69,6 @@ struct ProfileHeaderView: View {
 
 #Preview(traits: .sizeThatFitsLayout) {
     @State var name: String = "hina"
-    return ProfileHeaderView(profileDisplayName: $name)
+    @State var image: UIImage = UIImage(named: "hiyoko")!
+    return ProfileHeaderView(profileDisplayName: $name, profileImage: $image, profileBio: name)
 }

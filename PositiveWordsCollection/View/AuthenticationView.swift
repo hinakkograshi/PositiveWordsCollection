@@ -43,7 +43,7 @@ struct AuthenticationView: View {
                 GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .light, style: .wide, state: .normal)) {
                     Task {
                         do {
-                            try await viewModel.signInGoogle()
+                            try await viewModel.signInGoogle(dissmisAction: dismiss.callAsFunction)
                             // Success
 //                            showSignInView = false
                         } catch {
@@ -57,7 +57,7 @@ struct AuthenticationView: View {
                 Button(action: {
                     Task {
                         do {
-                            try await viewModel.signInApple()
+                            try await viewModel.signInApple(dissmisAction: dismiss.callAsFunction)
                             // Success
 //                            showSignInView = false
                         } catch {
@@ -80,7 +80,7 @@ struct AuthenticationView: View {
             SignInProfileView(viewModel: viewModel)
         })
         .alert(isPresented: $showError, content: {
-            return Alert(title: Text("サインインに失敗しました。"))
+            return Alert(title: Text("サインインに失敗しました"))
         })
     }
 }

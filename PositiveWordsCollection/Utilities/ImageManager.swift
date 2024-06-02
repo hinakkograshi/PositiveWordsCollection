@@ -9,6 +9,9 @@ import Foundation
 import FirebaseStorage
 import UIKit
 
+// Objectにたくさんの画像キャッシュ
+let imageCache = NSCache<AnyObject, UIImage>()
+
 class ImageManager {
     static let instance = ImageManager()
     private var storageREF = Storage.storage()
@@ -25,6 +28,42 @@ class ImageManager {
         return storagePath
     }
 
+    func downloadProfileImage(userID: String, handler: @escaping (_ image: UIImage?) -> Void) {
+        // Where the image is saved
+        let path = getProfileImagePath(userID: userID)
+        // Download image path
+        DispatchQueue.global(qos: .userInteractive).async {
+            self.downloadImage(path: path) { returnedImage in
+                DispatchQueue.main.async {
+                    handler(returnedImage)
+                }
+            }
+        }
+    }
+
+    private func downloadImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
+        // キャッシュされていたらそれを使用
+        if let cachedImage = imageCache.object(forKey: path) {
+            print("Image found in cache")
+            handler(cachedImage)
+            return
+        } else {
+            // 初めてキャッシュ
+            path.getData(maxSize: 27 * 1024 * 1024) { returnedImageData, _ in
+                if let data = returnedImageData, let image = UIImage(data: data) {
+                    // Success getting Image
+                    imageCache.setObject(image, forKey: path)
+                    handler(image)
+                    return
+                } else {
+                    print("Error getting data from path for image")
+                    handler(nil)
+                    return
+                }
+            }
+        }
+    }
+
     // 指定したパスに画像をアプロードする
     private func uploadImage(path: StorageReference, image: UIImage) async throws {
 
@@ -37,7 +76,6 @@ class ImageManager {
             print("Error getting data from image")
             return
         }
-
         // Check maximum file size画像圧縮
         while (originalData.count > maxFileSize) && (compression > maxCompression) {
             compression -= 0.05
