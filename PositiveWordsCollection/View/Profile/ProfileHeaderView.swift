@@ -69,6 +69,6 @@ struct ProfileHeaderView: View {
 
 #Preview(traits: .sizeThatFitsLayout) {
     @State var name: String = "hina"
-    @State var image: UIImage = UIImage(named: "hiyoko")!
+    @State var image: UIImage = UIImage(named: "hiyo")!
     return ProfileHeaderView(profileDisplayName: $name, profileImage: $image, profileBio: name)
 }

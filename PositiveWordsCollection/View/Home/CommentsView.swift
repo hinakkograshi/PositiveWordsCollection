@@ -13,7 +13,7 @@ struct CommentsView: View {
     @Binding var post: PostModel
     var body: some View {
         VStack {
-            PostCell(post: post)
+            PostView(post: post)
             ScrollView {
                 LazyVStack {
                     ForEach(commentArray, id: \.self) { comment in

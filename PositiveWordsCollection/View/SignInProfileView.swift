@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SignInProfileView: View {
     @ObservedObject var viewModel: AuthenticationViewModel
-    @State var selectedImage: UIImage = UIImage(named: "hiyoko")!
+    @State var selectedImage: UIImage = UIImage(named: "noImage")!
     @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
     @Environment(\.dismiss) private var dismiss
     @State var showImagePicker: Bool = false

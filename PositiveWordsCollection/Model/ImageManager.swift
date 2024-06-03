@@ -53,7 +53,7 @@ class ImageManager {
         }
     }
 
-    func downloadPostImage(postID: String, handler: @escaping (_ image: UIImage?) -> ()) {
+    func downloadPostImage(postID: String, handler: @escaping (_ image: UIImage?) -> Void) {
         // Where the image is saved
         let path = getPostImagePath(postID: postID)
         // Download image path

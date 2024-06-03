@@ -84,9 +84,9 @@ final class AuthenticationViewModel: ObservableObject {
             }
         } else {
             // Error
+            self.showError = true
             print("Error getting into from log in user to Firebase")
             throw AsyncError(message: "Error getting into from log in user to Firebase")
-            self.showError = true
         }
     }
 }

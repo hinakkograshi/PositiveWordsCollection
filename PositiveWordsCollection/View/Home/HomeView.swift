@@ -14,7 +14,7 @@ struct HomeView: View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack {
                 ForEach(posts.dataArray, id: \.self) { post in
-                    PostCell(post: post)
+                    PostView(post: post)
                 }
             }
         }
