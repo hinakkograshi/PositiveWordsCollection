@@ -13,10 +13,11 @@ struct ContentView: View {
 
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
+    @StateObject private var homePosts = PostArrayObject()
     var body: some View {
         TabView {
             NavigationStack {
-                HomeView(posts: PostArrayObject())
+                HomeView(posts: homePosts)
             }
             .tabItem {
                 Image(systemName: "house.fill")

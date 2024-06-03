@@ -6,11 +6,20 @@
 //
 
 import Foundation
-
+@MainActor
 class PostArrayObject: ObservableObject {
     @Published var dataArray = [PostModel]()
     @Published var postCountString = "0"
     @Published var likeCountString = "0"
+
+    // All User Post
+    init() {
+        print("Get All User Post Home")
+        Task {
+            let returnedPosts = try await DataService.instance.downloadPostsForFeed()
+            self.dataArray.append(contentsOf: returnedPosts)
+        }
+    }
 
     /// Used for single post selection
     init(post: PostModel) {
@@ -28,14 +37,6 @@ class PostArrayObject: ObservableObject {
                 }
                 self.dataArray.append(contentsOf: sortedPosts)
                 self.updateCounts()
-        }
-    }
-    // All User Post
-    init() {
-        print("Get All User Post Home")
-        Task {
-            let returnedPosts = try await DataService.instance.downloadPostsForFeed()
-            self.dataArray.append(contentsOf: returnedPosts)
         }
     }
 

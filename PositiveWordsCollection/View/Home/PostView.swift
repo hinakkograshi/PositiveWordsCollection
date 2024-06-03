@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PostCell: View {
+struct PostView: View {
     @State var post: PostModel
 //    @State var postStamp: UIImage = UIImage(named: "hiyo")!
     @State var animateLike: Bool = false
@@ -19,17 +19,21 @@ struct PostCell: View {
             // header
             HStack {
                 NavigationLink(destination: {
-                    ProfileView(isMyProfile: false, profileDisplayName: post.username, profileUserID: post.userID, posts: PostArrayObject(userID: post.userID))
+                    LazyView {
+                        ProfileView(isMyProfile: false, profileDisplayName: post.username, profileUserID: post.userID, posts: PostArrayObject(userID: post.userID))
+                    }
                 }, label: {
                     Image(uiImage: profileImage)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 40, height: 40, alignment: .center)
-                        .clipShape(RoundedRectangle(cornerRadius: 15))
+                        .clipShape(RoundedRectangle(cornerRadius: 60))
+                        .padding(.leading, 10)
                     Text(post.username)
-                        .font(.callout)
+                        .font(.title2)
                         .fontWeight(.medium)
                         .tint(.primary)
+                        .padding(.leading, 10)
                     // Time
                     Text("2s")
                         .foregroundStyle(.gray)
@@ -43,8 +47,9 @@ struct PostCell: View {
                 },
                        label: {
                     Image(systemName: "ellipsis")
-                        .font(.headline)
+                        .font(.system(size: 20))
                 })
+                .padding(.trailing, 10)
                 .tint(.primary)
                 .confirmationDialog("What would you like to do?", isPresented: $showActionSheet, titleVisibility: .visible) {
                     Button("Report", role: .destructive) {
@@ -55,14 +60,14 @@ struct PostCell: View {
                     }
                 }
             }
-            Divider()
             // Content
             HStack {
                 // stamp Image
                 Image(uiImage: postImage)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 80, height: 80, alignment: .center)
+                    .frame(width: 100, height: 100, alignment: .center)
+                    .padding(.horizontal, 10)
                 // post caption
                 Text(post.caption)
                     .font(.subheadline)
@@ -149,5 +154,5 @@ struct PostCell: View {
 
 #Preview {
     let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false)
-    return PostCell(post: post)
+    return PostView(post: post)
 }
