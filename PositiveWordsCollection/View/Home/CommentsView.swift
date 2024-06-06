@@ -11,6 +11,9 @@ struct CommentsView: View {
     @State var submissionText: String = ""
     @State var commentArray = [CommentModel]()
     @Binding var post: PostModel
+    @State var profileImage: UIImage = UIImage(named: "loading")!
+    @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
+    @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
     var body: some View {
         VStack {
             PostView(post: post)
@@ -18,21 +21,20 @@ struct CommentsView: View {
                 LazyVStack {
                     ForEach(commentArray, id: \.self) { comment in
                         MessageView(comment: comment)
-
                     }
-
                 }
             }
 
             HStack {
-                Image("hiyoko")
+                Image(uiImage: profileImage)
                     .resizable()
                     .scaledToFill()
                     .frame(width: 40, height: 40, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                 TextField("Add a commen here...", text: $submissionText)
                 Button {
-
+                    addComment()
+                    countComment()
                 } label: {
                     Image(systemName: "paperplane.fill")
                         .font(.title2)
@@ -45,25 +47,69 @@ struct CommentsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: {
             getComments()
+            getProfilePicture()
         })
     }
     // MARK: FUNCTIONS
+    // 🟩追加
+    func countComment() {
+        guard let userID = currentUserID else { return }
+
+        // Update the local data
+        let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount, likedByUser: post.likedByUser, comentsCount: post.comentsCount + 1)
+        self.post = updatePost
+        // Animate UI
+        // Update Firebase
+        Task {
+            do {
+                try await  DataService.instance.commentPostCount(postID: post.postID, currentUserID: userID)
+            } catch {
+                print("Comment UpdateError")
+            }
+        }
+    }
+    func addComment() {
+        guard let userID = currentUserID, let userName = currentUserName else { return }
+        Task {
+            do {
+                let returnedCommentID = try await DataService.instance.uploadComment(postID: post.postID, content: submissionText, displayName: userName, userID: userID)
+                guard let commentID = returnedCommentID else { return }
+                let newComment = CommentModel(commentID: commentID, userID: userID, username: userName, content: submissionText, dateCreated: Date())
+                self.commentArray.append(newComment)
+                self.submissionText = ""
+                await UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            } catch {
+                print("Upload Comment Error")
+            }
+        }
+    }
+    func getProfilePicture() {
+        guard let userID = currentUserID else { return }
+        ImageManager.instance.downloadProfileImage(userID: userID) { returnedImage in
+            if let image = returnedImage {
+                self.profileImage = image
+            }
+        }
+    }
     func getComments() {
-        print("Get comments from DB")
-        let comment1 = CommentModel(commentID: "", userID: "", username: "hinakko", content: "hello", dateCreated: Date())
-        let comment2 = CommentModel(commentID: "", userID: "", username: "hina", content: "Yes", dateCreated: Date())
-        let comment3 = CommentModel(commentID: "", userID: "", username: "Bob", content: "Nice", dateCreated: Date())
-        let comment4 = CommentModel(commentID: "", userID: "", username: "Kevin", content: "Good", dateCreated: Date())
-        commentArray.append(comment1)
-        commentArray.append(comment2)
-        commentArray.append(comment3)
-        commentArray.append(comment4)
+        // 空の場合、コメント読み込む
+        guard self.commentArray.isEmpty else { return }
+        Task {
+            do {
+                let returnedComment = try await DataService.instance.downloadComments(postID: post.postID)
+                commentArray.append(contentsOf: returnedComment)
+            } catch {
+                print("Comment download Error")
+            }
+        }
     }
 }
 
 #Preview {
     NavigationStack {
-        @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false)
-        CommentsView(post: $post)
+        @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
+//        @State var count = CommentModel(commentID: "", userID: "", username: "", content: "", dateCreated: Date())
+//
+//        CommentsView(commentArray: $count, post: $post)
     }
 }

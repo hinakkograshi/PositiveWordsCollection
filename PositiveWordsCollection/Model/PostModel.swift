@@ -16,7 +16,7 @@ struct PostModel: Identifiable, Hashable {
     var dateCreated: Date // 投稿が作成された日付
     var likeCount: Int // いいね数
     var likedByUser: Bool // ユーザーに気に入られているか
-
+    var comentsCount: Int // 投稿数
     // MARK: HashTable完成
     // この関数でIDとハッシュを持つことで、識別が可能
     func hash(into hasher: inout Hasher) {

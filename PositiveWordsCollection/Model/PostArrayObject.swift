@@ -18,6 +18,7 @@ class PostArrayObject: ObservableObject {
         Task {
             let returnedPosts = try await DataService.instance.downloadPostsForFeed()
             self.dataArray.append(contentsOf: returnedPosts)
+            print(dataArray)
         }
     }
 

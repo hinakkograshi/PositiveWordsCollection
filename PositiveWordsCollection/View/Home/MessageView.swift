@@ -9,14 +9,18 @@ import SwiftUI
 
 struct MessageView: View {
     @State var comment: CommentModel
+    @State var profileImage = UIImage(named: "loading")!
     var body: some View {
         HStack {
-            Image("hiyoko")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 40, height: 40, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-
+            NavigationLink(destination: LazyView(content: {
+                ProfileView(isMyProfile: false, profileDisplayName: comment.username, profileUserID: comment.userID, posts: PostArrayObject(userID: comment.userID))
+            }), label: {
+                Image(uiImage: profileImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 40, height: 40, alignment: .center)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+            })
             VStack(alignment: .leading, spacing: 4, content: {
                 Text(comment.username)
                     .font(.caption)
@@ -28,6 +32,18 @@ struct MessageView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 10))
             })
             Spacer(minLength: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/)
+        }
+        .onAppear(perform: {
+            getProfileImage()
+        })
+    }
+    // MARK: FUNCTION
+    func getProfileImage() {
+        ImageManager.instance.downloadProfileImage(userID: comment.userID) { returnedImage in
+            if let image = returnedImage {
+                // プロフィール画像更新
+                self.profileImage = image
+            }
         }
     }
 }

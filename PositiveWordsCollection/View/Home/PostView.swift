@@ -9,11 +9,13 @@ import SwiftUI
 
 struct PostView: View {
     @State var post: PostModel
-//    @State var postStamp: UIImage = UIImage(named: "hiyo")!
     @State var animateLike: Bool = false
-    @State var showActionSheet: Bool = false
     @State var profileImage = UIImage(named: "loading")!
     @State var postImage = UIImage(named: "loading")!
+    @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
+    @State var showReportsAlert: Bool = false
+    @State var showDeleteAlert: Bool = false
+
     var body: some View {
         VStack {
             // header
@@ -42,23 +44,27 @@ struct PostView: View {
                         .foregroundStyle(.primary)
                 })
                 Spacer()
-                Button(action: {
-                    showActionSheet.toggle()
-                },
-                       label: {
+                Menu {
+                    Button(role: .destructive) {
+                        if post.userID == currentUserID! {
+                            showDeleteAlert = true
+                        } else {
+                            showReportsAlert = true
+                        }
+                    } label: {
+                        //　🟥guard user
+                        if post.userID == currentUserID! {
+                            Text("投稿を削除する")
+                        } else {
+                            Text("違反を報告する")
+                        }
+                    }
+                } label: {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 20))
-                })
+                }
                 .padding(.trailing, 10)
                 .tint(.primary)
-                .confirmationDialog("What would you like to do?", isPresented: $showActionSheet, titleVisibility: .visible) {
-                    Button("Report", role: .destructive) {
-                        print("Report Post")
-                    }
-                    Button("Learn more...") {
-                        print("Learn more pressed")
-                    }
-                }
             }
             // Content
             HStack {
@@ -75,7 +81,9 @@ struct PostView: View {
                 Spacer()
             }
             .padding()
-            HStack(alignment: .center, spacing: 20) {
+
+            // Footer
+            HStack(alignment: .center, spacing: 5) {
                 Button(action: {
                     if post.likedByUser {
                         unLikePost()
@@ -87,6 +95,7 @@ struct PostView: View {
                         .font(.title3)
                 })
                 .tint(post.likedByUser ? .red : .primary)
+                Text("\(post.likeCount)")
                 // MARK: Comment Icon
                 HStack {
                     NavigationLink(
@@ -96,7 +105,7 @@ struct PostView: View {
                                 .font(.title3)
                                 .tint(.primary)
                         })
-                    Text("0")
+                    Text("\(post.comentsCount)")
                     .font(.subheadline)                }
                 Image(systemName: "paperplane")
                     .font(.title3)
@@ -105,11 +114,43 @@ struct PostView: View {
             Rectangle()
                 .frame(height: 1)
         }
+        .alert("投稿を削除", isPresented: $showDeleteAlert, actions: {
+            Button("戻る", role: .cancel) {
+
+            }
+            Button("削除", role: .destructive) {
+                // Firebase削除
+            }
+        }, message: {
+            Text("この投稿を削除しますか？")
+        })
+        .alert("違反を報告", isPresented: $showReportsAlert, actions: {
+            Button("戻る", role: .cancel) {
+
+            }
+            Button("報告する", role: .destructive) {
+                reportPost()
+            }
+        }, message: {
+            Text("不適切な投稿を報告しますか？")
+        })
         .onAppear {
             getImages()
         }
     }
     // MARK: function
+    // 報告
+    func reportPost() {
+        print("REPORT POST NOW")
+        Task {
+            do {
+                try await DataService.instance.uploadReport(
+                    postID: post.postID)
+            } catch {
+                print("REPORT POST Error")
+            }
+        }
+    }
     func getImages() {
         // Get Profile image
         ImageManager.instance.downloadProfileImage(userID: post.userID) { returnedImage in
@@ -124,21 +165,35 @@ struct PostView: View {
             }
         }
     }
+    
     func likePost() {
+        guard let userID = currentUserID else {
+            print("Cannot find userID while unliking post")
+            return
+        }
         // Update the local data
-        let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount + 1, likedByUser: true)
+        let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount + 1, likedByUser: true, comentsCount: post.comentsCount)
         self.post = updatePost
-
+        print("postの中身\(self.post)")
+        // Animate UI
         animateLike = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
             animateLike = false
         }
+        // Update Firebase
+        DataService.instance.likePost(postID: post.postID, currentUserID: userID)
     }
 
     func unLikePost() {
-        let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount - 1, likedByUser: false)
+        guard let userID = currentUserID else {
+            print("Cannot find userID while unliking post")
+            return
+        }
+        // Update the local data
+        let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount - 1, likedByUser: false, comentsCount: post.comentsCount)
         self.post = updatePost
-
+        // Update Firebase
+        DataService.instance.unlikePost(postID: post.postID, currentUserID: userID)
     }
     // MARK: 24.メソッド数個省略
     // X等にコピーする内容
@@ -153,6 +208,6 @@ struct PostView: View {
 }
 
 #Preview {
-    let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false)
+    let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
     return PostView(post: post)
 }
