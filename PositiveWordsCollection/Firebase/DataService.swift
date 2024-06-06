@@ -36,26 +36,15 @@ class DataService {
         }
     }
     // 🟥報告
-    func uploadReport(reason: String, postID: String, handler: @escaping (_ success: Bool) -> Void) {
+    func uploadReport(postID: String) async throws {
         let data: [String: Any] = [
-            DatabaseReportsField.content: reason,
             DatabaseReportsField.postID: postID,
             DatabaseReportsField.dateCreated: FieldValue.serverTimestamp()
-
         ]
-        reportsREF.addDocument(data: data) { error in
-            if let error = error {
-                print("Error uploadomg report.\(error)")
-                handler(false)
-                return
-            } else {
-                handler(true)
-                return
-            }
-        }
+        try await reportsREF.addDocument(data: data)
     }
 
-    func uploadComment(postID: String, content: String, displayName: String, userID: String, handler: @escaping (_ success: Bool, _ commentID: String?) -> Void) {
+    func uploadComment(postID: String, content: String, displayName: String, userID: String) async throws -> String? {
         let document = postsREF.document(postID).collection(DatabasePostField.comments).document()
         let commentID = document.documentID
         let data: [String: Any] = [
@@ -65,27 +54,20 @@ class DataService {
             DatabaseCommentsField.displayName: displayName,
             DatabaseCommentsField.dateCreated: FieldValue.serverTimestamp()
         ]
-        document.setData(data) { error in
-            if let error = error {
-                print("Error uploading comment. \(error)")
-                handler(false, nil)
-            } else {
-                handler(true, commentID)
-                return
-            }
-        }
+        try await document.setData(data)
+        return commentID
     }
     // MARK: Get functions
     func downloadPostForUser(userID: String) async throws -> [PostModel] {
-            let querySnapshot = try await postsREF.whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
-            return getPostsFromSnapshot(querySnapshot: querySnapshot)
+        let querySnapshot = try await postsREF.whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
+        return getPostsFromSnapshot(querySnapshot: querySnapshot)
     }
 
     // 最新の50個のポスト取得
     func downloadPostsForFeed() async throws -> [PostModel] {
         // 最新の50個しか取得しない
-            let querySnapshot = try await postsREF.order(by: DatabasePostField.dateCreated, descending: true).limit(to: 50).getDocuments()
-            return getPostsFromSnapshot(querySnapshot: querySnapshot)
+        let querySnapshot = try await postsREF.order(by: DatabasePostField.dateCreated, descending: true).limit(to: 50).getDocuments()
+        return getPostsFromSnapshot(querySnapshot: querySnapshot)
     }
 
     private func getPostsFromSnapshot(querySnapshot: QuerySnapshot?) -> [PostModel] {
@@ -99,15 +81,17 @@ class DataService {
                     let date = timestamp.dateValue()
                     let postID = document.documentID
                     let likeCount = document.get(DatabasePostField.likeCount) as? Int ?? 0
+                    let commentCount = document.get(DatabasePostField.commentCount) as? Int ?? 0
                     var likeByUser: Bool = false
-
+                    // 自分がいいねを押したか？UserID
                     if let userIDArray = document.get(DatabasePostField.likeBy) as? [String], let userID = currentUserID {
                         likeByUser = userIDArray.contains(userID)
                     }
-
+                    print("userID私の\(userID)")
                     // NewPost
-                    let newPost = PostModel(postID: postID, userID: userID, username: displayName, caption: caption, dateCreated: date, likeCount: likeCount, likedByUser: likeByUser)
+                    let newPost = PostModel(postID: postID, userID: userID, username: displayName, caption: caption, dateCreated: date, likeCount: likeCount, likedByUser: likeByUser, comentsCount: commentCount)
                     postArray.append(newPost)
+                    print("新しい\(newPost)")
                 }
             }
             return postArray
@@ -117,10 +101,10 @@ class DataService {
         }
     }
 
-    func downloadComments(postID: String, handler: @escaping (_ comments: [CommentModel]) -> Void) {
-        postsREF.document(postID).collection(DatabasePostField.comments).order(by: DatabaseCommentsField.dateCreated, descending: false).getDocuments { querySnapshot, _ in
-            handler(self.getCommentsFromSnapshot(querySnapshot: querySnapshot))
-        }
+
+    func downloadComments(postID: String) async throws -> [CommentModel] {
+        let querySnapshot = try await postsREF.document(postID).collection(DatabasePostField.comments).order(by: DatabaseCommentsField.dateCreated, descending: false).getDocuments()
+        return getCommentsFromSnapshot(querySnapshot: querySnapshot)
     }
 
     private func getCommentsFromSnapshot(querySnapshot: QuerySnapshot?) -> [CommentModel] {
@@ -145,7 +129,18 @@ class DataService {
     }
 
     // MARK: UPDATE FUNCTION
+    // 🟥
+    func commentPostCount(postID: String, currentUserID: String) async throws {
+        let commentArray = try await downloadComments(postID: postID)
+        let increment: Int64 = 1
+        let data: [String: Any] = [
+            DatabasePostField.commentCount: FieldValue.increment(increment)
+        ]
+        try await postsREF.document(postID).updateData(data)
+    }
     func likePost(postID: String, currentUserID: String) {
+        // Update post count
+        // Update who liked
         let increment: Int64 = 1
         let data: [String: Any] = [
             DatabasePostField.likeCount: FieldValue.increment(increment),
@@ -162,7 +157,7 @@ class DataService {
         ]
         postsREF.document(postID).updateData(data)
     }
-    
+
     func updateDisplayNameOnPosts(userID: String, displayName: String) async throws {
         let posts = try await downloadPostForUser(userID: userID)
         for post in posts {

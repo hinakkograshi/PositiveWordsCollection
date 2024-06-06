@@ -16,4 +16,5 @@ struct DatabasePostField {
     static let likeCount = "like_count" // Int
     static let likeBy = "liked_by" // Array
     static let comments = "comments" // sub-collection
+    static let commentCount = "comment_count" // Int
 }

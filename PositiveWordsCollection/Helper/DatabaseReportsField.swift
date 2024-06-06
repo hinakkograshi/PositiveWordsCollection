@@ -8,7 +8,6 @@
 import Foundation
 
 struct DatabaseReportsField {
-    static let content = "content"
     static let postID = "post_id"
     static let dateCreated = "date_created"
 }
