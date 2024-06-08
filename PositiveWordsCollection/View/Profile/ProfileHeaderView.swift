@@ -10,8 +10,8 @@ import SwiftUI
 struct ProfileHeaderView: View {
     @Binding var profileDisplayName: String
     @Binding var profileImage: UIImage
-//    @ObservedObject var postArray: PostArrayObject
-    var profileBio: String
+    @Binding var profileBio: String
+    @ObservedObject var postArray: PostArrayObject
     var body: some View {
         VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 10, content: {
             // MARK: PROFILE PICTURE

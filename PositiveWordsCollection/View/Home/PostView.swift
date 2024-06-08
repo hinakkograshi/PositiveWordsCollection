@@ -46,17 +46,19 @@ struct PostView: View {
                 Spacer()
                 Menu {
                     Button(role: .destructive) {
-                        if post.userID == currentUserID! {
-                            showDeleteAlert = true
-                        } else {
-                            showReportsAlert = true
-                        }
+                        guard let userID = currentUserID else { return }
+                            if post.userID == userID {
+                                showDeleteAlert = true
+                            } else {
+                                showReportsAlert = true
+                            }
                     } label: {
-                        //　🟥guard user
-                        if post.userID == currentUserID! {
-                            Text("投稿を削除する")
-                        } else {
-                            Text("違反を報告する")
+                        if let userID = currentUserID {
+                            if post.userID == userID {
+                                Text("投稿を削除する")
+                            } else {
+                                Text("違反を報告する")
+                            }
                         }
                     }
                 } label: {
@@ -105,6 +107,7 @@ struct PostView: View {
                                 .font(.title3)
                                 .tint(.primary)
                         })
+                    // 🟩Comentの数
                     Text("\(post.comentsCount)")
                     .font(.subheadline)                }
                 Image(systemName: "paperplane")

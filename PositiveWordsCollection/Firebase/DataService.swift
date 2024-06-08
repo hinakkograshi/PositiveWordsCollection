@@ -101,7 +101,6 @@ class DataService {
         }
     }
 
-
     func downloadComments(postID: String) async throws -> [CommentModel] {
         let querySnapshot = try await postsREF.document(postID).collection(DatabasePostField.comments).order(by: DatabaseCommentsField.dateCreated, descending: false).getDocuments()
         return getCommentsFromSnapshot(querySnapshot: querySnapshot)
