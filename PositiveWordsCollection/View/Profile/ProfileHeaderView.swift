@@ -13,13 +13,13 @@ struct ProfileHeaderView: View {
     @Binding var profileBio: String
     @ObservedObject var postArray: PostArrayObject
     var body: some View {
-        VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 10, content: {
+        VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 20, content: {
             // MARK: PROFILE PICTURE
             HStack(alignment: .center, spacing: 20, content: {
                 Image(uiImage: profileImage)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 120, height: 120, alignment: .leading)
+                    .frame(width: 100, height: 100, alignment: .leading)
                     .clipShape(RoundedRectangle(cornerRadius: 60))
                 // MARK: USER NAME
                 Text(profileDisplayName)
@@ -29,35 +29,42 @@ struct ProfileHeaderView: View {
 
             // MARK: BIO
             Text(profileBio)
-                .font(.body)
+                .font(.title3)
                 .fontWeight(.regular)
                 .multilineTextAlignment(.center)
             HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 20, content: {
                 // MARK: POSTS
                 VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 5, content: {
-                    Text("5")
-                        .font(.title2)
-                        .fontWeight(.bold)
+                    HStack {
+                        Image(systemName: "paperplane")
+                        Text("20")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                    }
 
                     Capsule()
                         .fill(.gray)
-                        .frame(width: 20, height: 2, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        .frame(width: 60, height: 3, alignment: .center)
 
-                    Text("Post")
+                    Text("ポスト数")
                         .font(.callout)
                         .fontWeight(.medium)
                 })
                 // MARK: LIKES
                 VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 5, content: {
-                    Text("20")
-                        .font(.title2)
-                        .fontWeight(.bold)
+                    HStack {
+                        Image(systemName: "heart.fill")
+                            .foregroundStyle(.red)
+                        Text("100")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                    }
 
                     Capsule()
-                        .fill(.gray)
-                        .frame(width: 20, height: 2, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        .fill(.red)
+                        .frame(width: 60, height: 3, alignment: .center)
 
-                    Text("Likes")
+                    Text("いいね数")
                         .font(.callout)
                         .fontWeight(.medium)
                 })
@@ -67,8 +74,9 @@ struct ProfileHeaderView: View {
     }
 }
 
-#Preview(traits: .sizeThatFitsLayout) {
+#Preview {
     @State var name: String = "hina"
-    @State var image: UIImage = UIImage(named: "hiyo")!
-    return ProfileHeaderView(profileDisplayName: $name, profileImage: $image, profileBio: name)
+    @State var bio = "iOSエンジニア目指して学習をしています。"
+    @State var image: UIImage = UIImage(named: "posiIcon")!
+    return ProfileHeaderView(profileDisplayName: $name, profileImage: $image, profileBio: $bio, postArray: PostArrayObject())
 }
