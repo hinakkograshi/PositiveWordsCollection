@@ -12,24 +12,17 @@ struct ProfileView: View {
     @StateObject private var viewModel = ProfileViewModel()
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
     @State var profileDisplayName: String
+    @State var profileBio: String = ""
     var profileUserID: String
     var posts: PostArrayObject
     @State var showSettings: Bool = false
     @Environment(\.colorScheme) var colorScheme
     var body: some View {
-        if let bio = currentBio {
-            ProfileHeaderView(profileDisplayName: $profileDisplayName, profileImage: $viewModel.profileImage, profileBio: bio)
-        }
+        ProfileHeaderView(profileDisplayName: $profileDisplayName, profileImage: $viewModel.profileImage, profileBio: $profileBio, postArray: posts)
         Rectangle()
             .foregroundStyle(.orange)
             .frame(height: 2)
-        ScrollView(.vertical, showsIndicators: false) {
-            LazyVStack {
-                ForEach(posts.dataArray, id: \.self) { post in
-                    PostView(post: post)
-                }
-            }
-        }
+        ProfilePostView(posts: posts)
         .navigationTitle("Profile")
         .navigationBarTitleDisplayMode(.inline)
 
@@ -44,13 +37,27 @@ struct ProfileView: View {
             .opacity(isMyProfile ? 1.0 : 0.0)
         }
         .onAppear(perform: {
+            print("⭐️ポストデータあれいの中身⭐️\(posts.dataArray)")
             viewModel.getProfileImage(profileUserID: profileUserID)
+            getAdditionalProfileInfo()
         })
         .sheet(isPresented: $showSettings, content: {
             EditProfileView(profileImage: $viewModel.profileImage)
             //　なくてもdarkモード対応できそう
                 .preferredColorScheme(colorScheme)
         })
+    }
+    // 編集更新された場合
+    func getAdditionalProfileInfo() {
+        Task {
+            do {
+                let (returnedName, returnedBio) = try await AuthService.instance.getUserInfo(userID: profileUserID)
+                self.profileDisplayName = returnedName
+                self.profileBio = returnedBio
+            } catch {
+                print("getAdditionalProfileInfo Error")
+            }
+        }
     }
 }
 

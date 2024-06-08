@@ -18,25 +18,26 @@ class PostArrayObject: ObservableObject {
         Task {
             let returnedPosts = try await DataService.instance.downloadPostsForFeed()
             self.dataArray.append(contentsOf: returnedPosts)
-            print(dataArray)
+            print("❤️データアレイの中身\(dataArray)")
         }
     }
 
     /// Used for single post selection
-    init(post: PostModel) {
-        self.dataArray.append(post)
-    }
+//    init(post: PostModel) {
+//        self.dataArray.append(post)
+//    }
 
     /// USERがMyProfileの投稿を取得するために使用
     init(userID: String) {
         Task {
-            print("get posts for user ID \(userID)")
+            print("🟥プロフィールのuserIDは\(userID)")
                 let returnedposts = try await DataService.instance.downloadPostForUser(userID: userID)
                 // 最新の日付
                 let sortedPosts = returnedposts.sorted { (post1, post2) -> Bool in
                     return post1.dateCreated > post2.dateCreated
                 }
                 self.dataArray.append(contentsOf: sortedPosts)
+            print("🐥dataArray現在のUserは\(dataArray)")
                 self.updateCounts()
         }
     }
