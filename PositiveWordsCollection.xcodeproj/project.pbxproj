@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5312D47B2C154F520061F2F2 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5312D47A2C154F520061F2F2 /* PostViewModel.swift */; };
 		533050D92C1430C10081B60B /* ProfilePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533050D82C1430C10081B60B /* ProfilePostView.swift */; };
 		533D40A02BF9E408005C684A /* SignInAppleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533D409F2BF9E408005C684A /* SignInAppleHelper.swift */; };
 		533D40A42BFA01D2005C684A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533D40A32BFA01D2005C684A /* HomeView.swift */; };
@@ -59,7 +58,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5312D47A2C154F520061F2F2 /* PostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		533050D82C1430C10081B60B /* ProfilePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePostView.swift; sourceTree = "<group>"; };
 		533D409F2BF9E408005C684A /* SignInAppleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInAppleHelper.swift; sourceTree = "<group>"; };
 		533D40A32BFA01D2005C684A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -153,7 +151,6 @@
 			children = (
 				535C7F962BF82C3200BA33D1 /* AuthenticationViewModel.swift */,
 				5345D9452C0C047E000287DF /* ProfileViewModel.swift */,
-				5312D47A2C154F520061F2F2 /* PostViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -409,7 +406,6 @@
 				5345D9522C0C4C41000287DF /* SelectStampCell.swift in Sources */,
 				535C7F8C2BF8239C00BA33D1 /* AuthenticationView.swift in Sources */,
 				53A655592BF787D200D915B5 /* PositiveWordsCollectionApp.swift in Sources */,
-				5312D47B2C154F520061F2F2 /* PostViewModel.swift in Sources */,
 				5345D94E2C0C46A6000287DF /* DatabaseCommentsField.swift in Sources */,
 				539C80272C016DC70000BD44 /* CreatePostView.swift in Sources */,
 				539DD1272BFE383500D6BCBC /* MessageView.swift in Sources */,

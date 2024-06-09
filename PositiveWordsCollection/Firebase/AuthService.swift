@@ -118,4 +118,13 @@ class AuthService {
         try await document.setData(userData)
         return userID
     }
+
+    func updateUserProfileText(userID: String, displayName: String, bio: String) async throws {
+                let data: [String: Any] = [
+                    DatabaseUserField.displayName: displayName,
+                    DatabaseUserField.bio: bio
+                ]
+        try await userCollection.document(userID).updateData(data)
+
+    }
 }

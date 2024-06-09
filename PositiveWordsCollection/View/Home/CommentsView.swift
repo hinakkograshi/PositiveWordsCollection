@@ -29,7 +29,7 @@ struct CommentsView: View {
                 Image(uiImage: profileImage)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 40, height: 40, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                    .frame(width: 40, height: 40, alignment: .center)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                 TextField("Add a commen here...", text: $submissionText)
                 Button {

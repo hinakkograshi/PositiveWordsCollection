@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct PostView: View {
+//    @StateObject var viewModel = PostViewModel(userID: <#String#>, postID: <#String#>)
     @State var post: PostModel
     @State var animateLike: Bool = false
     @State var profileImage = UIImage(named: "loading")!
@@ -16,13 +17,14 @@ struct PostView: View {
     @State var showReportsAlert: Bool = false
     @State var showDeleteAlert: Bool = false
 
+
     var body: some View {
         VStack {
             // header
             HStack {
                 NavigationLink(destination: {
                     LazyView {
-                        ProfileView(isMyProfile: false, profileDisplayName: post.username, profileUserID: post.userID, posts: PostArrayObject(userID: post.userID))
+                        ProfileView(isMyProfile: false, profileDisplayName: post.username, profileUserID: post.userID)
                     }
                 }, label: {
                     Image(uiImage: profileImage)
@@ -75,6 +77,7 @@ struct PostView: View {
                     .resizable()
                     .scaledToFill()
                     .frame(width: 100, height: 100, alignment: .center)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
                     .padding(.horizontal, 10)
                 // post caption
                 Text(post.caption)
@@ -138,7 +141,17 @@ struct PostView: View {
             Text("不適切な投稿を報告しますか？")
         })
         .onAppear {
-            getImages()
+                getImages()
+
+//                .task {
+//                    do {
+//                        try await Task.sleep(for: .seconds(5))
+//                        try await Task.sleep(for: .seconds(5))
+//                        getImages()
+//                    } catch {
+//                        print(error)
+//                    }
+//                }
         }
     }
     // MARK: function
@@ -154,12 +167,14 @@ struct PostView: View {
             }
         }
     }
+    // PostImage取得
     func getImages() {
+        print("⭐️getImageの取得")
         // Get Profile image
         ImageManager.instance.downloadProfileImage(userID: post.userID) { returnedImage in
             if let image = returnedImage {
                 self.profileImage = image
-            }
+            } 
         }
         // Get Post image
         ImageManager.instance.downloadPostImage(postID: post.postID) { returnedImage in
@@ -210,7 +225,7 @@ struct PostView: View {
     }
 }
 
-#Preview {
-    let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
-    return PostView(post: post)
-}
+//#Preview {
+//    let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
+//    return PostView(post: post)
+//}

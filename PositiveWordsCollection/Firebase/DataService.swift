@@ -58,6 +58,7 @@ class DataService {
         return commentID
     }
     // MARK: Get functions
+    // UserIDの投稿を取得
     func downloadPostForUser(userID: String) async throws -> [PostModel] {
         let querySnapshot = try await postsREF.whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
         return getPostsFromSnapshot(querySnapshot: querySnapshot)
@@ -87,11 +88,9 @@ class DataService {
                     if let userIDArray = document.get(DatabasePostField.likeBy) as? [String], let userID = currentUserID {
                         likeByUser = userIDArray.contains(userID)
                     }
-                    print("userID私の\(userID)")
                     // NewPost
                     let newPost = PostModel(postID: postID, userID: userID, username: displayName, caption: caption, dateCreated: date, likeCount: likeCount, likedByUser: likeByUser, comentsCount: commentCount)
                     postArray.append(newPost)
-                    print("新しい\(newPost)")
                 }
             }
             return postArray
@@ -156,7 +155,7 @@ class DataService {
         ]
         postsREF.document(postID).updateData(data)
     }
-
+    // MARK: UPDATE USER FUNCTION
     func updateDisplayNameOnPosts(userID: String, displayName: String) async throws {
         let posts = try await downloadPostForUser(userID: userID)
         for post in posts {
