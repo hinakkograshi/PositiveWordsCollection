@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct PostView: View {
-//    @StateObject var viewModel = PostViewModel(userID: <#String#>, postID: <#String#>)
     @State var post: PostModel
     @State var animateLike: Bool = false
     @State var profileImage = UIImage(named: "loading")!
@@ -16,7 +15,6 @@ struct PostView: View {
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @State var showReportsAlert: Bool = false
     @State var showDeleteAlert: Bool = false
-
 
     var body: some View {
         VStack {
@@ -49,11 +47,11 @@ struct PostView: View {
                 Menu {
                     Button(role: .destructive) {
                         guard let userID = currentUserID else { return }
-                            if post.userID == userID {
-                                showDeleteAlert = true
-                            } else {
-                                showReportsAlert = true
-                            }
+                        if post.userID == userID {
+                            showDeleteAlert = true
+                        } else {
+                            showReportsAlert = true
+                        }
                     } label: {
                         if let userID = currentUserID {
                             if post.userID == userID {
@@ -141,17 +139,7 @@ struct PostView: View {
             Text("不適切な投稿を報告しますか？")
         })
         .onAppear {
-                getImages()
-
-//                .task {
-//                    do {
-//                        try await Task.sleep(for: .seconds(5))
-//                        try await Task.sleep(for: .seconds(5))
-//                        getImages()
-//                    } catch {
-//                        print(error)
-//                    }
-//                }
+            getImages()
         }
     }
     // MARK: function
@@ -174,7 +162,7 @@ struct PostView: View {
         ImageManager.instance.downloadProfileImage(userID: post.userID) { returnedImage in
             if let image = returnedImage {
                 self.profileImage = image
-            } 
+            }
         }
         // Get Post image
         ImageManager.instance.downloadPostImage(postID: post.postID) { returnedImage in
@@ -183,7 +171,7 @@ struct PostView: View {
             }
         }
     }
-    
+
     func likePost() {
         guard let userID = currentUserID else {
             print("Cannot find userID while unliking post")
@@ -225,7 +213,7 @@ struct PostView: View {
     }
 }
 
-//#Preview {
-//    let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
-//    return PostView(post: post)
-//}
+#Preview {
+    let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
+    return PostView(post: post)
+}

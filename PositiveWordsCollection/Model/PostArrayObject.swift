@@ -67,17 +67,4 @@ class PostArrayObject: ObservableObject {
                 self.updateCounts()
         }
     }
-//    func refreshOfUser(userID: String) async {
-//
-//        print("🟩 プロフィールのuserIDは\(userID)")
-//        guard let returnedposts = try? await DataService.instance.downloadPostForUser(userID: userID) else {
-//            fatalError()
-//        }
-//        // 最新の日付
-//        let sortedPosts = returnedposts.sorted { (post1, post2) -> Bool in
-//            return post1.dateCreated > post2.dateCreated
-//        }
-//        self.dataArray = sortedPosts
-//        self.updateCounts()
-//    }
 }
