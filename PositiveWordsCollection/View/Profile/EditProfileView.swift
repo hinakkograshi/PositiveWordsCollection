@@ -87,19 +87,10 @@ struct EditProfileView: View {
                     Button(action: {
                         Task {
                             // キャッシュバグ解消
+                            ImageManager.instance.chashRemove()
                             await saveEditProfile()
-                            print("処理終わったよ！")
-                            
-                            print("saveされました！")
-                            
                             dismiss()
-                            print("閉じました")
                         }
-//                        if userImage != selectedImage {
-//                            saveImage {
-//                                dismiss()
-//                            }
-//                        }
                     }, label: {
                         Text("保存")
                             .tint(.primary)
@@ -114,25 +105,6 @@ struct EditProfileView: View {
         }
     }
     // MARK: FUNCTION
-//    func saveImage(completionHandler: @escaping () -> Void) {
-//        print("🟩 1")
-//        guard let userID = currentUserID else { return }
-//        // Update UI profile image
-//        self.userImage = selectedImage
-//        print("🟩 2")
-//        // Update profile image in database
-//        Task {
-//            do {
-//                try await ImageManager.instance.uploadProfileImage(userID: userID, image: selectedImage)
-//                print("🟩 3")
-//                completionHandler()
-//            } catch {
-//                print("uploadProfileImage Error")
-//            }
-//        }
-//        print("🟩 4")
-//    }
-
     func saveEditProfile() async {
         guard let userID = currentUserID else { return }
         // Update UI

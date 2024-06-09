@@ -37,7 +37,7 @@ struct ProfileHeaderView: View {
             }
             HStack(alignment: .center, spacing: 50, content: {
                 // MARK: POSTS
-                VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 5, content: {
+                VStack(alignment: .center, spacing: 5, content: {
                     HStack {
                         Image(systemName: "paperplane")
                         Text(postArray.postCountString)
@@ -54,7 +54,7 @@ struct ProfileHeaderView: View {
                         .fontWeight(.medium)
                 })
                 // MARK: LIKES
-                VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 5, content: {
+                VStack(alignment: .center, spacing: 5, content: {
                     HStack {
                         Image(systemName: "heart.fill")
                             .foregroundStyle(.red)

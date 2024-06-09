@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ProfileView: View {
     var isMyProfile: Bool
-    //    @StateObject private var viewModel = ProfileViewModel()
     @State var profileImage = UIImage(named: "loading")!
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
     @State var profileDisplayName: String
@@ -50,16 +49,14 @@ struct ProfileView: View {
             }
             .onAppear(perform: {
                 getProfileImage(profileUserID: profileUserID)
-
             })
             .sheet(
                 isPresented: $showSettings,
                 onDismiss: {
+                    // TODO: -画像の取得方法要修正。画像ごとのUUID作成
                     posts.refreshOfUser(userID: profileUserID)
                     // 画像のリロードのタイミング
-                    DispatchQueue.main.asyncAfter(deadline: .now()+20) {
                         getProfileImage(profileUserID: profileUserID)
-                    }
                 },
                 content: {
                     EditProfileView(userDisplayName: $profileDisplayName, userBio: $profileBio, userImage: $profileImage)
@@ -71,19 +68,16 @@ struct ProfileView: View {
     func getProfileImage(profileUserID: String) {
         ImageManager.instance.downloadProfileImage(userID: profileUserID) { returnedImage in
             if let image = returnedImage {
-                print("🟩アンラップ成功")
                 // プロフィール画像更新
                 self.profileImage = image
-            } else {
-                print("🟥アンラップ失敗")
             }
         }
     }
 }
 
-//#Preview {
-//    @State var selectedImage = UIImage(named: "hiyoko")!
-//    return NavigationStack {
-//        ProfileView(isMyProfile: true, profileDisplayName: "hina", profileUserID: "", posts: PostArrayObject(userID: ""))
-//    }
-//}
+#Preview {
+    @State var selectedImage = UIImage(named: "hiyoko")!
+    return NavigationStack {
+        ProfileView(isMyProfile: true, profileDisplayName: "hina", profileUserID: "")
+    }
+}

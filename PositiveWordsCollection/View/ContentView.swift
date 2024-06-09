@@ -64,11 +64,7 @@ struct ContentView: View {
         .fullScreenCover(isPresented: $showSignInView, content: {
             AuthenticationView(showSignInView: $showSignInView)
         })
-        //        .fullScreenCover(
-        //            isPresented: $showSignInView,
-        //            onDismiss: { showSignInProfileView = true },
-        //            content: { AuthenticationView(showSignInView: $showSignInView) }
-        //        )
+
     }
 }
 
