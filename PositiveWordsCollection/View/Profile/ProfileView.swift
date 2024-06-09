@@ -15,7 +15,7 @@ struct ProfileView: View {
     @State var profileBio: String = ""
     var profileUserID: String
     @StateObject var posts: PostArrayObject
-    @State var showSettings: Bool = false
+    @State var showEditProfileView: Bool = false
     @Environment(\.colorScheme) var colorScheme
 
     init(
@@ -39,8 +39,7 @@ struct ProfileView: View {
 
             .toolbar {
                 Button(action: {
-                    showSettings.toggle()
-
+                    showEditProfileView = true
                 }, label: {
                     Text("編集")
                 })
@@ -51,7 +50,7 @@ struct ProfileView: View {
                 getProfileImage(profileUserID: profileUserID)
             })
             .sheet(
-                isPresented: $showSettings,
+                isPresented: $showEditProfileView,
                 onDismiss: {
                     // TODO: -画像の取得方法要修正。画像ごとのUUID作成
                     posts.refreshOfUser(userID: profileUserID)

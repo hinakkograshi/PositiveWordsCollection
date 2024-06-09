@@ -29,10 +29,10 @@ struct EditProfileView: View {
                     Image(uiImage: selectedImage)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 100, height: 100)
-                        .clipShape(RoundedRectangle(cornerRadius: 75))
+                        .frame(width: 200, height: 200)
+                        .clipShape(RoundedRectangle(cornerRadius: 150))
                         .overlay {
-                            RoundedRectangle(cornerRadius: 75)
+                            RoundedRectangle(cornerRadius: 150)
                                 .stroke(Color.orange, lineWidth: 3.0)
                         }
                 })
@@ -50,9 +50,16 @@ struct EditProfileView: View {
                     Text("名前")
                         .fontWeight(.bold)
                         .padding()
+                        .padding(.trailing, 30)
                     TextField("名前", text: $editProfileName)
-                        .textFieldStyle(.roundedBorder)
+                        .padding(10)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.orange, lineWidth: 2)
+                        }
+
                 }
+                .padding(.trailing, 10)
                 Divider()
                 HStack {
                     Text("自己紹介")
@@ -61,7 +68,11 @@ struct EditProfileView: View {
                     ZStack(alignment: .topLeading) {
                         TextEditor(text: $editProfileBio)
                             .frame(height: 100)
-                            .border(Color.black)
+                            .padding(5)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(Color.orange, lineWidth: 2)
+                            }
                         if editProfileBio.isEmpty {
                             Text("自己紹介").foregroundStyle(Color(uiColor: .placeholderText))
                                 .padding(8)
@@ -69,9 +80,8 @@ struct EditProfileView: View {
                         }
                     }
                 }
-                Divider()
+                .padding(.trailing, 10)
             }
-
             .navigationTitle("編集")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -99,8 +109,10 @@ struct EditProfileView: View {
             }
         }
         .onAppear {
-            editProfileName = currentUserName!
-            editProfileBio = currentBio!
+            guard let userName = currentUserName else { return }
+            guard let userBio = currentBio else { return }
+            editProfileName = userName
+            editProfileBio = userBio
             selectedImage = userImage
         }
     }
@@ -127,7 +139,7 @@ struct EditProfileView: View {
 }
 
 #Preview {
-    @State var tes = "Hinakkoです。よろしく！"
-    @State var image = UIImage(named: "loading")!
-    return EditProfileView(userDisplayName: $tes, userBio: $tes, userImage: $image)
+    @State var name = "Hinakkoです。よろしく"
+    @State var image = UIImage(named: "hiyoko") ?? UIImage()
+    return EditProfileView(userDisplayName: $name, userBio: $name, userImage: $image)
 }
