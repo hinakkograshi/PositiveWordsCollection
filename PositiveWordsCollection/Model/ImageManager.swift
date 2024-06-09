@@ -20,6 +20,7 @@ class ImageManager {
         // 画像を保存する場所のパス
         let path = getProfileImagePath(userID: userID)
         try await uploadImage(path: path, image: image)
+        print("ProfileImageを保存")
     }
 
     private func getProfileImagePath(userID: String) -> StorageReference {
@@ -43,7 +44,7 @@ class ImageManager {
     func downloadProfileImage(userID: String, handler: @escaping (_ image: UIImage?) -> Void) {
         // Where the image is saved
         let path = getProfileImagePath(userID: userID)
-        // Download image path
+        // Download image from path
         DispatchQueue.global(qos: .userInteractive).async {
             self.downloadImage(path: path) { returnedImage in
                 DispatchQueue.main.async {
@@ -69,7 +70,7 @@ class ImageManager {
     private func downloadImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
         // キャッシュされていたらそれを使用
         if let cachedImage = imageCache.object(forKey: path) {
-            print("Image found in cache")
+//            print("Image found in cache")
             handler(cachedImage)
             return
         } else {

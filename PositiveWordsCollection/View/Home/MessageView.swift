@@ -13,7 +13,7 @@ struct MessageView: View {
     var body: some View {
         HStack {
             NavigationLink(destination: LazyView(content: {
-                ProfileView(isMyProfile: false, profileDisplayName: comment.username, profileUserID: comment.userID, posts: PostArrayObject(userID: comment.userID))
+                ProfileView(isMyProfile: false, profileDisplayName: comment.username, profileUserID: comment.userID)
             }), label: {
                 Image(uiImage: profileImage)
                     .resizable()

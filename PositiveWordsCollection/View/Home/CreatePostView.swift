@@ -101,8 +101,9 @@ struct CreatePostView: View {
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(action: {
-                            postPicture()
-                            dismiss()
+                            postPicture {
+                                dismiss()
+                            }
                         }, label: {
                             Text("保存")
                                 .tint(.primary)
@@ -122,7 +123,7 @@ struct CreatePostView: View {
             }
     }
     // FUNCTION
-    func postPicture() {
+    func postPicture(completionHandler: @escaping () -> Void) {
         print("Post picture to DB here")
         guard let userID = currentUserID, let displayName = currentUserName else {
             print("Error getting userOD or displayname posting image")
@@ -130,6 +131,7 @@ struct CreatePostView: View {
         }
         Task {
             await DataService.instance.uploadPost(image: selectedImage, caption: bioText, displayName: displayName, userID: userID)
+            completionHandler()
         }
     }
 }

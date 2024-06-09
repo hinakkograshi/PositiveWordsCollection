@@ -18,6 +18,9 @@ struct HomeView: View {
                 }
             }
         }
+        .refreshable {
+            posts.refreshAllUserPosts()
+                }
         .overlay(alignment: .bottomTrailing) {
             Button(action: {
                 showCreatePostView.toggle()
@@ -30,11 +33,18 @@ struct HomeView: View {
             })
             .padding(10)
         }
-        .sheet(isPresented: $showCreatePostView) {
+        .sheet(
+            isPresented: $showCreatePostView,
+            onDismiss: posts.refreshAllUserPosts
+        ) {
             CreatePostView()
         }
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            print("HomeView表示されました")
+            posts.refreshAllUserPosts()
+        }
     }
 }
 
