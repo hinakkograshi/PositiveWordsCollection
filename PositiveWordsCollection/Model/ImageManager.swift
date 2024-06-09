@@ -67,6 +67,11 @@ class ImageManager {
         }
     }
 
+    func chashRemove() {
+        imageCache.removeAllObjects()
+//        removeObject(forKey: path)
+    }
+
     private func downloadImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
         // キャッシュされていたらそれを使用
         if let cachedImage = imageCache.object(forKey: path) {

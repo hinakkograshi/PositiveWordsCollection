@@ -86,6 +86,7 @@ struct EditProfileView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
                         Task {
+                            // キャッシュバグ解消
                             await saveEditProfile()
                             print("処理終わったよ！")
                             
