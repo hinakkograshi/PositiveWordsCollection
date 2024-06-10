@@ -23,7 +23,7 @@ final class SettingsViewModel: ObservableObject {
     }
 
     private func signOut() throws {
-            try AuthenticationManager.instance.signOut()
+        try AuthService.instance.signOut()
             print("Success Log out")
             // All UserDefault Delete
             let defaultDictionary = UserDefaults.standard.dictionaryRepresentation()
@@ -34,12 +34,14 @@ final class SettingsViewModel: ObservableObject {
             print(defaultDictionary)
     }
 
-    func deleteAccount() async throws {
-        try await AuthenticationManager.instance.deleteUser()
-    }
+//    func deleteAccount() async throws {
+//        try await AuthService.instance.deleteUser()
+//    }
 }
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
+    @State var showUserDelete = false
+    @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
 //    @Binding var showSignInView: Bool
     var body: some View {
         List {
@@ -47,20 +49,31 @@ struct SettingsView: View {
                 viewModel.didTapLogOutButton()
             }
             Button(role: .destructive) {
-                Task {
-                    do {
-                        try await viewModel.deleteAccount()
-                        viewModel.showSignInView = true
-                    } catch {
-                        print(error)
-                    }
-                }
+                showUserDelete = true
             } label: {
                 Text("Delete account")
             }
         }
         .fullScreenCover(isPresented: $viewModel.showSignInView, content: {
             AuthenticationView(showSignInView: $viewModel.showSignInView)
+        })
+        .alert("アカウント削除", isPresented: $showUserDelete, actions: {
+            Button("アカウント削除", role: .destructive) {
+                Task {
+                    do {
+                        guard let userID = currentUserID else { return }
+                        try await AuthService.instance.deleteUser(userID: userID)
+                        viewModel.showSignInView = true
+                    } catch {
+                        print(error)
+                    }
+                }
+            }
+            Button("キャンセル", role: .cancel) {
+                showUserDelete = false
+            }
+        }, message: {
+            Text("アカウントを削除するとデータを復活できません。")
         })
         .alert(isPresented: $viewModel.showSignOutError, content: {
             return Alert(title: Text("ログアウトに失敗しました。"))

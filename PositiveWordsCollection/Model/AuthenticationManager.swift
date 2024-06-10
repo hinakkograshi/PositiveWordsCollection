@@ -24,26 +24,16 @@ final class AuthenticationManager {
     // シングルトン
     static let instance = AuthenticationManager()
 
-    func getAuthenticatedUser() throws -> AuthDataResultModel {
-        guard let user = Auth.auth().currentUser else {
-            print("ログインusernil")
-            throw URLError(.badServerResponse)
-        }
-        print("ログインuser:\(user)")
-        print("ログインuser:\(AuthDataResultModel(user: user))")
-        return AuthDataResultModel(user: user)
-    }
+//    func getAuthenticatedUser() throws -> AuthDataResultModel {
+//        guard let user = Auth.auth().currentUser else {
+//            print("ログインusernil")
+//            throw URLError(.badServerResponse)
+//        }
+//        print("ログインuser:\(user)")
+//        print("ログインuser:\(AuthDataResultModel(user: user))")
+//        return AuthDataResultModel(user: user)
+//    }
 
-    func signOut() throws {
-        try Auth.auth().signOut()
-    }
-
-    func deleteUser() async throws {
-        guard let user = Auth.auth().currentUser else {
-            throw URLError(.badURL)
-        }
-        try await user.delete()
-    }
 }
 
 extension AuthenticationManager {
