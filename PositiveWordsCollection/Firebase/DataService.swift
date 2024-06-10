@@ -9,12 +9,13 @@ import Foundation
 import SwiftUI
 import FirebaseFirestore
 
-let db = Firestore.firestore()
+
 class DataService {
     static let instance = DataService()
-    private var postsREF = db.collection("posts")
-    private var reportsREF = db.collection("reports")
+    private var postsREF = Firestore.firestore().collection("posts")
+    private var reportsREF = Firestore.firestore().collection("reports")
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
+
 
     func uploadPost(image: UIImage, caption: String, displayName: String, userID: String) async {
         // Create new post document

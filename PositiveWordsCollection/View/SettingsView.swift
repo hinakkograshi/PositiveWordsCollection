@@ -62,10 +62,10 @@ struct SettingsView: View {
                 Task {
                     do {
                         guard let userID = currentUserID else { return }
-                        try await AuthService.instance.deleteUser(userID: userID)
+                        try await AuthService.instance.deleteAccount(userID: userID)
                         viewModel.showSignInView = true
                     } catch {
-                        print(error)
+                        print("deleteAccount: \(error)")
                     }
                 }
             }

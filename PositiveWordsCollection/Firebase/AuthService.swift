@@ -29,49 +29,84 @@ class AuthService {
     }
 
     // サブコレクションの削除が完了した後に親ドキュメントも削除する
-    func deleteUser(userID: String) async throws {
+    func deleteAccount(userID: String) async throws {
         // UserDefault削除
         // All UserDefault Delete
         let defaultDictionary = UserDefaults.standard.dictionaryRepresentation()
-        print(defaultDictionary)
         defaultDictionary.keys.forEach { key in
             UserDefaults.standard.removeObject(forKey: key)
         }
-        print("🟥deleteデータ\(defaultDictionary)")
+        await deleteUserCollection(userID: userID)
+
         // posts Collection of userID
-        let postOfUserSnapshot = try await Firestore.firestore().collection("posts").whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
-        let usersAccountSnapshot = try await Firestore.firestore().collection("users").whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
-        for usersDocument in usersAccountSnapshot.documents {
-            try await usersDocument.reference.delete()
-        }
-        print("🟥snapshotデータ\(postOfUserSnapshot)")
-        let docData = postOfUserSnapshot.documents
-        print("🟥docData\(docData)")
-        let storageRef = Storage.storage().reference()
+            let postOfUserSnapshot =  try await Firestore.firestore().collection("posts").whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
 
         for document in postOfUserSnapshot.documents {
             let postID = document.documentID
+            // SubCollection Delete
+            await subCollectionDelete(postID: postID)
+            print("⭐️これPostsDoCument\(document.documentID)⭐️")
+            // PostCollection Delete
+            try await Firestore.firestore().collection("posts").document(postID).delete()
+            // Storage削除
+            await postsStorageDelete(postID: postID)
+        }
+        // Storage削除
+        await userStorageDelete(userID: userID)
+        // users Collection Delete
+        try await userCollection.document(userID).delete()
+        // Authアカウント削除
+        do {
+            guard let user = Auth.auth().currentUser else {throw URLError(.badURL)}
+            print("userの中身\(user)")
+            try await user.delete()
+        } catch {
+            print("😭Authアカウント削除Error")
+        }
+    }
 
-            // SubCollection
-            let subCollection = db.collection("posts").document("\(postID)").collection("comments")
+    private func subCollectionDelete(postID: String) async {
+
+        let subCollection = Firestore.firestore().collection("posts").document(postID).collection("comments")
+        do {
             let subSnapshot = try await subCollection.getDocuments()
             for subdocument in subSnapshot.documents {
                 try await subdocument.reference.delete()
             }
-            print("⭐️これPostID\(document.documentID)⭐️")
-            // Postの全削除
-            try await db.collection("posts").document("\(postID)").delete()
-//            try await document.reference.delete()
-            let postIDRef = storageRef.child("posts").child("\(postID)").child("1")
-            try await postIDRef.delete()
-            let userIDRef = storageRef.child("users").child("\(userID)").child("profile")
-            try await userIDRef.delete()
+        } catch {
+            print("subCollectionDelete Error")
         }
-        // users Collection Delete
-        try await userCollection.document(userID).delete()
-        // Authアカウント削除
-        guard let user = Auth.auth().currentUser else {throw URLError(.badURL)}
-        try await user.delete()
+    }
+
+    private func postsStorageDelete(postID: String) async {
+        let storageRef = Storage.storage().reference()
+        let postIDRef = storageRef.child("posts").child(postID).child("1")
+        do {
+            try await postIDRef.delete()
+        } catch {
+            print("postsStorageDelete Error")
+        }
+    }
+
+    private func userStorageDelete(userID: String) async {
+        let storageRef = Storage.storage().reference()
+        let userIDRef = storageRef.child("users").child(userID).child("profile")
+        do {
+            try await userIDRef.delete()
+        } catch {
+            print("userStorageDelete Error")
+        }
+    }
+
+    private func deleteUserCollection(userID: String) async {
+        do {
+            let usersAccountSnapshot = try await Firestore.firestore().collection("users").whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
+            for usersDocument in usersAccountSnapshot.documents {
+                try await usersDocument.reference.delete()
+            }
+        } catch {
+            print("deleteUserCollection Error")
+        }
     }
 
     func asyncLogInUserToFirebase(credential: AuthCredential) async throws -> LogInUser {
@@ -98,6 +133,7 @@ class AuthService {
 
             self.checkIfUserExistsDatabase(providerID: providerID) { returnedUserID in
                 if let userID  = returnedUserID {
+                    
                     // Userが存在
                     handler(providerID, false, false, userID)
                 } else {
@@ -121,15 +157,15 @@ class AuthService {
             }
         }
     }
-// UserDefault保存
+    // UserDefault保存
     func logInUserToApp(userID: String) async throws {
         do {
             // get user ID
             let (returnedName, returnBio) = try await getUserInfo(userID: userID)
             // UserDefault保存
-                UserDefaults.standard.set(userID, forKey: CurrentUserDefaults.userID)
-                UserDefaults.standard.set(returnedName, forKey: CurrentUserDefaults.displayName)
-                UserDefaults.standard.set(returnBio, forKey: CurrentUserDefaults.bio)
+            UserDefaults.standard.set(userID, forKey: CurrentUserDefaults.userID)
+            UserDefaults.standard.set(returnedName, forKey: CurrentUserDefaults.displayName)
+            UserDefaults.standard.set(returnBio, forKey: CurrentUserDefaults.bio)
         } catch {
             print("Error getting lohInUser Info")
             throw AsyncError(message: "Error getting lohInUser Info")
@@ -138,7 +174,7 @@ class AuthService {
 
     func getUserInfo(userID: String) async throws -> (name: String, bio: String) {
         let snapshot = try await userDocument(userId: userID).getDocument()
-        guard let name = snapshot.get(DatabaseUserField.displayName) as? String, 
+        guard let name = snapshot.get(DatabaseUserField.displayName) as? String,
                 let bio = snapshot.get(DatabaseUserField.bio) as? String else { throw URLError(.cannotFindHost)}
         print("Success getting user info")
         return (name, bio)
@@ -171,10 +207,10 @@ class AuthService {
     }
 
     func updateUserProfileText(userID: String, displayName: String, bio: String) async throws {
-                let data: [String: Any] = [
-                    DatabaseUserField.displayName: displayName,
-                    DatabaseUserField.bio: bio
-                ]
+        let data: [String: Any] = [
+            DatabaseUserField.displayName: displayName,
+            DatabaseUserField.bio: bio
+        ]
         try await userCollection.document(userID).updateData(data)
 
     }
