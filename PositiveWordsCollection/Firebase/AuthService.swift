@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseAuth
+import FirebaseStorage
 
 struct LogInUser {
     let providerID: String?
@@ -21,6 +22,56 @@ class AuthService {
     private let userCollection = Firestore.firestore().collection("users")
     private func userDocument(userId: String) -> DocumentReference {
         userCollection.document(userId)
+    }
+
+    func signOut() throws {
+        try Auth.auth().signOut()
+    }
+
+    // サブコレクションの削除が完了した後に親ドキュメントも削除する
+    func deleteUser(userID: String) async throws {
+        // UserDefault削除
+        // All UserDefault Delete
+        let defaultDictionary = UserDefaults.standard.dictionaryRepresentation()
+        print(defaultDictionary)
+        defaultDictionary.keys.forEach { key in
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+        print("🟥deleteデータ\(defaultDictionary)")
+        // posts Collection of userID
+        let postOfUserSnapshot = try await Firestore.firestore().collection("posts").whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
+        let usersAccountSnapshot = try await Firestore.firestore().collection("users").whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
+        for usersDocument in usersAccountSnapshot.documents {
+            try await usersDocument.reference.delete()
+        }
+        print("🟥snapshotデータ\(postOfUserSnapshot)")
+        let docData = postOfUserSnapshot.documents
+        print("🟥docData\(docData)")
+        let storageRef = Storage.storage().reference()
+
+        for document in postOfUserSnapshot.documents {
+            let postID = document.documentID
+
+            // SubCollection
+            let subCollection = db.collection("posts").document("\(postID)").collection("comments")
+            let subSnapshot = try await subCollection.getDocuments()
+            for subdocument in subSnapshot.documents {
+                try await subdocument.reference.delete()
+            }
+            print("⭐️これPostID\(document.documentID)⭐️")
+            // Postの全削除
+            try await db.collection("posts").document("\(postID)").delete()
+//            try await document.reference.delete()
+            let postIDRef = storageRef.child("posts").child("\(postID)").child("1")
+            try await postIDRef.delete()
+            let userIDRef = storageRef.child("users").child("\(userID)").child("profile")
+            try await userIDRef.delete()
+        }
+        // users Collection Delete
+        try await userCollection.document(userID).delete()
+        // Authアカウント削除
+        guard let user = Auth.auth().currentUser else {throw URLError(.badURL)}
+        try await user.delete()
     }
 
     func asyncLogInUserToFirebase(credential: AuthCredential) async throws -> LogInUser {
