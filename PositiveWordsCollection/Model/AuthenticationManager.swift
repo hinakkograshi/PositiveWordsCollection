@@ -24,26 +24,12 @@ final class AuthenticationManager {
     // シングルトン
     static let instance = AuthenticationManager()
 
-//    func getAuthenticatedUser() throws -> AuthDataResultModel {
-//        guard let user = Auth.auth().currentUser else {
-//            print("ログインusernil")
-//            throw URLError(.badServerResponse)
-//        }
-//        print("ログインuser:\(user)")
-//        print("ログインuser:\(AuthDataResultModel(user: user))")
-//        return AuthDataResultModel(user: user)
-//    }
-
-}
-
-extension AuthenticationManager {
-    
     func signInWithGoogle(tokens: GoogleSignInResultModel) async throws -> (AuthCredential, AuthDataResult) {
         let credential = GoogleAuthProvider.credential(withIDToken: tokens.idToken, accessToken: tokens.accessToken)
         let authDataResult = try await signIn(credential: credential)
         return (credential, authDataResult)
     }
-    
+
     func signInWithApple(tokens: SignInAppleResult) async throws -> (OAuthCredential) {
 
         let credential = OAuthProvider.appleCredential(withIDToken: tokens.token,
@@ -52,7 +38,7 @@ extension AuthenticationManager {
         let authDataResult = try await signIn(credential: credential)
         return credential
     }
-    
+
     func signIn(credential: AuthCredential) async throws -> AuthDataResult {
         let authDataResult =  try await Auth.auth().signIn(with: credential)
         return authDataResult
