@@ -16,9 +16,9 @@ struct CommentsView: View {
     @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
     var body: some View {
         VStack {
-            // 🟥 posts
-            PostView(post: post, posts: PostArrayObject())
             ScrollView {
+            // 🟥 posts
+                PostView(post: post, posts: PostArrayObject())
                 LazyVStack {
                     ForEach(commentArray, id: \.self) { comment in
                         MessageView(comment: comment)

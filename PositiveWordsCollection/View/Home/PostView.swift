@@ -16,7 +16,7 @@ struct PostView: View {
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @State var showReportsAlert: Bool = false
     @State var showDeleteAlert: Bool = false
-
+    
     var body: some View {
         VStack {
             // header
@@ -82,10 +82,11 @@ struct PostView: View {
                 Text(post.caption)
                     .font(.subheadline)
                     .padding(.leading, 20)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer()
             }
             .padding()
-
+            
             // Footer
             HStack(alignment: .center, spacing: 5) {
                 Button(action: {
@@ -121,7 +122,7 @@ struct PostView: View {
         }
         .alert("投稿を削除", isPresented: $showDeleteAlert, actions: {
             Button("戻る", role: .cancel) {
-
+                
             }
             Button("削除", role: .destructive) {
                 Task {
@@ -132,7 +133,7 @@ struct PostView: View {
                     } catch {
                         print("投稿削除に失敗しました。")
                     }
-
+                    
                 }
             }
         }, message: {
@@ -140,7 +141,7 @@ struct PostView: View {
         })
         .alert("違反を報告", isPresented: $showReportsAlert, actions: {
             Button("戻る", role: .cancel) {
-
+                
             }
             Button("報告する", role: .destructive) {
                 reportPost()
@@ -180,7 +181,7 @@ struct PostView: View {
             }
         }
     }
-
+    
     func likePost() {
         guard let userID = currentUserID else {
             print("Cannot find userID while unliking post")
@@ -198,7 +199,7 @@ struct PostView: View {
         // Update Firebase
         DataService.instance.likePost(postID: post.postID, currentUserID: userID)
     }
-
+    
     func unLikePost() {
         guard let userID = currentUserID else {
             print("Cannot find userID while unliking post")
