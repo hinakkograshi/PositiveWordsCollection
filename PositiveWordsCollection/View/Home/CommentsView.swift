@@ -16,7 +16,8 @@ struct CommentsView: View {
     @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
     var body: some View {
         VStack {
-            PostView(post: post)
+            // 🟥 posts
+            PostView(post: post, posts: PostArrayObject())
             ScrollView {
                 LazyVStack {
                     ForEach(commentArray, id: \.self) { comment in
@@ -108,8 +109,8 @@ struct CommentsView: View {
 #Preview {
     NavigationStack {
         @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
-//        @State var count = CommentModel(commentID: "", userID: "", username: "", content: "", dateCreated: Date())
-//
-//        CommentsView(commentArray: $count, post: $post)
+        @State var count = [CommentModel(commentID: "", userID: "", username: "", content: "HelloooooooooooooooHelloooooooooooooooHellooooooooooooooo", dateCreated: Date())]
+
+        CommentsView(commentArray: count, post: $post)
     }
 }

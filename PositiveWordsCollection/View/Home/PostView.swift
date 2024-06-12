@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PostView: View {
     @State var post: PostModel
+    @StateObject var posts: PostArrayObject
     @State var animateLike: Bool = false
     @State var profileImage = UIImage(named: "loading")!
     @State var postImage = UIImage(named: "loading")!
@@ -123,7 +124,16 @@ struct PostView: View {
 
             }
             Button("削除", role: .destructive) {
-                // Firebase削除
+                Task {
+                    do {
+                        guard let userID = currentUserID else { return }
+                        try await DataService.instance.postDelete(postID: post.postID)
+                        await posts.refreshAllUserPosts()
+                    } catch {
+                        print("投稿削除に失敗しました。")
+                    }
+
+                }
             }
         }, message: {
             Text("この投稿を削除しますか？")
@@ -157,7 +167,6 @@ struct PostView: View {
     }
     // PostImage取得
     func getImages() {
-        print("⭐️getImageの取得")
         // Get Profile image
         ImageManager.instance.downloadProfileImage(userID: post.userID) { returnedImage in
             if let image = returnedImage {
@@ -215,5 +224,5 @@ struct PostView: View {
 
 #Preview {
     let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
-    return PostView(post: post)
+    return PostView(post: post, posts: PostArrayObject())
 }
