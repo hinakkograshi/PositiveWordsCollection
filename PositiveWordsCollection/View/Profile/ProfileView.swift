@@ -53,9 +53,11 @@ struct ProfileView: View {
                 isPresented: $showEditProfileView,
                 onDismiss: {
                     // TODO: -画像の取得方法要修正。画像ごとのUUID作成
-                    posts.refreshOfUser(userID: profileUserID)
+                    Task {
+                    await posts.refreshOfUser(userID: profileUserID)
                     // 画像のリロードのタイミング
                         getProfileImage(profileUserID: profileUserID)
+                    }
                 },
                 content: {
                     EditProfileView(userDisplayName: $profileDisplayName, userBio: $profileBio, userImage: $profileImage)

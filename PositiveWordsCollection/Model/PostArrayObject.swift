@@ -25,13 +25,13 @@ class PostArrayObject: ObservableObject {
     init(userID: String) {
         Task {
             print("🟩 プロフィールのuserIDは\(userID)")
-                let returnedposts = try await DataService.instance.downloadPostForUser(userID: userID)
-                // 最新の日付
-                let sortedPosts = returnedposts.sorted { (post1, post2) -> Bool in
-                    return post1.dateCreated > post2.dateCreated
-                }
-                self.dataArray.append(contentsOf: sortedPosts)
-                self.updateCounts()
+            let returnedposts = try await DataService.instance.downloadPostForUser(userID: userID)
+            // 最新の日付
+            let sortedPosts = returnedposts.sorted { (post1, post2) -> Bool in
+                return post1.dateCreated > post2.dateCreated
+            }
+            self.dataArray.append(contentsOf: sortedPosts)
+            self.updateCounts()
         }
     }
 
@@ -45,26 +45,26 @@ class PostArrayObject: ObservableObject {
         self.likeCountString = "\(sumOfLikeCountArray)"
         print(likeCountString)
     }
-    func refreshAllUserPosts() {
-        Task {
-            do {
-                let returnedPosts = try await DataService.instance.downloadPostsForFeed()
-                self.dataArray = returnedPosts
-            } catch {
-                print("🟥returnedPosts Error")
-            }
+    func refreshAllUserPosts() async {
+        do {
+            let returnedPosts = try await DataService.instance.downloadPostsForFeed()
+            self.dataArray = returnedPosts
+        } catch {
+            print("refreshAllUserPosts Error")
         }
     }
-    func refreshOfUser(userID: String) {
-        Task {
-            print("🟩 プロフィールのuserIDは\(userID)")
-                let returnedposts = try await DataService.instance.downloadPostForUser(userID: userID)
-                // 最新の日付
-                let sortedPosts = returnedposts.sorted { (post1, post2) -> Bool in
-                    return post1.dateCreated > post2.dateCreated
-                }
-                self.dataArray = sortedPosts
-                self.updateCounts()
+    func refreshOfUser(userID: String) async {
+        print("🟩 プロフィールのuserIDは\(userID)")
+        do {
+            let returnedposts = try await DataService.instance.downloadPostForUser(userID: userID)
+        // 最新の日付
+        let sortedPosts = returnedposts.sorted { (post1, post2) -> Bool in
+            return post1.dateCreated > post2.dateCreated
+        }
+        self.dataArray = sortedPosts
+        self.updateCounts()
+        } catch {
+            print("refreshOfUser Error")
         }
     }
 }
