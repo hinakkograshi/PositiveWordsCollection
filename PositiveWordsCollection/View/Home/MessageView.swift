@@ -9,29 +9,47 @@ import SwiftUI
 
 struct MessageView: View {
     @State var comment: CommentModel
+
     @State var profileImage = UIImage(named: "loading")!
+    @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     var body: some View {
-        HStack {
-            NavigationLink(destination: LazyView(content: {
-                ProfileView(isMyProfile: false, profileDisplayName: comment.username, profileUserID: comment.userID)
-            }), label: {
-                Image(uiImage: profileImage)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 40, height: 40, alignment: .center)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-            })
-            VStack(alignment: .leading, spacing: 4, content: {
-                Text(comment.username)
-                    .font(.caption)
-                    .foregroundStyle(.gray)
-                Text(comment.content)
-                    .padding(10)
-                    .foregroundStyle(.primary)
-                    .background(.gray)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-            })
-            Spacer(minLength: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/)
+        VStack {
+            if let userID = currentUserID {
+                if comment.userID == userID {
+                    HStack {
+                        Spacer(minLength: 0)
+                        VStack(alignment: .trailing, spacing: 8, content: {
+                            Text(comment.username)
+                                .font(.caption)
+                            BalloonText(comment.content)
+                        })
+                        .padding(.trailing, 5)
+                    }
+                } else {
+                    HStack {
+                        NavigationLink(destination: LazyView(content: {
+                            ProfileView(isMyProfile: false, profileDisplayName: comment.username, profileUserID: comment.userID)
+                        }), label: {
+                            if let userID = currentUserID {
+                                if comment.userID != userID {
+                                    Image(uiImage: profileImage)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 40, height: 40, alignment: .center)
+                                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                                }
+                            }
+                        })
+                        .padding(.leading, 5)
+                        VStack(alignment: .leading, spacing: 8, content: {
+                            Text(comment.username)
+                                .font(.caption)
+                            BalloonText(comment.content, mirrored: true)
+                        })
+                        Spacer(minLength: 0)
+                    }
+                }
+            }
         }
         .onAppear(perform: {
             getProfileImage()
@@ -50,5 +68,6 @@ struct MessageView: View {
 
 #Preview(traits: .sizeThatFitsLayout) {
     let comment = CommentModel(commentID: "", userID: "", username: "hinakko", content: "This photo is really cool. haha", dateCreated: Date())
-   return MessageView(comment: comment)
+    @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
+    return MessageView(comment: comment)
 }
