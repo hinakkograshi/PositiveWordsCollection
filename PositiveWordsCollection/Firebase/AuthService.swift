@@ -9,7 +9,6 @@ import Foundation
 import FirebaseFirestore
 import FirebaseAuth
 
-
 struct LogInUser {
     let providerID: String?
     let isError: Bool
