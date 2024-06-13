@@ -25,23 +25,12 @@ struct ContentView: View {
                 Text("Home")
             }
             NavigationStack {
-                Text("NoticeView")
-            }
-            .tabItem {
-                Image(systemName: "bell.fill")
-                Text("Notice")
-            }
-            NavigationStack {
                 if let userID = currentUserID, let displayName = currentUserName {
                     ProfileView(
                         isMyProfile: true,
                         profileDisplayName: displayName,
                         profileUserID: userID
                     )
-//                isMyProfile: true,
-//                profileDisplayName: displayName,
-//                profileUserID: userID,
-//                posts: PostArrayObject(userID: userID)
                 }
             }
             .tabItem {

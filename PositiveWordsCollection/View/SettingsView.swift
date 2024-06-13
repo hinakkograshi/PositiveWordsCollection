@@ -45,13 +45,19 @@ struct SettingsView: View {
 //    @Binding var showSignInView: Bool
     var body: some View {
         List {
-            Button("Log out") {
+            Button("利用規約") {
+                viewModel.didTapLogOutButton()
+            }
+            Button("プライバシーポリシー") {
+                viewModel.didTapLogOutButton()
+            }
+            Button("サインアウト") {
                 viewModel.didTapLogOutButton()
             }
             Button(role: .destructive) {
                 showUserDelete = true
             } label: {
-                Text("Delete account")
+                Text("退会する")
             }
         }
         .fullScreenCover(isPresented: $viewModel.showSignInView, content: {

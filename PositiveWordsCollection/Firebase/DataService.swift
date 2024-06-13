@@ -17,7 +17,6 @@ class DataService {
     private let userCollection = Firestore.firestore().collection("users")
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
 
-
     func postDelete(postID: String) async throws {
 
             // SubCollection Delete
@@ -106,25 +105,6 @@ class DataService {
             print("deleteUserCollection Error")
         }
     }
-
-
-//    private func postDelete(postID: String) async throws {
-//        let document = postsREF.document()
-//        let postID = document.documentID
-//        // posts Collection of userID
-////            let postOfUserSnapshot =  try await Firestore.firestore().collection("posts").whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
-////
-////        for document in postOfUserSnapshot.documents {
-////            let postID = document.documentID
-//            // SubCollection Delete
-//        await AuthService.instance.subCollectionDelete(postID: postID)
-////            print("⭐️これPostsDoCument\(document.documentID)⭐️")
-//            // PostCollection Delete
-//            try await Firestore.firestore().collection("posts").document(postID).delete()
-//            // Storage削除
-//        await AuthService.instance.postsStorageDelete(postID: postID)
-////        }
-//    }
 
     func uploadPost(image: UIImage, caption: String, displayName: String, userID: String) async {
         // Create new post document

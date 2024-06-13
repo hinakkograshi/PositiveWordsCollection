@@ -225,7 +225,7 @@ struct PostView: View {
     }
 }
 
-//#Preview {
-//    let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
-//    return PostView(post: post, posts: PostArrayObject())
-//}
+#Preview {
+    let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
+    return PostView(post: post, posts: PostArrayObject(), isActive: true)
+}
