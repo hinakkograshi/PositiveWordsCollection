@@ -105,7 +105,7 @@ struct CreatePostView: View {
                                 dismiss()
                             }
                         }, label: {
-                            Text("保存")
+                            Text("投稿")
                                 .tint(.primary)
                         })
                     }

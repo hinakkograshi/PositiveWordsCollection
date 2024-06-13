@@ -16,7 +16,8 @@ struct PostView: View {
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @State var showReportsAlert: Bool = false
     @State var showDeleteAlert: Bool = false
-    
+    let isActive: Bool
+
     var body: some View {
         VStack {
             // header
@@ -35,7 +36,7 @@ struct PostView: View {
                     Text(post.username)
                         .font(.title2)
                         .fontWeight(.medium)
-                        .tint(.primary)
+                        .foregroundStyle(.black)
                         .padding(.leading, 10)
                     // Time
                     Text("2s")
@@ -44,6 +45,7 @@ struct PostView: View {
                     // light and dark mode対応
                         .foregroundStyle(.primary)
                 })
+                .disabled(isActive)
                 Spacer()
                 Menu {
                     Button(role: .destructive) {
@@ -223,7 +225,7 @@ struct PostView: View {
     }
 }
 
-#Preview {
-    let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
-    return PostView(post: post, posts: PostArrayObject())
-}
+//#Preview {
+//    let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
+//    return PostView(post: post, posts: PostArrayObject())
+//}
