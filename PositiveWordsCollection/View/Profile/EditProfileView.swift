@@ -8,6 +8,11 @@
 import SwiftUI
 
 struct EditProfileView: View {
+    enum Field: Hashable {
+        case name
+        case bio
+    }
+    @FocusState private var focusedField: Field?
     @Binding var userDisplayName: String
     @Binding var userBio: String
     @Binding var userImage: UIImage
@@ -57,7 +62,10 @@ struct EditProfileView: View {
                             RoundedRectangle(cornerRadius: 10)
                                 .stroke(Color.orange, lineWidth: 2)
                         }
-
+                        .focused($focusedField, equals: .name)
+                        .onTapGesture {
+                            focusedField = .name
+                        }
                 }
                 .padding(.trailing, 10)
                 Divider()
@@ -72,6 +80,10 @@ struct EditProfileView: View {
                             .overlay {
                                 RoundedRectangle(cornerRadius: 16)
                                     .stroke(Color.orange, lineWidth: 2)
+                            }
+                            .focused($focusedField, equals: .bio)
+                            .onTapGesture {
+                                focusedField = .bio
                             }
                         if editProfileBio.isEmpty {
                             Text("自己紹介").foregroundStyle(Color(uiColor: .placeholderText))
@@ -107,6 +119,9 @@ struct EditProfileView: View {
                     })
                 }
             }
+        }
+        .onTapGesture {
+            focusedField = nil
         }
         .onAppear {
             guard let userName = currentUserName else { return }

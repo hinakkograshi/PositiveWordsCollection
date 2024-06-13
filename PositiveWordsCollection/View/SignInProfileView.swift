@@ -8,6 +8,11 @@
 import SwiftUI
 
 struct SignInProfileView: View {
+    enum Field: Hashable {
+        case name
+        case bio
+    }
+    @FocusState private var focusedField: Field?
     @ObservedObject var viewModel: AuthenticationViewModel
     @State var selectedImage: UIImage = UIImage(named: "noImage")!
     @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
@@ -15,7 +20,7 @@ struct SignInProfileView: View {
     @State var showImagePicker: Bool = false
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
+                VStack(spacing: 20) {
                     Text("プロフィール画像")
                         .font(.title2)
                         .fontWeight(.bold)
@@ -51,11 +56,14 @@ struct SignInProfileView: View {
                         Text("名前")
                             .fontWeight(.bold)
                         TextField("名前", text: $viewModel.displayName)
-//                            .textFieldStyle(.roundedBorder)
                             .padding(10)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.orange, lineWidth: 2)
+                            }
+                            .focused($focusedField, equals: .name)
+                            .onTapGesture {
+                                focusedField = .name
                             }
                     }
                     VStack(alignment: .leading) {
@@ -68,6 +76,10 @@ struct SignInProfileView: View {
                                 .overlay {
                                     RoundedRectangle(cornerRadius: 16)
                                         .stroke(Color.orange, lineWidth: 2)
+                                }
+                                .focused($focusedField, equals: .bio)
+                                .onTapGesture {
+                                    focusedField = .bio
                                 }
                             if viewModel.bio.isEmpty {
                                 Text("自己紹介").foregroundStyle(Color(uiColor: .placeholderText))
@@ -91,8 +103,11 @@ struct SignInProfileView: View {
                             .background(Color.MyTheme.yellowColor)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
-            }
-                .padding()
+                }
+            .padding()
+        }
+        .onTapGesture {
+            focusedField = nil
         }
     }
     // MARK: Function
@@ -114,7 +129,7 @@ struct SignInProfileView: View {
         }
     }
 }
- #Preview {
+#Preview {
     @State var selectedImage = UIImage(named: "hiyoko")!
     return SignInProfileView(viewModel: AuthenticationViewModel(), selectedImage: selectedImage)
- }
+}

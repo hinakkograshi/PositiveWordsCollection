@@ -8,10 +8,8 @@
 import SwiftUI
 
 struct CommentsView: View {
-    enum Field: Hashable {
-        case message
-    }
-    @FocusState private var focusedField: Field?
+
+    @FocusState private var focusedField: Bool
     @State var submissionText: String = ""
     @State var commentArray = [CommentModel]()
     @Binding var post: PostModel
@@ -37,10 +35,7 @@ struct CommentsView: View {
                     .frame(width: 40, height: 40, alignment: .center)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                 TextField("Add a commen here...", text: $submissionText)
-                    .focused($focusedField, equals: .message)
-                    .onTapGesture {
-                        focusedField = .message
-                    }
+                    .focused($focusedField)
                 Button {
                     addComment()
                     countComment()
@@ -52,11 +47,8 @@ struct CommentsView: View {
             }
             .padding(6)
         }
-//        .frame(width: UIScreen.main.bounds.width,
-//                       height: UIScreen.main.bounds.height)
-//                .contentShape(RoundedRectangle(cornerRadius: 10))
                 .onTapGesture {
-                    focusedField = nil
+                    focusedField = false
                 }
         .navigationTitle("Comments")
         .navigationBarTitleDisplayMode(.inline)
@@ -91,8 +83,6 @@ struct CommentsView: View {
                 guard let commentID = returnedCommentID else { return }
                 let newComment = CommentModel(commentID: commentID, userID: userID, username: userName, content: submissionText, dateCreated: Date())
                 self.commentArray.append(newComment)
-                // キーボード非表示
-                await UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 self.submissionText = ""
             } catch {
                 print("Upload Comment Error")
