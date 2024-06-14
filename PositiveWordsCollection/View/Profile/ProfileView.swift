@@ -36,6 +36,8 @@ struct ProfileView: View {
         ProfilePostView(posts: posts)
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color.colorBeige, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
 
             .toolbar {
                 Button(action: {

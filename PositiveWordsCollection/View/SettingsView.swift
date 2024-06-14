@@ -44,21 +44,30 @@ struct SettingsView: View {
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
 //    @Binding var showSignInView: Bool
     var body: some View {
-        List {
-            Button("利用規約") {
-                viewModel.didTapLogOutButton()
+        NavigationStack {
+            List {
+                Button("利用規約") {
+                    viewModel.didTapLogOutButton()
+                }
+                .foregroundStyle(.black)
+                Button("プライバシーポリシー") {
+                    viewModel.didTapLogOutButton()
+                }
+                .foregroundStyle(.black)
+                Button("サインアウト") {
+                    viewModel.didTapLogOutButton()
+                }
+                .foregroundStyle(.black)
+                Button(role: .destructive) {
+                    showUserDelete = true
+                } label: {
+                    Text("退会する")
+                }
             }
-            Button("プライバシーポリシー") {
-                viewModel.didTapLogOutButton()
-            }
-            Button("サインアウト") {
-                viewModel.didTapLogOutButton()
-            }
-            Button(role: .destructive) {
-                showUserDelete = true
-            } label: {
-                Text("退会する")
-            }
+            .navigationTitle("設定")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color.colorBeige, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
         }
         .fullScreenCover(isPresented: $viewModel.showSignInView, content: {
             AuthenticationView(showSignInView: $viewModel.showSignInView)
