@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct CommentsView: View {
-
     @FocusState private var focusedField: Bool
     @State var submissionText: String = ""
     @State var commentArray = [CommentModel]()

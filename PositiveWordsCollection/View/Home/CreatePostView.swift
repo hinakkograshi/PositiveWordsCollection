@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CreatePostView: View {
+    @FocusState private var focusedField: Bool
     @State var nameText = ""
     @State var bioText = ""
     @State var postStamp = UIImage(named: "noImage")!
@@ -43,7 +44,7 @@ struct CreatePostView: View {
                                 .fontWeight(.bold)
                                 .tint(.primary)
                                 .padding()
-                                .frame(minWidth: 140, minHeight: 70)
+                                .frame(minWidth: 140, minHeight: 80)
                                 .background(Color.MyTheme.yellowColor)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                                 .padding(.horizontal)
@@ -55,7 +56,7 @@ struct CreatePostView: View {
                                 .fontWeight(.bold)
                                 .tint(.primary)
                                 .padding()
-                                .frame(minWidth: 140, minHeight: 70)
+                                .frame(minWidth: 140, minHeight: 80)
                                 .background(Color.MyTheme.yellowColor)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                                 .padding(.horizontal)
@@ -75,6 +76,7 @@ struct CreatePostView: View {
                                     RoundedRectangle(cornerRadius: 16)
                                         .stroke(Color.orange, lineWidth: 5.0)
                                 }
+                                .focused($focusedField)
                             if bioText.isEmpty {
                                 Text("今日はどんな良いことがありましたか？").foregroundStyle(Color(uiColor: .placeholderText))
                                     .padding(8)
@@ -109,6 +111,9 @@ struct CreatePostView: View {
                     }
                 }
             }
+        .onTapGesture {
+            focusedField = false
+        }
             .overlay {
                 if showSelectStampView == true {
                     Color.black.opacity(0.3)
