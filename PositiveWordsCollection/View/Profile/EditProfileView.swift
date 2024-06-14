@@ -45,11 +45,18 @@ struct EditProfileView: View {
                     showImagePicker.toggle()
                 }, label: {
                     Text("ライブラリから画像を選択")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .tint(.primary)
+                        .padding()
+                        .frame(width: 230, height: 50)
+                        .background(Color.MyTheme.yellowColor)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
                 })
                 .sheet(isPresented: $showImagePicker) {
                     ImagePicker(imageSelection: $selectedImage, sourceType: $sourceType)
                 }
-                .padding(.bottom, 50)
+                .padding(.vertical, 10)
                 Divider()
                 HStack {
                     Text("名前")
