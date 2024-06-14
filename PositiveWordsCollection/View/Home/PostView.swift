@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+enum DeletedDataState {
+    case allUserLoading
+    case myUserLoading
+    case noLoading
+}
+
 struct PostView: View {
     @State var post: PostModel
     @StateObject var posts: PostArrayObject
@@ -16,7 +22,9 @@ struct PostView: View {
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @State var showReportsAlert: Bool = false
     @State var showDeleteAlert: Bool = false
-    let isActive: Bool
+    let headerIsActive: Bool
+    let deletedDataState: DeletedDataState
+    let comentIsActive: Bool
 
     var body: some View {
         VStack {
@@ -39,13 +47,13 @@ struct PostView: View {
                         .foregroundStyle(.black)
                         .padding(.leading, 10)
                     // Time
-                    Text("2s")
-                        .foregroundStyle(.gray)
-                        .font(.caption)
-                    // light and dark mode対応
-                        .foregroundStyle(.primary)
+//                    Text("2s")
+//                        .foregroundStyle(.gray)
+//                        .font(.caption)
+//                    // light and dark mode対応
+//                        .foregroundStyle(.primary)
                 })
-                .disabled(isActive)
+                .disabled(headerIsActive)
                 Spacer()
                 Menu {
                     Button(role: .destructive) {
@@ -90,7 +98,7 @@ struct PostView: View {
             .padding()
             
             // Footer
-            HStack(alignment: .center, spacing: 5) {
+            HStack {
                 Button(action: {
                     if post.likedByUser {
                         unLikePost()
@@ -101,8 +109,10 @@ struct PostView: View {
                     Image(systemName: post.likedByUser ? "heart.fill" : "heart")
                         .font(.title3)
                 })
+                .padding(.leading, 5)
                 .tint(post.likedByUser ? .red : .primary)
                 Text("\(post.likeCount)")
+                    .padding(.trailing, 10)
                 // MARK: Comment Icon
                 HStack {
                     NavigationLink(
@@ -110,13 +120,14 @@ struct PostView: View {
                         label: {
                             Image(systemName: "bubble.middle.bottom")
                                 .font(.title3)
-                                .tint(.primary)
+                                .foregroundStyle(.black)
                         })
+                    .disabled(comentIsActive)
                     // 🟩Comentの数
                     Text("\(post.comentsCount)")
                     .font(.subheadline)                }
-                Image(systemName: "paperplane")
-                    .font(.title3)
+//                Image(systemName: "paperplane")
+//                    .font(.title3)
                 Spacer()
             }
             Rectangle()
@@ -129,9 +140,16 @@ struct PostView: View {
             Button("削除", role: .destructive) {
                 Task {
                     do {
-                        guard let userID = currentUserID else { return }
                         try await DataService.instance.postDelete(postID: post.postID)
-                        await posts.refreshAllUserPosts()
+                        switch deletedDataState {
+                        case .allUserLoading:
+
+                            await posts.refreshAllUserPosts()
+                        case .myUserLoading:
+                            await posts.refreshOfUser(userID: post.userID)
+                        case .noLoading:
+                            print("noLoading")
+                        }
                     } catch {
                         print("投稿削除に失敗しました。")
                     }
@@ -227,5 +245,5 @@ struct PostView: View {
 
 #Preview {
     let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
-    return PostView(post: post, posts: PostArrayObject(), isActive: true)
+    return PostView(post: post, posts: PostArrayObject(), headerIsActive: true, deletedDataState: .noLoading, comentIsActive: false)
 }

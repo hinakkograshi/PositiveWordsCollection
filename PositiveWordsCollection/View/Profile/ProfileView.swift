@@ -17,6 +17,7 @@ struct ProfileView: View {
     @StateObject var posts: PostArrayObject
     @State var showEditProfileView: Bool = false
     @Environment(\.colorScheme) var colorScheme
+    @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
 
     init(
         isMyProfile: Bool,
@@ -48,9 +49,9 @@ struct ProfileView: View {
                 .tint(colorScheme == .light ? Color.MyTheme.purpleColor: Color.MyTheme.yellowColor)
                 .opacity(isMyProfile ? 1.0 : 0.0)
             }
-            .onAppear(perform: {
+            .onAppear {           
                 getProfileImage(profileUserID: profileUserID)
-            })
+            }
             .sheet(
                 isPresented: $showEditProfileView,
                 onDismiss: {
