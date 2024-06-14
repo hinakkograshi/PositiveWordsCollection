@@ -39,12 +39,11 @@ struct CreatePostView: View {
                         Button {
                             showSelectStampView = true
                         } label: {
-                            Text("オリジナルスタンプから追加")
+                            Text("スタンプから\n画像を追加")
                                 .fontWeight(.bold)
                                 .tint(.primary)
                                 .padding()
-                                .frame(height: 80)
-                                .frame(maxWidth: .infinity)
+                                .frame(minWidth: 140, minHeight: 70)
                                 .background(Color.MyTheme.yellowColor)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                                 .padding(.horizontal)
@@ -52,12 +51,11 @@ struct CreatePostView: View {
                         Button {
                             showImagePicker = true
                         } label: {
-                            Text("写真ライブラリから画像を追加")
+                            Text("写真ライブラリ\nから画像を追加")
                                 .fontWeight(.bold)
                                 .tint(.primary)
                                 .padding()
-                                .frame(height: 80)
-                                .frame(maxWidth: .infinity)
+                                .frame(minWidth: 140, minHeight: 70)
                                 .background(Color.MyTheme.yellowColor)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                                 .padding(.horizontal)
@@ -117,7 +115,8 @@ struct CreatePostView: View {
                     VStack {
                         SelectStampCell(postStamp: $selectedImage, showSelectStampView: $showSelectStampView)
                     }
-                    .frame(width: 300, height: 400)
+                    .frame(maxWidth: .infinity, maxHeight: 400)
+//                    .frame(width: 300, height: 400)
                     .background()
                 }
             }

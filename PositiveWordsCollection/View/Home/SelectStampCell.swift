@@ -15,9 +15,21 @@ struct SelectStampCell: View {
         ]
     var body: some View {
         VStack {
+            HStack {
+                Button(action: {
+                    showSelectStampView = false
+                }, label: {
+                    Text("✖️")
+                        .font(.largeTitle)
+                })
+                .padding()
+                Spacer()
+            }
+            Spacer()
             Text("今の気持ちに一番近いスタンプを選ぼう！")
+            
                 .fontWeight(.bold)
-                .padding(.bottom, 50)
+                .padding(.bottom, 30)
             LazyVGrid(columns: Array(repeating: .init(), count: 3), spacing: 20) {
                 ForEach(items, id: \.self) { item in
                     Button(action: {
@@ -27,12 +39,13 @@ struct SelectStampCell: View {
                         Image(item)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 75, height: 75, alignment: .center)
+                            .frame(width: 100, height: 100, alignment: .center)
                             .clipShape(RoundedRectangle(cornerRadius: 20))
                     })
                 }
             }
-            .padding(.horizontal)
+            .padding()
+            Spacer()
         }
     }
 }

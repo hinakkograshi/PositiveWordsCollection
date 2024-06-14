@@ -86,25 +86,23 @@ struct SignInProfileView: View {
                                     .padding(8)
                                     .allowsHitTesting(false)
                             }
-
                         }
                     }
-                    Button {
+                }
+            .padding()
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: {
                         createProfile()
                         dismiss()
-                    } label: {
+                    }, label: {
                         Text("登録")
                             .font(.headline)
                             .fontWeight(.bold)
                             .tint(.primary)
-                            .padding()
-                            .frame(height: 60)
-                            .frame(maxWidth: .infinity)
-                            .background(Color.MyTheme.yellowColor)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                    }
+                    })
                 }
-            .padding()
+            }
         }
         .onTapGesture {
             focusedField = nil

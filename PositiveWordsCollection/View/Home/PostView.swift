@@ -79,6 +79,7 @@ struct PostView: View {
                 .padding(.trailing, 10)
                 .tint(.primary)
             }
+            .padding(.top, 5)
             // Content
             HStack {
                 // stamp Image
@@ -95,8 +96,7 @@ struct PostView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer()
             }
-            .padding()
-            
+
             // Footer
             HStack {
                 Button(action: {
