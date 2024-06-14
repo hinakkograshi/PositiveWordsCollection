@@ -45,6 +45,7 @@ struct ContentView: View {
                 Text("Settings")
             }
         }
+        .accentColor(.orange)
         .onAppear {
             self.showSignInView = currentUserID == nil ? true : false
             //            let authUser = try? AuthenticationManager.instance.getAuthenticatedUser()

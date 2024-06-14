@@ -47,6 +47,8 @@ struct HomeView: View {
         })
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Color.colorBeige, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         .onAppear {
             print("HomeView表示されました")
             Task {
