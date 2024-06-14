@@ -31,6 +31,7 @@ struct ProfileView: View {
 
     var body: some View {
         ProfileHeaderView(profileDisplayName: $profileDisplayName, profileImage: $profileImage, profileBio: $profileBio, postArray: posts)
+            .padding(.top, 10)
         Rectangle()
             .foregroundStyle(.orange)
             .frame(height: 2)
