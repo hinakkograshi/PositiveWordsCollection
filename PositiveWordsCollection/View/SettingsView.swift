@@ -24,44 +24,54 @@ final class SettingsViewModel: ObservableObject {
 
     private func signOut() throws {
         try AuthService.instance.signOut()
-            print("Success Log out")
-            // All UserDefault Delete
-            let defaultDictionary = UserDefaults.standard.dictionaryRepresentation()
-            print(defaultDictionary)
-            defaultDictionary.keys.forEach { key in
-                UserDefaults.standard.removeObject(forKey: key)
-            }
-            print(defaultDictionary)
+        print("Success Log out")
+        // All UserDefault Delete
+        let defaultDictionary = UserDefaults.standard.dictionaryRepresentation()
+        print(defaultDictionary)
+        defaultDictionary.keys.forEach { key in
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+        print(defaultDictionary)
     }
 
-//    func deleteAccount() async throws {
-//        try await AuthService.instance.deleteUser()
-//    }
+    //    func deleteAccount() async throws {
+    //        try await AuthService.instance.deleteUser()
+    //    }
 }
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
     @State var showUserDelete = false
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
-//    @Binding var showSignInView: Bool
+    //    @Binding var showSignInView: Bool
     var body: some View {
         NavigationStack {
-            List {
-                Button("利用規約") {
-                    viewModel.didTapLogOutButton()
+            Form {
+                Section {
+                    Button("利用規約") {
+                        viewModel.didTapLogOutButton()
+                    }
+                    .foregroundStyle(.black)
+                    Button("プライバシーポリシー") {
+                        viewModel.didTapLogOutButton()
+                    }
+                    .foregroundStyle(.black)
+                } header: {
+                    Text("その他")
                 }
-                .foregroundStyle(.black)
-                Button("プライバシーポリシー") {
-                    viewModel.didTapLogOutButton()
-                }
-                .foregroundStyle(.black)
-                Button("サインアウト") {
-                    viewModel.didTapLogOutButton()
-                }
-                .foregroundStyle(.black)
-                Button(role: .destructive) {
-                    showUserDelete = true
-                } label: {
-                    Text("退会する")
+
+                Section {
+                    Button(role: .destructive) {
+                        viewModel.didTapLogOutButton()
+                    } label: {
+                        Text("ログアウト")
+                    }
+                    Button(role: .destructive) {
+                        showUserDelete = true
+                    } label: {
+                        Text("アカウントの削除")
+                    }
+                } header: {
+                    Text("アカウント")
                 }
             }
             .navigationTitle("設定")
