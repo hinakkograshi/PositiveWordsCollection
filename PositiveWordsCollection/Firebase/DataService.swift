@@ -151,9 +151,7 @@ class DataService {
     // UserIDの投稿を取得
     func downloadPostForUser(userID: String) async throws -> [PostModel] {
         let querySnapshot = try await postsREF.whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
-        print("🐥UserIDの投稿を取得\(querySnapshot)")
         let docData = querySnapshot.documents
-        print("🐕docData\(docData)")
         return getPostsFromSnapshot(querySnapshot: querySnapshot)
     }
 
