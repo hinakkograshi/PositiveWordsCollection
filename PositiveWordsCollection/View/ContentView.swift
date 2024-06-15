@@ -9,24 +9,29 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var showSignInView: Bool = false
+    @State private var showSignInProfileView: Bool = false
+
+    @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
+    @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
+    // ここで全部の投稿取得
+    @StateObject private var homePosts = PostArrayObject()
     var body: some View {
         TabView {
             NavigationStack {
-                HomeView(posts: PostArrayObject())
+                HomeView(posts: homePosts)
             }
             .tabItem {
                 Image(systemName: "house.fill")
                 Text("Home")
             }
             NavigationStack {
-                Text("NoticeView")
-            }
-            .tabItem {
-                Image(systemName: "bell.fill")
-                Text("Notice")
-            }
-            NavigationStack {
-                ProfileView(isMyProfile: true, profileDisplayName: "userName", profileUserID: "userID")
+                if let userID = currentUserID, let displayName = currentUserName {
+                    ProfileView(
+                        isMyProfile: true,
+                        profileDisplayName: displayName,
+                        profileUserID: userID
+                    )
+                }
             }
             .tabItem {
                 Image(systemName: "person.fill")
@@ -40,15 +45,16 @@ struct ContentView: View {
                 Text("Settings")
             }
         }
+        .accentColor(.orange)
         .onAppear {
-            let authUser = try? AuthenticationManager.shared.getAuthenticatedUser()
-            self.showSignInView = authUser == nil ? true : false
-//            try? AuthenticationManager.shared.getProvider()
+            self.showSignInView = currentUserID == nil ? true : false
+            //            let authUser = try? AuthenticationManager.instance.getAuthenticatedUser()
+            //            self.showSignInView = authUser == nil ? true : false
         }
         .fullScreenCover(isPresented: $showSignInView, content: {
             AuthenticationView(showSignInView: $showSignInView)
         })
-//        if showSignInView == false, 
+
     }
 }
 

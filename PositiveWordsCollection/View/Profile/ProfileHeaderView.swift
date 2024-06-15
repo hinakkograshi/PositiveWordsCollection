@@ -9,62 +9,76 @@ import SwiftUI
 
 struct ProfileHeaderView: View {
     @Binding var profileDisplayName: String
+    @Binding var profileImage: UIImage
+    @Binding var profileBio: String
+    @ObservedObject var postArray: PostArrayObject
+    
     var body: some View {
-        VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 10, content: {
+        VStack(alignment: .center, spacing: 10, content: {
             // MARK: PROFILE PICTURE
             HStack(alignment: .center, spacing: 20, content: {
-                Image("hiyoko")
+                Image(uiImage: profileImage)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 120, height: 120, alignment: .leading)
+                    .frame(width: 80, height: 80, alignment: .leading)
                     .clipShape(RoundedRectangle(cornerRadius: 60))
                 // MARK: USER NAME
-                Text("Hinakko")
-                    .font(.largeTitle)
+                Text(profileDisplayName)
+                    .font(.title)
                     .fontWeight(.bold)
             })
 
             // MARK: BIO
-            Text("This is the area where th user can add a bio to their profile!")
-                .font(.body)
-                .fontWeight(.regular)
-                .multilineTextAlignment(.center)
-            HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 20, content: {
+            if profileBio != "" {
+                Text(profileBio)
+                    .font(.title3)
+                    .fontWeight(.regular)
+                    .multilineTextAlignment(.center)
+            }
+            HStack(alignment: .center, spacing: 50, content: {
                 // MARK: POSTS
-                VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 5, content: {
-                    Text("5")
-                        .font(.title2)
-                        .fontWeight(.bold)
+                VStack(alignment: .center, spacing: 5, content: {
+                    HStack {
+                        Image(systemName: "paperplane")
+                        Text(postArray.postCountString)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                    }
 
                     Capsule()
                         .fill(.gray)
-                        .frame(width: 20, height: 2, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        .frame(width: 60, height: 3, alignment: .center)
 
-                    Text("Post")
+                    Text("ポスト数")
                         .font(.callout)
                         .fontWeight(.medium)
                 })
                 // MARK: LIKES
-                VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 5, content: {
-                    Text("20")
-                        .font(.title2)
-                        .fontWeight(.bold)
+                VStack(alignment: .center, spacing: 5, content: {
+                    HStack {
+                        Image(systemName: "heart.fill")
+                            .foregroundStyle(.red)
+                        Text(postArray.likeCountString)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                    }
 
                     Capsule()
-                        .fill(.gray)
-                        .frame(width: 20, height: 2, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                        .fill(.red)
+                        .frame(width: 60, height: 3, alignment: .center)
 
-                    Text("Likes")
+                    Text("いいね数")
                         .font(.callout)
                         .fontWeight(.medium)
                 })
             })
         })
-        .padding()
     }
 }
 
-#Preview(traits: .sizeThatFitsLayout) {
+#Preview {
     @State var name: String = "hina"
-    return ProfileHeaderView(profileDisplayName: $name)
+    @State var bio = "iOSエンジニア目指して学習をしています。"
+    @State var image: UIImage = UIImage(named: "posiIcon")!
+    return ProfileHeaderView(profileDisplayName: $name, profileImage: $image, profileBio: $bio, postArray: PostArrayObject())
 }

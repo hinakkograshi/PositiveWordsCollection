@@ -36,7 +36,6 @@ struct ImagePicker: UIViewControllerRepresentable {
             if let image = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage {
                 parent.imageSelection = image
                 parent.presentationMode.wrappedValue.dismiss()
-
             }
         }
     }

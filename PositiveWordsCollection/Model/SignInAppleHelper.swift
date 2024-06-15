@@ -27,6 +27,7 @@ struct SignInAppleResult {
     let token: String
     let nonce: String
     let fullName: PersonNameComponents?
+    let email: String
 }
 
 @MainActor
@@ -68,7 +69,7 @@ final class SignInAppleHelper: NSObject {
       authorizationController.presentationContextProvider = topVC
       authorizationController.performRequests()
     }
-
+    
     private func randomNonceString(length: Int = 32) -> String {
       precondition(length > 0)
       var randomBytes = [UInt8](repeating: 0, count: length)
@@ -90,7 +91,6 @@ final class SignInAppleHelper: NSObject {
       return String(nonce)
     }
 
-    @available(iOS 13, *)
     private func sha256(_ input: String) -> String {
       let inputData = Data(input.utf8)
       let hashedData = SHA256.hash(data: inputData)
@@ -112,7 +112,7 @@ extension SignInAppleHelper: ASAuthorizationControllerDelegate {
           completionHandler?(.failure(URLError(.badServerResponse)))
           return
       }
-      let result = SignInAppleResult(token: idTokenString, nonce: nonce, fullName: appleIDCredential.fullName)
+      let result = SignInAppleResult(token: idTokenString, nonce: nonce, fullName: appleIDCredential.fullName, email: appleIDCredential.email ?? "")
       completionHandler?(.success(result))
   }
 
@@ -121,7 +121,6 @@ extension SignInAppleHelper: ASAuthorizationControllerDelegate {
     print("Sign in with Apple errored: \(error)")
       completionHandler?(.failure(URLError(.cannotFindHost)))
   }
-
 }
 
 extension UIViewController: ASAuthorizationControllerPresentationContextProviding {

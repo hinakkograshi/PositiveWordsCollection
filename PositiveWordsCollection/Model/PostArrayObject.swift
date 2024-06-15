@@ -6,27 +6,65 @@
 //
 
 import Foundation
-
+@MainActor
 class PostArrayObject: ObservableObject {
     @Published var dataArray = [PostModel]()
+    @Published var postCountString = "0"
+    @Published var likeCountString = "0"
 
+    // All User Post
     init() {
-        print("データベースから投稿をfetch")
-        let post1 = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false)
-        let post2 = PostModel(postID: "", userID: "", username: "hinakko", dateCreated: Date(), likeCount: 0, likedByUser: false)
-        let post3 = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false)
-        let post4 = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false)
-        let post5 = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false)
-        let post6 = PostModel(postID: "", userID: "", username: "hinakko", dateCreated: Date(), likeCount: 0, likedByUser: false)
-        let post7 = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false)
-        let post8 = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false)
-        dataArray.append(post1)
-        dataArray.append(post2)
-        dataArray.append(post3)
-        dataArray.append(post4)
-        dataArray.append(post5)
-        dataArray.append(post6)
-        dataArray.append(post7)
-        dataArray.append(post8)
+        print("Get All User Post Home")
+        Task {
+            let returnedPosts = try await DataService.instance.downloadPostsForFeed()
+            self.dataArray = returnedPosts
+        }
+    }
+
+    /// USERがMyProfileの投稿を取得するために使用
+    init(userID: String) {
+        Task {
+            print("🟩 プロフィールのuserIDは\(userID)")
+            let returnedposts = try await DataService.instance.downloadPostForUser(userID: userID)
+            // 最新の日付
+            let sortedPosts = returnedposts.sorted { (post1, post2) -> Bool in
+                return post1.dateCreated > post2.dateCreated
+            }
+            self.dataArray.append(contentsOf: sortedPosts)
+            self.updateCounts()
+        }
+    }
+
+    func updateCounts() {
+        self.postCountString = "\(self.dataArray.count)"
+        let likeCountArray = dataArray.map({ (existPost) -> Int in
+            return existPost.likeCount
+        })
+        print("いいね数\(likeCountArray)")
+        let sumOfLikeCountArray = likeCountArray.reduce(0, +)
+        self.likeCountString = "\(sumOfLikeCountArray)"
+        print(likeCountString)
+    }
+    func refreshAllUserPosts() async {
+        do {
+            let returnedPosts = try await DataService.instance.downloadPostsForFeed()
+            self.dataArray = returnedPosts
+        } catch {
+            print("refreshAllUserPosts Error")
+        }
+    }
+    func refreshOfUser(userID: String) async {
+        print("🟩 プロフィールのuserIDは\(userID)")
+        do {
+            let returnedposts = try await DataService.instance.downloadPostForUser(userID: userID)
+        // 最新の日付
+        let sortedPosts = returnedposts.sorted { (post1, post2) -> Bool in
+            return post1.dateCreated > post2.dateCreated
+        }
+        self.dataArray = sortedPosts
+        self.updateCounts()
+        } catch {
+            print("refreshOfUser Error")
+        }
     }
 }
