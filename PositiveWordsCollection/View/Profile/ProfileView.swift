@@ -52,6 +52,7 @@ struct ProfileView: View {
             }
             .onAppear {           
                 getProfileImage(profileUserID: profileUserID)
+                getAdditionalProfileInfo()
             }
             .sheet(
                 isPresented: $showEditProfileView,
@@ -70,6 +71,17 @@ struct ProfileView: View {
                 })
     }
     // MARK: FUNCTION
+    func getAdditionalProfileInfo() {
+        Task {
+            do {
+                let (returnedName, returnedBio) = try await AuthService.instance.getUserInfo(userID: profileUserID)
+                self.profileDisplayName = returnedName
+                self.profileBio = returnedBio
+            } catch {
+                print("getAdditionalProfileInfo Error")
+            }
+        }
+    }
     func getProfileImage(profileUserID: String) {
         ImageManager.instance.downloadProfileImage(userID: profileUserID) { returnedImage in
             if let image = returnedImage {
