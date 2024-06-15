@@ -30,14 +30,14 @@ final class AuthenticationManager {
         return (credential, authDataResult)
     }
 
-    func signInWithApple(tokens: SignInAppleResult) async throws -> (OAuthCredential) {
-
-        let credential = OAuthProvider.appleCredential(withIDToken: tokens.token,
-                                                       rawNonce: tokens.nonce,
-                                                       fullName: tokens.fullName)
-        let authDataResult = try await signIn(credential: credential)
-        return credential
-    }
+//    func signInWithApple(tokens: SignInAppleResult) async throws -> (OAuthCredential) {
+//
+//        let credential = OAuthProvider.appleCredential(withIDToken: tokens.token,
+//                                                       rawNonce: tokens.nonce,
+//                                                       fullName: tokens.fullName)
+//        let authDataResult = try await signIn(credential: credential)
+//        return credential
+//    }
 
     func signIn(credential: AuthCredential) async throws -> AuthDataResult {
         let authDataResult =  try await Auth.auth().signIn(with: credential)
