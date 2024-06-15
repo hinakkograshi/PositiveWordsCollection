@@ -42,7 +42,7 @@ class DataService {
         // users Collection Delete
         try await userCollection.document(userID).delete()
         // Authアカウント削除
-        await AuthService.instance.userAcountDelete()
+        try await AuthService.instance.userAcountDelete()
     }
 
     private func postAllDelete(userID: String) async throws {
