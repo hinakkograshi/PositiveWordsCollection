@@ -27,13 +27,10 @@ class AuthService {
         try Auth.auth().signOut()
     }
     
-    func userAcountDelete() async {
-        do {
+    func userAcountDelete() async throws {
             guard let user = Auth.auth().currentUser else {throw URLError(.badURL)}
+        print("🐥\(user)")
             try await user.delete()
-        } catch {
-            print("😭Authアカウント削除Error")
-        }
     }
     
     func asyncLogInUserToFirebase(credential: AuthCredential) async throws -> LogInUser {
