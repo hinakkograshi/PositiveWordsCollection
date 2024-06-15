@@ -18,7 +18,6 @@ class DataService {
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
 
     func postDelete(postID: String) async throws {
-
             // SubCollection Delete
             await subCollectionDelete(postID: postID)
             // PostCollection Delete

@@ -185,6 +185,7 @@
 			children = (
 				535C7F8B2BF8239C00BA33D1 /* AuthenticationView.swift */,
 				5367F11B2C00E99700A119B7 /* SignInProfileView.swift */,
+				5369C9872C1D759900D22083 /* SignInWithApple.swift */,
 			);
 			name = SignInView;
 			sourceTree = "<group>";
@@ -194,7 +195,6 @@
 			children = (
 				539C802A2C01CCE70000BD44 /* AuthService.swift */,
 				5345D9472C0C32DD000287DF /* DataService.swift */,
-				5369C9872C1D759900D22083 /* SignInWithApple.swift */,
 			);
 			path = Firebase;
 			sourceTree = "<group>";

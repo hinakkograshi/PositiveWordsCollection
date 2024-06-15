@@ -11,30 +11,52 @@ import CryptoKit
 import AuthenticationServices
 import FirebaseAuth
 
-class SignInWithApple: NSObject, ASAuthorizationControllerDelegate {
+struct SignInAppleResult {
+    let token: String
+    let nonce: String
+    let fullName: String
+    let email: String
+    let credential: OAuthCredential
+}
+
+@MainActor
+final class SignInWithApple: NSObject {
 
     static let instance = SignInWithApple()
-    var authView: AuthenticationView!
+    private var currentNonce: String?
+    private var completionHandler: ((Result<SignInAppleResult, Error>) -> Void)? = nil
 
-    // Unhashed nonce.
-    fileprivate var currentNonce: String?
+    func startSignInWithAppleFlow() async throws -> SignInAppleResult {
+        try await withCheckedThrowingContinuation { continuation in
+            self.startSignInWithAppleFlow { result in
+                switch result {
+                case .success(let signInAppleResult):
+                    continuation.resume(returning: signInAppleResult)
+                    return
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                    return
+                }
+            }
+        }
+    }
 
-    func startSignInWithAppleFlow(view: AuthenticationView) {
-      self.authView = view
+    func startSignInWithAppleFlow(completion: @escaping (Result<SignInAppleResult, Error>) -> Void) {
       let nonce = randomNonceString()
       currentNonce = nonce
+      completionHandler = completion
       let appleIDProvider = ASAuthorizationAppleIDProvider()
       let request = appleIDProvider.createRequest()
       request.requestedScopes = [.fullName, .email]
       request.nonce = sha256(nonce)
 
       let authorizationController = ASAuthorizationController(authorizationRequests: [request])
-      authorizationController.delegate = self
+      // 指示を受け取る側
+        authorizationController.delegate = self
 //      authorizationController.presentationContextProvider = self
       authorizationController.performRequests()
     }
 
-    @available(iOS 13, *)
     private func sha256(_ input: String) -> String {
       let inputData = Data(input.utf8)
       let hashedData = SHA256.hash(data: inputData)
@@ -63,20 +85,17 @@ class SignInWithApple: NSObject, ASAuthorizationControllerDelegate {
         }
         return String(nonce)
     }
+}
 
+extension SignInWithApple: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-          guard let nonce = currentNonce else {
-            fatalError("Invalid state: A login callback was received, but no login request was sent.")
-          }
-          guard let appleIDToken = appleIDCredential.identityToken else {
-            print("Unable to fetch identity token")
+        guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
+              let appleIDToken = appleIDCredential.identityToken,
+              let idTokenString = String(data: appleIDToken, encoding: .utf8),
+              let nonce = currentNonce else {
+            completionHandler?(.failure(URLError(.badServerResponse)))
             return
-          }
-          guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
-            print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
-            return
-          }
+        }
             let email = appleIDCredential.email ?? ""
             var name = "Your name here"
             if let fullName = appleIDCredential.fullName {
@@ -87,14 +106,15 @@ class SignInWithApple: NSObject, ASAuthorizationControllerDelegate {
           let credential = OAuthProvider.appleCredential(withIDToken: idTokenString,
                                                             rawNonce: nonce,
                                                             fullName: appleIDCredential.fullName)
-          print("Sign in to Firebase now email:\(email)and with name\(name)")
-            self.authView.connectToFirebase(name: name, email: email, provider: "apple", credential: credential)
+        print("Sign in to Firebase now email:\(email)and with name\(name)")
+        let result = SignInAppleResult(token: idTokenString, nonce: nonce, fullName: name, email: email, credential: credential)
+        completionHandler?(.success(result))
         }
-      }
 
       func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         // Handle error.
         print("Sign in with Apple errored: \(error)")
-//          self.onboardingView.showError.toggle()
+          completionHandler?(.failure(URLError(.cannotFindHost)))
       }
+
 }
