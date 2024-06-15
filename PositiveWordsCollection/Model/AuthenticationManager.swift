@@ -39,7 +39,7 @@ final class AuthenticationManager {
 //        return credential
 //    }
 
-    func signIn(credential: AuthCredential) async throws -> AuthDataResult {
+    private func signIn(credential: AuthCredential) async throws -> AuthDataResult {
         let authDataResult =  try await Auth.auth().signIn(with: credential)
         return authDataResult
     }
