@@ -9,6 +9,7 @@ import SwiftUI
 import GoogleSignIn
 import GoogleSignInSwift
 import _AuthenticationServices_SwiftUI
+import FirebaseAuth
 
 struct AuthenticationView: View {
     @StateObject private var viewModel = AuthenticationViewModel()
@@ -43,7 +44,7 @@ struct AuthenticationView: View {
                 GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .light, style: .wide, state: .normal)) {
                     Task {
                         do {
-                            try await viewModel.signInGoogle(dissmisAction: dismiss.callAsFunction)
+//                            try await viewModel.signInGoogle(dissmisAction: dismiss.callAsFunction)
                             // Success
 //                            showSignInView = false
                         } catch {
@@ -57,7 +58,8 @@ struct AuthenticationView: View {
                 Button(action: {
                     Task {
                         do {
-                            try await viewModel.signInApple(dissmisAction: dismiss.callAsFunction)
+                            SignInWithApple.instance.startSignInWithAppleFlow(view: self)
+//                            try await viewModel.signInApple(dissmisAction: dismiss.callAsFunction)
                             // Success
 //                            showSignInView = false
                         } catch {
@@ -81,6 +83,48 @@ struct AuthenticationView: View {
         })
         .alert(isPresented: $showError, content: {
             return Alert(title: Text("サインインに失敗しました"))
+        })
+    }
+    func connectToFirebase(name: String, email: String, provider: String, credential: AuthCredential) {
+        AuthService.instance.logInUserToFirebase(credential: credential, handler: { (returnedProviderID, isError, isNewUser, returnedUserID) in
+            // falseかtrueは入る！
+            if let newUser = isNewUser {
+                if newUser {
+                    // NEW USER
+                    if let providerID = returnedProviderID, !isError {
+                        self.viewModel.displayName = name
+                        self.viewModel.email = email
+                        self.viewModel.providerID = providerID
+                        self.viewModel.provider = provider
+                        self.viewModel.showSignInProfileView = true
+
+                    } else {
+                        print("Error getting provider ID from log in user to Firebase")
+                        self.showError.toggle()
+                    }
+                } else {
+                    // EXISTING USER
+                    if let userID = returnedUserID {
+                        AuthService.instance.logInUserToApp(userID: userID) { success in
+                            if success {
+                                print("Successful log in existing user")
+                                dismiss()
+                            } else {
+                                print("Error logging existing user into our app")
+                                self.showError = true
+                            }
+                        }
+                    } else {
+                        // Error
+                        print("Error getting user ID from log in user to Firebase")
+                        self.showError = true
+                    }
+                }
+            } else {
+                // Error
+                print("Error getting into from log in user to Firebase")
+                self.showError = true
+            }
         })
     }
 }

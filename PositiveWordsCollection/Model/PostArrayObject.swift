@@ -24,7 +24,6 @@ class PostArrayObject: ObservableObject {
     /// USERがMyProfileの投稿を取得するために使用
     init(userID: String) {
         Task {
-            print("🟩 プロフィールのuserIDは\(userID)")
             let returnedposts = try await DataService.instance.downloadPostForUser(userID: userID)
             // 最新の日付
             let sortedPosts = returnedposts.sorted { (post1, post2) -> Bool in
@@ -54,7 +53,6 @@ class PostArrayObject: ObservableObject {
         }
     }
     func refreshOfUser(userID: String) async {
-        print("🟩 プロフィールのuserIDは\(userID)")
         do {
             let returnedposts = try await DataService.instance.downloadPostForUser(userID: userID)
         // 最新の日付
