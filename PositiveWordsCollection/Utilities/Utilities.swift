@@ -5,7 +5,6 @@
 //  Created by Hina on 2024/05/19.
 //
 
-import Foundation
 import UIKit
 
 final class Utilities {

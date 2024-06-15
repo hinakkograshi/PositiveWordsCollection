@@ -14,8 +14,13 @@ struct HomeView: View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack {
                 ForEach(posts.dataArray, id: \.self) { post in
-                    PostCell(post: post)
+                    PostView(post: post, posts: posts, headerIsActive: false, deletedDataState: .allUserLoading, comentIsActive: false)
                 }
+            }
+        }
+        .refreshable {
+            Task {
+                    await posts.refreshAllUserPosts()
             }
         }
         .overlay(alignment: .bottomTrailing) {
@@ -30,11 +35,26 @@ struct HomeView: View {
             })
             .padding(10)
         }
-        .sheet(isPresented: $showCreatePostView) {
+        .sheet(
+            isPresented: $showCreatePostView,
+            onDismiss: {
+                Task {
+                    await posts.refreshAllUserPosts()
+                }
+            },
+            content: {
             CreatePostView()
-        }
+        })
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Color.colorBeige, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .onAppear {
+            print("HomeView表示されました")
+            Task {
+                await posts.refreshAllUserPosts()
+            }
+        }
     }
 }
 
