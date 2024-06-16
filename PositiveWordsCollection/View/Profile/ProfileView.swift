@@ -50,7 +50,9 @@ struct ProfileView: View {
                 .tint(colorScheme == .light ? Color.MyTheme.purpleColor: Color.MyTheme.yellowColor)
                 .opacity(isMyProfile ? 1.0 : 0.0)
             }
-            .onAppear {           
+            .onAppear { 
+                // 二回以降のMyProfile表示時更新
+                isMyProfileUpdate()
                 getProfileImage(profileUserID: profileUserID)
                 getAdditionalProfileInfo()
             }
@@ -71,6 +73,15 @@ struct ProfileView: View {
                 })
     }
     // MARK: FUNCTION
+    func isMyProfileUpdate() {
+        guard let userID = currentUserID else {return}
+        Task {
+            if isMyProfile {
+                await posts.refreshOfUser(userID: userID)
+            }
+        }
+
+    }
     func getAdditionalProfileInfo() {
         Task {
             do {
