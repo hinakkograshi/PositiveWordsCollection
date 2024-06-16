@@ -24,6 +24,7 @@ struct EditProfileView: View {
     @State var selectedImage = UIImage(named: "loading")!
     @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
     @State var showImagePicker: Bool = false
+    @State var showEditProfileError = false
     @Environment(\.dismiss) private var dismiss
     var body: some View {
         NavigationStack {
@@ -114,11 +115,15 @@ struct EditProfileView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
-                        Task {
-                            // キャッシュバグ解消
-                            ImageManager.instance.chashRemove()
-                            await saveEditProfile()
-                            dismiss()
+                        if editProfileName != "" {
+                            Task {
+                                // キャッシュバグ解消
+                                ImageManager.instance.chashRemove()
+                                await saveEditProfile()
+                                dismiss()
+                            }
+                        } else {
+                            showEditProfileError = true
                         }
                     }, label: {
                         Text("保存")
@@ -127,6 +132,9 @@ struct EditProfileView: View {
                 }
             }
         }
+        .alert(isPresented: $showEditProfileError, content: {
+            return Alert(title: Text("名前は空にできません。"))
+        })
         .onTapGesture {
             focusedField = nil
         }
@@ -149,14 +157,14 @@ struct EditProfileView: View {
         UserDefaults.standard.setValue(editProfileName, forKey: CurrentUserDefaults.displayName)
         UserDefaults.standard.setValue(editProfileBio, forKey: CurrentUserDefaults.bio)
         // Update all of user's posts Change
-            do {
-                try await DataService.instance.updateDisplayNameOnPosts(userID: userID, displayName: editProfileName)
-                try await AuthService.instance.updateUserProfileText(userID: userID, displayName: editProfileName, bio: editProfileBio)
-                try await ImageManager.instance.uploadProfileImage(userID: userID, image: selectedImage)
-                print("全て保存しました🐥")
-            } catch {
-                print("Update UserName ERROR")
-            }
+        do {
+            try await DataService.instance.updateDisplayNameOnPosts(userID: userID, displayName: editProfileName)
+            try await AuthService.instance.updateUserProfileText(userID: userID, displayName: editProfileName, bio: editProfileBio)
+            try await ImageManager.instance.uploadProfileImage(userID: userID, image: selectedImage)
+            print("全て保存しました🐥")
+        } catch {
+            print("Update UserName ERROR")
+        }
     }
 }
 
