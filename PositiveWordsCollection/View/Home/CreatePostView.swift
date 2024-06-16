@@ -15,6 +15,7 @@ struct CreatePostView: View {
     @State var showSelectStampView = false
     @State var selectedImage: UIImage = UIImage(named: "noImage")!
     @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
+    @State var disableButton: Bool = false
     @State var showImagePicker: Bool = false
     @Environment(\.dismiss) private var dismiss
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
@@ -101,13 +102,17 @@ struct CreatePostView: View {
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(action: {
+                            // 2回連打で二重に投稿しないように
+                            disableButton = true
                             postPicture {
                                 dismiss()
                             }
+
                         }, label: {
                             Text("投稿")
                                 .tint(.primary)
                         })
+                        .disabled(disableButton)
                     }
                 }
             }
