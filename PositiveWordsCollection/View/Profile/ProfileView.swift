@@ -59,7 +59,6 @@ struct ProfileView: View {
             .sheet(
                 isPresented: $showEditProfileView,
                 onDismiss: {
-                    // TODO: -画像の取得方法要修正。画像ごとのUUID作成
                     Task {
                     await posts.refreshOfUser(userID: profileUserID)
                     // 画像のリロードのタイミング

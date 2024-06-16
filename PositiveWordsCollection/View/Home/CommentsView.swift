@@ -69,7 +69,6 @@ struct CommentsView: View {
     // 🟩追加
     func countComment() {
         guard let userID = currentUserID else { return }
-
         // Update the local data
         let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount, likedByUser: post.likedByUser, comentsCount: post.comentsCount + 1)
         self.post = updatePost
