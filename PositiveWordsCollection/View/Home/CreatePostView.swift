@@ -121,7 +121,6 @@ struct CreatePostView: View {
                         SelectStampCell(postStamp: $selectedImage, showSelectStampView: $showSelectStampView)
                     }
                     .frame(maxWidth: .infinity, maxHeight: 400)
-//                    .frame(width: 300, height: 400)
                     .background()
                 }
             }

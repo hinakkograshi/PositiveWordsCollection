@@ -119,6 +119,7 @@ struct SignInProfileView: View {
                     return
                 }
                 print("createProfile Success")
+                // 🟥logInUserToApp
                 try await AuthService.instance.logInUserToApp(userID: userID)
             } catch {
                 print("createProfile Error\(error)")

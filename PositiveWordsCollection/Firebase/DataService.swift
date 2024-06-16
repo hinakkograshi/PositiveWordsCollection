@@ -18,7 +18,6 @@ class DataService {
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
 
     func postDelete(postID: String) async throws {
-
             // SubCollection Delete
             await subCollectionDelete(postID: postID)
             // PostCollection Delete
@@ -28,6 +27,8 @@ class DataService {
     }
     // サブコレクションの削除が完了した後に親ドキュメントも削除する
     func deleteAccount(userID: String) async throws {
+        // Authアカウント削除
+        try await AuthService.instance.userAcountDelete()
         // UserDefault削除
         // All UserDefault Delete
         let defaultDictionary = UserDefaults.standard.dictionaryRepresentation()
@@ -35,15 +36,12 @@ class DataService {
             UserDefaults.standard.removeObject(forKey: key)
         }
         await deleteUserCollection(userID: userID)
-
         // posts Collection of userID
         try await postAllDelete(userID: userID)
         // Storage削除
         await userStorageDelete(userID: userID)
         // users Collection Delete
         try await userCollection.document(userID).delete()
-        // Authアカウント削除
-        await AuthService.instance.userAcountDelete()
     }
 
     private func postAllDelete(userID: String) async throws {
@@ -151,9 +149,7 @@ class DataService {
     // UserIDの投稿を取得
     func downloadPostForUser(userID: String) async throws -> [PostModel] {
         let querySnapshot = try await postsREF.whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
-        print("🐥UserIDの投稿を取得\(querySnapshot)")
         let docData = querySnapshot.documents
-        print("🐕docData\(docData)")
         return getPostsFromSnapshot(querySnapshot: querySnapshot)
     }
 
