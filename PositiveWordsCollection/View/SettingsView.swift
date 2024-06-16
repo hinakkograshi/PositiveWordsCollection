@@ -42,17 +42,22 @@ struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
     @State var showUserDelete = false
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
+    @Environment(\.openURL) private var openURL
     //    @Binding var showSignInView: Bool
     var body: some View {
         NavigationStack {
             Form {
                 Section {
                     Button("利用規約") {
-                        viewModel.didTapLogOutButton()
+                        if let url = URL(string: "https://royal-wisteria-cf4.notion.site/52a618b0823648db89f024703733045e") {
+                            openURL(url)
+                        }
                     }
                     .foregroundStyle(.black)
                     Button("プライバシーポリシー") {
-                        viewModel.didTapLogOutButton()
+                        if let url = URL(string: "https://www.notion.so/13be1dd4865f4bdf918b6c3b1a7e3971") {
+                            openURL(url)
+                        }
                     }
                     .foregroundStyle(.black)
                 } header: {
