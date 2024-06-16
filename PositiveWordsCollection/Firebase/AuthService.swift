@@ -29,7 +29,6 @@ class AuthService {
     
     func userAcountDelete() async throws {
             guard let user = Auth.auth().currentUser else {throw URLError(.badURL)}
-        print("🐥\(user)")
             try await user.delete()
     }
     

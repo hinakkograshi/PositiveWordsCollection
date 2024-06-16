@@ -62,11 +62,9 @@ struct ProfileHeaderView: View {
                             .font(.title2)
                             .fontWeight(.bold)
                     }
-
                     Capsule()
                         .fill(.red)
                         .frame(width: 60, height: 3, alignment: .center)
-
                     Text("いいね数")
                         .font(.callout)
                         .fontWeight(.medium)
