@@ -18,6 +18,7 @@ struct SignInProfileView: View {
     @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
     @Environment(\.dismiss) private var dismiss
     @State var showImagePicker: Bool = false
+    @State var showCreateProfileError: Bool = false
     var body: some View {
         NavigationStack {
                 VStack(spacing: 20) {
@@ -93,8 +94,12 @@ struct SignInProfileView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
-                        createProfile()
-                        dismiss()
+                        if selectedImage != UIImage(named: "noImage")!, viewModel.displayName != "" {
+                            createProfile()
+                            dismiss()
+                        } else {
+                            showCreateProfileError = true
+                        }
                     }, label: {
                         Text("登録")
                             .font(.headline)
@@ -104,6 +109,9 @@ struct SignInProfileView: View {
                 }
             }
         }
+        .alert(isPresented: $showCreateProfileError, content: {
+            return Alert(title: Text("ユーザーの画像と名前を入力する必要があります。"))
+        })
         .onTapGesture {
             focusedField = nil
         }
