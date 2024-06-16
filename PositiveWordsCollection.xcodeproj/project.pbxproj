@@ -173,6 +173,7 @@
 				539C80302C01D89E0000BD44 /* ImageManager.swift */,
 				53C157C22BF90997003776CB /* SignInGoogleHelper.swift */,
 				533D409F2BF9E408005C684A /* SignInAppleHelper.swift */,
+				5369C9872C1D759900D22083 /* SignInWithApple.swift */,
 				539DD1192BFE299900D6BCBC /* PostArrayObject.swift */,
 				539DD1172BFE0E1A00D6BCBC /* PostModel.swift */,
 				539DD11B2BFE2EB300D6BCBC /* CommentModel.swift */,
@@ -185,7 +186,6 @@
 			children = (
 				535C7F8B2BF8239C00BA33D1 /* AuthenticationView.swift */,
 				5367F11B2C00E99700A119B7 /* SignInProfileView.swift */,
-				5369C9872C1D759900D22083 /* SignInWithApple.swift */,
 			);
 			name = SignInView;
 			sourceTree = "<group>";
