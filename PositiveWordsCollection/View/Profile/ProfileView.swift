@@ -18,6 +18,7 @@ struct ProfileView: View {
     @State var showEditProfileView: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
+    @State var fetchOnAppear = false
 
     init(
         isMyProfile: Bool,
@@ -50,14 +51,15 @@ struct ProfileView: View {
                 .tint(colorScheme == .light ? Color.MyTheme.purpleColor: Color.MyTheme.yellowColor)
                 .opacity(isMyProfile ? 1.0 : 0.0)
             }
-            .onAppear {           
+            .onAppear { 
+                // 二回以降のMyProfile表示時更新
+                isMyProfileUpdate()
                 getProfileImage(profileUserID: profileUserID)
                 getAdditionalProfileInfo()
             }
             .sheet(
                 isPresented: $showEditProfileView,
                 onDismiss: {
-                    // TODO: -画像の取得方法要修正。画像ごとのUUID作成
                     Task {
                     await posts.refreshOfUser(userID: profileUserID)
                     // 画像のリロードのタイミング
@@ -71,6 +73,14 @@ struct ProfileView: View {
                 })
     }
     // MARK: FUNCTION
+    func isMyProfileUpdate() {
+        guard let userID = currentUserID else {return}
+        Task {
+            if isMyProfile {
+                await posts.refreshOfUser(userID: userID)
+            }
+        }
+    }
     func getAdditionalProfileInfo() {
         Task {
             do {

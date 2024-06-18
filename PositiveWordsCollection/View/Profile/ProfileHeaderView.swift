@@ -22,6 +22,10 @@ struct ProfileHeaderView: View {
                     .scaledToFill()
                     .frame(width: 80, height: 80, alignment: .leading)
                     .clipShape(RoundedRectangle(cornerRadius: 60))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 60)
+                            .stroke(Color.black, lineWidth: 1.0)
+                    }
                 // MARK: USER NAME
                 Text(profileDisplayName)
                     .font(.title)
@@ -62,11 +66,9 @@ struct ProfileHeaderView: View {
                             .font(.title2)
                             .fontWeight(.bold)
                     }
-
                     Capsule()
                         .fill(.red)
                         .frame(width: 60, height: 3, alignment: .center)
-
                     Text("いいね数")
                         .font(.callout)
                         .fontWeight(.medium)

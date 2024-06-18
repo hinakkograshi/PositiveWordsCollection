@@ -16,22 +16,15 @@ class PostArrayObject: ObservableObject {
     init() {
         print("Get All User Post Home")
         Task {
-            let returnedPosts = try await DataService.instance.downloadPostsForFeed()
-            self.dataArray = returnedPosts
+            await refreshAllUserPosts()
         }
     }
 
-    /// USERがMyProfileの投稿を取得するために使用
+    // USERがMyProfileの投稿を取得するために使用
     init(userID: String) {
-        Task {
-            let returnedposts = try await DataService.instance.downloadPostForUser(userID: userID)
-            // 最新の日付
-            let sortedPosts = returnedposts.sorted { (post1, post2) -> Bool in
-                return post1.dateCreated > post2.dateCreated
+            Task {
+                await refreshOfUser(userID: userID)
             }
-            self.dataArray.append(contentsOf: sortedPosts)
-            self.updateCounts()
-        }
     }
 
     func updateCounts() {

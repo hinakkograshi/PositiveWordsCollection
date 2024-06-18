@@ -38,8 +38,12 @@ struct PostView: View {
                     Image(uiImage: profileImage)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 40, height: 40, alignment: .center)
+                        .frame(width: 50, height: 50, alignment: .center)
                         .clipShape(RoundedRectangle(cornerRadius: 60))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 60)
+                                .stroke(Color.black, lineWidth: 1.0)
+                        }
                         .padding(.leading, 10)
                     Text(post.username)
                         .font(.title2)
