@@ -22,6 +22,10 @@ struct ProfileHeaderView: View {
                     .scaledToFill()
                     .frame(width: 80, height: 80, alignment: .leading)
                     .clipShape(RoundedRectangle(cornerRadius: 60))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 60)
+                            .stroke(Color.black, lineWidth: 1.0)
+                    }
                 // MARK: USER NAME
                 Text(profileDisplayName)
                     .font(.title)
