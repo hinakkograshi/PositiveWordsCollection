@@ -16,8 +16,7 @@ class PostArrayObject: ObservableObject {
     init() {
         print("Get All User Post Home")
         Task {
-            let returnedPosts = try await DataService.instance.downloadPostsForFeed()
-            self.dataArray = returnedPosts
+            await refreshAllUserPosts()
         }
     }
 
