@@ -18,6 +18,7 @@ struct ProfileView: View {
     @State var showEditProfileView: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
+    @State var fetchOnAppear = false
 
     init(
         isMyProfile: Bool,
@@ -79,7 +80,6 @@ struct ProfileView: View {
                 await posts.refreshOfUser(userID: userID)
             }
         }
-
     }
     func getAdditionalProfileInfo() {
         Task {

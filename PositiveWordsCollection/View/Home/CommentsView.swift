@@ -89,8 +89,8 @@ struct CommentsView: View {
                 let returnedCommentID = try await DataService.instance.uploadComment(postID: post.postID, content: submissionText, displayName: userName, userID: userID)
                 guard let commentID = returnedCommentID else { return }
                 let newComment = CommentModel(commentID: commentID, userID: userID, username: userName, content: submissionText, dateCreated: Date())
-                self.commentArray.append(newComment)
                 self.submissionText = ""
+                self.commentArray.append(newComment)
             } catch {
                 print("Upload Comment Error")
             }

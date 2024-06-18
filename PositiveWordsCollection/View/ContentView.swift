@@ -52,7 +52,6 @@ struct ContentView: View {
         .fullScreenCover(isPresented: $showSignInView, content: {
             AuthenticationView(showSignInView: $showSignInView)
         })
-
     }
 }
 
