@@ -39,7 +39,7 @@ struct EditProfileView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 150))
                         .overlay {
                             RoundedRectangle(cornerRadius: 150)
-                                .stroke(Color.orange, lineWidth: 3.0)
+                                .stroke(Color.black, lineWidth: 3.0)
                         }
                 })
                 Button(action: {
@@ -68,7 +68,7 @@ struct EditProfileView: View {
                         .padding(10)
                         .overlay {
                             RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.orange, lineWidth: 2)
+                                .stroke(Color.black, lineWidth: 2)
                         }
                         .focused($focusedField, equals: .name)
                         .onTapGesture {
@@ -87,7 +87,7 @@ struct EditProfileView: View {
                             .padding(5)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 16)
-                                    .stroke(Color.orange, lineWidth: 2)
+                                    .stroke(Color.black, lineWidth: 2)
                             }
                             .focused($focusedField, equals: .bio)
                             .onTapGesture {

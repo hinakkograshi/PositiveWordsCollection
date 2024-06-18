@@ -31,11 +31,11 @@ struct SignInProfileView: View {
                         Image(uiImage: selectedImage)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 150, height: 150)
-                            .clipShape(RoundedRectangle(cornerRadius: 75))
+                            .frame(width: 200, height: 200)
+                            .clipShape(RoundedRectangle(cornerRadius: 150))
                             .overlay {
-                                RoundedRectangle(cornerRadius: 75)
-                                    .stroke(Color.orange, lineWidth: 3.0)
+                                RoundedRectangle(cornerRadius: 150)
+                                    .stroke(Color.black, lineWidth: 3.0)
                             }
                     })
                     Button(action: {
@@ -60,7 +60,7 @@ struct SignInProfileView: View {
                             .padding(10)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.orange, lineWidth: 2)
+                                    .stroke(Color.black, lineWidth: 2)
                             }
                             .focused($focusedField, equals: .name)
                             .onTapGesture {
@@ -76,7 +76,7 @@ struct SignInProfileView: View {
                                 .padding(5)
                                 .overlay {
                                     RoundedRectangle(cornerRadius: 16)
-                                        .stroke(Color.orange, lineWidth: 2)
+                                        .stroke(Color.black, lineWidth: 2)
                                 }
                                 .focused($focusedField, equals: .bio)
                                 .onTapGesture {
