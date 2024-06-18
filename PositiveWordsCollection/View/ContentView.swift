@@ -48,13 +48,10 @@ struct ContentView: View {
         .accentColor(.orange)
         .onAppear {
             self.showSignInView = currentUserID == nil ? true : false
-            //            let authUser = try? AuthenticationManager.instance.getAuthenticatedUser()
-            //            self.showSignInView = authUser == nil ? true : false
         }
         .fullScreenCover(isPresented: $showSignInView, content: {
             AuthenticationView(showSignInView: $showSignInView)
         })
-
     }
 }
 

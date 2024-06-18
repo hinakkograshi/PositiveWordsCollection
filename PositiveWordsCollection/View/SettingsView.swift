@@ -41,6 +41,7 @@ final class SettingsViewModel: ObservableObject {
 struct SettingsView: View {
     @StateObject private var viewModel = SettingsViewModel()
     @State var showUserDelete = false
+    @State var showDeleteAccountError = false
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @Environment(\.openURL) private var openURL
     //    @Binding var showSignInView: Bool
@@ -84,6 +85,9 @@ struct SettingsView: View {
             .toolbarBackground(Color.colorBeige, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
         }
+        .alert(isPresented: $showDeleteAccountError, content: {
+            return Alert(title: Text("アカウントの削除に失敗しました"))
+        })
         .fullScreenCover(isPresented: $viewModel.showSignInView, content: {
             AuthenticationView(showSignInView: $viewModel.showSignInView)
         })
@@ -95,7 +99,7 @@ struct SettingsView: View {
                         try await DataService.instance.deleteAccount(userID: userID)
                         viewModel.showSignInView = true
                     } catch {
-                        print("deleteAccount: \(error)")
+                        showDeleteAccountError = true
                     }
                 }
             }

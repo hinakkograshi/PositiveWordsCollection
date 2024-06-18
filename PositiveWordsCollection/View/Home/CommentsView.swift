@@ -26,25 +26,34 @@ struct CommentsView: View {
                     }
                 }
             }
-
             HStack {
-                Image(uiImage: profileImage)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 40, height: 40, alignment: .center)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                TextField("Add a commen here...", text: $submissionText)
-                    .focused($focusedField)
-                Button {
-                    addComment()
-                    countComment()
-                } label: {
-                    Image(systemName: "paperplane.fill")
-                        .font(.title2)
+                HStack(spacing: 8) {
+                    ZStack {
+                        // 背景
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(Color(red: 239 / 255,
+                                        green: 239 / 255,
+                                        blue: 241 / 255))
+                            .frame(height: 36)
+                        // テキストフィールド
+                        TextField("メッセージを入力", text: $submissionText)
+                            .focused($focusedField)
+                            .padding(.horizontal, 15)
+                    }
+                    Button {
+                        if submissionText != "" {
+                            addComment()
+                            countComment()
+                        }
+                    } label: {
+                        Image(systemName: "paperplane.fill")
+                            .font(.title2)
+                    }
+                    .tint(.orange)
                 }
-                .tint(Color.MyTheme.purpleColor)
+                .padding(8)
             }
-            .padding(6)
+            .border(.gray)
         }
                 .onTapGesture {
                     focusedField = false
@@ -60,7 +69,6 @@ struct CommentsView: View {
     // 🟩追加
     func countComment() {
         guard let userID = currentUserID else { return }
-
         // Update the local data
         let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount, likedByUser: post.likedByUser, comentsCount: post.comentsCount + 1)
         self.post = updatePost
@@ -81,8 +89,8 @@ struct CommentsView: View {
                 let returnedCommentID = try await DataService.instance.uploadComment(postID: post.postID, content: submissionText, displayName: userName, userID: userID)
                 guard let commentID = returnedCommentID else { return }
                 let newComment = CommentModel(commentID: commentID, userID: userID, username: userName, content: submissionText, dateCreated: Date())
-                self.commentArray.append(newComment)
                 self.submissionText = ""
+                self.commentArray.append(newComment)
             } catch {
                 print("Upload Comment Error")
             }
