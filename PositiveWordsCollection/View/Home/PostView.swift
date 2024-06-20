@@ -146,7 +146,7 @@ struct PostView: View {
             Button("削除", role: .destructive) {
                 Task {
                     do {
-                        try await DataService.instance.postDelete(postID: post.postID)
+                        try await DeleteService.instance.postDelete(postID: post.postID)
                         switch deletedDataState {
                         case .allUserLoading:
 
