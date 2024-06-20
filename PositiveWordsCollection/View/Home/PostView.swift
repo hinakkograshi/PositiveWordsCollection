@@ -106,7 +106,9 @@ struct PostView: View {
                 Button(action: {
                     if post.likedByUser {
                         unLikePost()
+
                     } else {
+                        // ❤️+1
                         likePost()
                     }
                 }, label: {
@@ -205,7 +207,7 @@ struct PostView: View {
             }
         }
     }
-    
+
     func likePost() {
         guard let userID = currentUserID else {
             print("Cannot find userID while unliking post")
@@ -221,9 +223,15 @@ struct PostView: View {
             animateLike = false
         }
         // Update Firebase
-        DataService.instance.likePost(postID: post.postID, currentUserID: userID)
+        Task {
+            do {
+                try await DataService.instance.uploadLikedPost(postID: post.postID, userID: userID)
+            } catch {
+                print("Like Error")
+            }
+        }
     }
-    
+
     func unLikePost() {
         guard let userID = currentUserID else {
             print("Cannot find userID while unliking post")
@@ -233,18 +241,50 @@ struct PostView: View {
         let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount - 1, likedByUser: false, comentsCount: post.comentsCount)
         self.post = updatePost
         // Update Firebase
-        DataService.instance.unlikePost(postID: post.postID, currentUserID: userID)
+        Task {
+            do {
+                try await DataService.instance.unLikePost(postID: post.postID, myUserID: userID)
+            } catch {
+                print("unLikePost Error")
+            }
+        }
     }
+
+//    func likeByPost() {
+//        guard let userID = currentUserID else { return }
+//        Task {
+//            do {
+//                try await DataService.instance.uploadLikedPost(postID: post.postID, userID: userID)
+//                let likeCount = try await DataService.instance.likeCount(postID: post.postID)
+//                let likeByUser = try await DataService.instance.myLiked(postID: post.postID, userID: userID)
+//                print("likeCount💛\(likeCount)❤️")
+//            } catch {
+//                print("❤️Upload Like Error")
+//            }
+//        }
+//    }
+//    func unLike() {
+//        guard let userID = currentUserID else { return }
+//        Task {
+//            do {
+//                let count = try await DataService.instance.unLikeCount(postID: post.postID, myUserID: userID)
+//                print("unlikeCount🩵\(count)❤️")
+//            } catch {
+//                print("❤️Upload Like Error")
+//            }
+//        }
+//    }
+
     // MARK: 24.メソッド数個省略
     // X等にコピーする内容
-    func sharePost() {
-        let message = "Check out this post on DogGram"
-        let image = postImage
-        let link = URL(string: "https://www.google.com")!
-        let activityViewController =  UIActivityViewController(activityItems: [message, image, link], applicationActivities: nil)
-        let viewController =  UIApplication.shared.windows.first?.rootViewController
-        viewController?.present(activityViewController, animated: true, completion: nil)
-    }
+//    func sharePost() {
+//        let message = "Check out this post on DogGram"
+//        let image = postImage
+//        let link = URL(string: "https://www.google.com")!
+//        let activityViewController =  UIActivityViewController(activityItems: [message, image, link], applicationActivities: nil)
+//        let viewController =  UIApplication.shared.windows.first?.rootViewController
+//        viewController?.present(activityViewController, animated: true, completion: nil)
+//    }
 }
 
 #Preview {

@@ -61,7 +61,6 @@ class DataService {
     }
 
     private func subCollectionDelete(postID: String) async {
-
         let subCollection = Firestore.firestore().collection("posts").document(postID).collection("comments")
         do {
             let subSnapshot = try await subCollection.getDocuments()
@@ -132,6 +131,7 @@ class DataService {
         try await reportsREF.addDocument(data: data)
     }
 
+    // commentsSubCollection
     func uploadComment(postID: String, content: String, displayName: String, userID: String) async throws -> String? {
         let document = postsREF.document(postID).collection(DatabasePostField.comments).document()
         let commentID = document.documentID
@@ -150,17 +150,30 @@ class DataService {
     func downloadPostForUser(userID: String) async throws -> [PostModel] {
         let querySnapshot = try await postsREF.whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
         let docData = querySnapshot.documents
-        return getPostsFromSnapshot(querySnapshot: querySnapshot)
+        return try await getPostsFromSnapshot(querySnapshot: querySnapshot)
     }
 
     // 最新の50個のポスト取得
     func downloadPostsForFeed() async throws -> [PostModel] {
         // 最新の50個しか取得しない
         let querySnapshot = try await postsREF.order(by: DatabasePostField.dateCreated, descending: true).limit(to: 50).getDocuments()
-        return getPostsFromSnapshot(querySnapshot: querySnapshot)
+        return try await getPostsFromSnapshot(querySnapshot: querySnapshot)
+    }
+    //　❤️
+    func myLiked(postID: String, userID: String) async throws -> Bool {
+        let query = postsREF.document(postID).collection(DatabasePostField.likedBy).whereField(DatabaseLikedByField.userID, isEqualTo: userID)
+        let countQuery = query.count
+                let myLikeCountSnapshot = try await countQuery.getAggregation(source: .server)
+                print(myLikeCountSnapshot.count)
+                let count = myLikeCountSnapshot.count as? Int ?? 0
+                if count >= 1 {
+                    return true
+                } else {
+                    return false
+                }
     }
 
-    private func getPostsFromSnapshot(querySnapshot: QuerySnapshot?) -> [PostModel] {
+    private func getPostsFromSnapshot(querySnapshot: QuerySnapshot?) async throws -> [PostModel] {
         var postArray = [PostModel]()
         if let snapshot = querySnapshot, snapshot.documents.count > 0 {
             for document in snapshot.documents {
@@ -170,12 +183,12 @@ class DataService {
                    let caption = document.get(DatabasePostField.caption) as? String {
                     let date = timestamp.dateValue()
                     let postID = document.documentID
-                    let likeCount = document.get(DatabasePostField.likeCount) as? Int ?? 0
-                    let commentCount = document.get(DatabasePostField.commentCount) as? Int ?? 0
+                    let likeCount = try await likeCount(postID: postID)
+                    let commentCount = try await commentCount(postID: postID)
                     var likeByUser: Bool = false
-                    // 自分がいいねを押したか？UserID
-                    if let userIDArray = document.get(DatabasePostField.likeBy) as? [String], let userID = currentUserID {
-                        likeByUser = userIDArray.contains(userID)
+                    // ❤️自分がいいねを押したか？UserID
+                    if let userID = currentUserID {
+                     likeByUser = try await DataService.instance.myLiked(postID: postID, userID: userID)
                     }
                     // NewPost
                     let newPost = PostModel(postID: postID, userID: userID, username: displayName, caption: caption, dateCreated: date, likeCount: likeCount, likedByUser: likeByUser, comentsCount: commentCount)
@@ -216,34 +229,86 @@ class DataService {
     }
 
     // MARK: UPDATE FUNCTION
+    // 💛
+    func commentCount(postID: String) async throws -> Int {
+        let query = postsREF.document(postID).collection(DatabasePostField.comments)
+        let countQuery = query.count
+        let snapshot = try await countQuery.getAggregation(source: .server)
+        print("❤️\(snapshot.count)❤️")
+        return snapshot.count as? Int ?? 0
+    }
     // 🟥
-    func commentPostCount(postID: String, currentUserID: String) async throws {
-        let commentArray = try await downloadComments(postID: postID)
-        let increment: Int64 = 1
-        let data: [String: Any] = [
-            DatabasePostField.commentCount: FieldValue.increment(increment)
-        ]
-        try await postsREF.document(postID).updateData(data)
-    }
-    func likePost(postID: String, currentUserID: String) {
-        // Update post count
-        // Update who liked
-        let increment: Int64 = 1
-        let data: [String: Any] = [
-            DatabasePostField.likeCount: FieldValue.increment(increment),
-            DatabasePostField.likeBy: FieldValue.arrayUnion([currentUserID])
-        ]
-        postsREF.document(postID).updateData(data)
-    }
+//    func commentPostCount(postID: String, currentUserID: String) async throws {
+//        let commentArray = try await downloadComments(postID: postID)
+//        let increment: Int64 = 1
+//        let data: [String: Any] = [
+//            DatabasePostField.commentCount: FieldValue.increment(increment)
+//        ]
+//        try await postsREF.document(postID).updateData(data)
+//    }
+//
 
-    func unlikePost(postID: String, currentUserID: String) {
-        let decrement: Int64 = -1
-        let data: [String: Any] = [
-            DatabasePostField.likeCount: FieldValue.increment(decrement),
-            DatabasePostField.likeBy: FieldValue.arrayRemove([currentUserID])
-        ]
-        postsREF.document(postID).updateData(data)
+    // 💛
+    func likeCount(postID: String) async throws -> Int {
+        let query = postsREF.document(postID).collection(DatabasePostField.likedBy)
+        let countQuery = query.count
+        let snapshot = try await countQuery.getAggregation(source: .server)
+        print("🩵\(snapshot.count)❤️")
+        return snapshot.count as? Int ?? 0
     }
+    //🟡
+//    func unLikeCount(postID: String, myUserID: String) async throws -> Int {
+//        let query = postsREF.document(postID).collection(DatabasePostField.likedBy).whereField(DatabaseLikedByField.userID, isEqualTo: myUserID)
+//        let snapShot = try await query.getDocuments()
+//        for document in snapShot.documents {
+//            try await document.reference.delete()
+//        }
+//        let count = try await likeCount(postID: postID)
+//        return count
+//    }
+    //🩵
+//    func likePost(postID: String, currentUserID: String) {
+//        // Update post count
+//        // Update who liked
+//        let increment: Int64 = 1
+//        let data: [String: Any] = [
+//            DatabasePostField.likeCount: FieldValue.increment(increment),
+//            DatabasePostField.likedBy: FieldValue.arrayUnion([currentUserID])
+//        ]
+//        postsREF.document(postID).updateData(data)
+//    }
+    func unLikePost(postID: String, myUserID: String) async throws {
+        let query = postsREF.document(postID).collection(DatabasePostField.likedBy).whereField(DatabaseLikedByField.userID, isEqualTo: myUserID)
+        let snapShot = try await query.getDocuments()
+        for document in snapShot.documents {
+            try await document.reference.delete()
+        }
+//        let count = try await likeCount(postID: postID)
+//        return count
+    }
+    // ❤️liked_bySubCollection
+//    func uploadLikedPost(postID: String, userID: String) async throws -> String {
+    func uploadLikedPost(postID: String, userID: String) async throws {
+        let document = postsREF.document(postID).collection(DatabasePostField.likedBy).document()
+//        let likedByID = document.documentID
+        let data: [String: Any] = [
+//            DatabaseLikedByField.likedBy: likedByID,
+            DatabaseLikedByField.userID: userID,
+//            DatabaseLikedByField.displayName: displayName,
+            DatabaseLikedByField.dateCreated: FieldValue.serverTimestamp()
+        ]
+        try await document.setData(data)
+//        return likedByID
+    }
+//🩵
+//    func unlikePost(postID: String, currentUserID: String) {
+//        let decrement: Int64 = -1
+//        let data: [String: Any] = [
+//            DatabasePostField.likeCount: FieldValue.increment(decrement),
+//            DatabasePostField.likedBy: FieldValue.arrayRemove([currentUserID])
+//        ]
+//        postsREF.document(postID).updateData(data)
+//    }
     // MARK: UPDATE USER FUNCTION
     func updateDisplayNameOnPosts(userID: String, displayName: String) async throws {
         let posts = try await downloadPostForUser(userID: userID)

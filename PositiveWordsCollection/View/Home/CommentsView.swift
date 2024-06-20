@@ -18,7 +18,6 @@ struct CommentsView: View {
     var body: some View {
         VStack {
             ScrollView {
-                // 🟥 posts
                 PostView(post: post, posts: PostArrayObject(), headerIsActive: false, deletedDataState: .noLoading, comentIsActive: true)
                 LazyVStack {
                     ForEach(commentArray, id: \.self) { comment in
@@ -55,9 +54,9 @@ struct CommentsView: View {
             }
             .border(.gray)
         }
-                .onTapGesture {
-                    focusedField = false
-                }
+        .onTapGesture {
+            focusedField = false
+        }
         .navigationTitle("Comments")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: {
@@ -72,15 +71,6 @@ struct CommentsView: View {
         // Update the local data
         let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount, likedByUser: post.likedByUser, comentsCount: post.comentsCount + 1)
         self.post = updatePost
-        // Animate UI
-        // Update Firebase
-        Task {
-            do {
-                try await  DataService.instance.commentPostCount(postID: post.postID, currentUserID: userID)
-            } catch {
-                print("Comment UpdateError")
-            }
-        }
     }
     func addComment() {
         guard let userID = currentUserID, let userName = currentUserName else { return }

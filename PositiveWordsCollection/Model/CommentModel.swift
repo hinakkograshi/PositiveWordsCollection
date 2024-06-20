@@ -6,9 +6,8 @@
 //
 
 import Foundation
-
+// LikedBy
 struct CommentModel: Identifiable, Hashable {
-
     var id = UUID() // 設定
     var commentID: String // データベース内のコメントのID
     var userID: String // データベース内のユーザーのID
