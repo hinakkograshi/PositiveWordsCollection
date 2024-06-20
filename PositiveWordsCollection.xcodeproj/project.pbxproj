@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5304DEE72C246949008400DB /* DeleteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5304DEE62C246949008400DB /* DeleteService.swift */; };
 		533050D92C1430C10081B60B /* ProfilePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533050D82C1430C10081B60B /* ProfilePostView.swift */; };
 		533D40A02BF9E408005C684A /* SignInAppleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533D409F2BF9E408005C684A /* SignInAppleHelper.swift */; };
 		533D40A42BFA01D2005C684A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533D40A32BFA01D2005C684A /* HomeView.swift */; };
@@ -60,6 +61,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5304DEE62C246949008400DB /* DeleteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteService.swift; sourceTree = "<group>"; };
 		533050D82C1430C10081B60B /* ProfilePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePostView.swift; sourceTree = "<group>"; };
 		533D409F2BF9E408005C684A /* SignInAppleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInAppleHelper.swift; sourceTree = "<group>"; };
 		533D40A32BFA01D2005C684A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 			children = (
 				539C802A2C01CCE70000BD44 /* AuthService.swift */,
 				5345D9472C0C32DD000287DF /* DataService.swift */,
+				5304DEE62C246949008400DB /* DeleteService.swift */,
 			);
 			path = Firebase;
 			sourceTree = "<group>";
@@ -408,6 +411,7 @@
 				533050D92C1430C10081B60B /* ProfilePostView.swift in Sources */,
 				539DD11F2BFE2F1700D6BCBC /* Extension.swift in Sources */,
 				53458E782C19D62D0097643C /* BalloonText.swift in Sources */,
+				5304DEE72C246949008400DB /* DeleteService.swift in Sources */,
 				539DD11C2BFE2EB300D6BCBC /* CommentModel.swift in Sources */,
 				5345D9522C0C4C41000287DF /* SelectStampCell.swift in Sources */,
 				535C7F8C2BF8239C00BA33D1 /* AuthenticationView.swift in Sources */,
