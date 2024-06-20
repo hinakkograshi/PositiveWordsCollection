@@ -34,6 +34,8 @@
 		5367F1172C00CD5900A119B7 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5367F1162C00CD5900A119B7 /* EditProfileView.swift */; };
 		5367F11C2C00E99700A119B7 /* SignInProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5367F11B2C00E99700A119B7 /* SignInProfileView.swift */; };
 		537CB6A52C0AE71C00E3F4F0 /* CurrentUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537CB6A42C0AE71C00E3F4F0 /* CurrentUserDefaults.swift */; };
+		539A4BF62C22390C00ECFA92 /* LikedByModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539A4BF52C22390C00ECFA92 /* LikedByModel.swift */; };
+		539A4BF82C223C8500ECFA92 /* DatabaseLikedByField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539A4BF72C223C8500ECFA92 /* DatabaseLikedByField.swift */; };
 		539C80272C016DC70000BD44 /* CreatePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539C80262C016DC70000BD44 /* CreatePostView.swift */; };
 		539C80292C01B0E40000BD44 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539C80282C01B0E40000BD44 /* ImagePicker.swift */; };
 		539C802B2C01CCE70000BD44 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539C802A2C01CCE70000BD44 /* AuthService.swift */; };
@@ -78,6 +80,8 @@
 		5367F1162C00CD5900A119B7 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		5367F11B2C00E99700A119B7 /* SignInProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInProfileView.swift; sourceTree = "<group>"; };
 		537CB6A42C0AE71C00E3F4F0 /* CurrentUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentUserDefaults.swift; sourceTree = "<group>"; };
+		539A4BF52C22390C00ECFA92 /* LikedByModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LikedByModel.swift; sourceTree = "<group>"; };
+		539A4BF72C223C8500ECFA92 /* DatabaseLikedByField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseLikedByField.swift; sourceTree = "<group>"; };
 		539C80262C016DC70000BD44 /* CreatePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePostView.swift; sourceTree = "<group>"; };
 		539C80282C01B0E40000BD44 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		539C802A2C01CCE70000BD44 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
@@ -171,6 +175,7 @@
 				539DD1192BFE299900D6BCBC /* PostArrayObject.swift */,
 				539DD1172BFE0E1A00D6BCBC /* PostModel.swift */,
 				539DD11B2BFE2EB300D6BCBC /* CommentModel.swift */,
+				539A4BF52C22390C00ECFA92 /* LikedByModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -202,6 +207,7 @@
 				5345D9492C0C33CB000287DF /* DatabasePostField.swift */,
 				5345D94B2C0C4655000287DF /* DatabaseReportsField.swift */,
 				5345D94D2C0C46A6000287DF /* DatabaseCommentsField.swift */,
+				539A4BF72C223C8500ECFA92 /* DatabaseLikedByField.swift */,
 				534261CE2C0E799F0061B9E6 /* LazyView.swift */,
 			);
 			path = Helper;
@@ -409,9 +415,11 @@
 				5345D94E2C0C46A6000287DF /* DatabaseCommentsField.swift in Sources */,
 				539C80272C016DC70000BD44 /* CreatePostView.swift in Sources */,
 				539DD1272BFE383500D6BCBC /* MessageView.swift in Sources */,
+				539A4BF82C223C8500ECFA92 /* DatabaseLikedByField.swift in Sources */,
 				5345D94C2C0C4655000287DF /* DatabaseReportsField.swift in Sources */,
 				539C802F2C01D50D0000BD44 /* DatabaseUserField.swift in Sources */,
 				53EE21272BF8FC240067CF40 /* Utilities.swift in Sources */,
+				539A4BF62C22390C00ECFA92 /* LikedByModel.swift in Sources */,
 				539DD1182BFE0E1A00D6BCBC /* PostModel.swift in Sources */,
 				533D40A02BF9E408005C684A /* SignInAppleHelper.swift in Sources */,
 				5346CAC42BFFF054000829E1 /* ProfileView.swift in Sources */,

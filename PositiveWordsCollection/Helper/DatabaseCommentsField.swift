@@ -6,8 +6,8 @@
 //
 
 import Foundation
-
-struct DatabaseCommentsField { // SUBCollection of PostDocument
+// SubCollection
+struct DatabaseCommentsField {
     static let commentID = "comment_id"
     static let displayName = "display_name"
     static let userID = "user_id"
