@@ -116,9 +116,9 @@ struct EditProfileView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
                         if editProfileName != "" {
+                            // キャッシュバグ解消
+                            ImageManager.instance.chashRemove()
                             Task {
-                                // キャッシュバグ解消
-                                ImageManager.instance.chashRemove()
                                 await saveEditProfile()
                                 dismiss()
                             }
