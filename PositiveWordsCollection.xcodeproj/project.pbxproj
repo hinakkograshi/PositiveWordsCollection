@@ -56,6 +56,7 @@
 		53A655602BF787D400D915B5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53A6555F2BF787D400D915B5 /* Preview Assets.xcassets */; };
 		53C157C32BF90997003776CB /* SignInGoogleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C157C22BF90997003776CB /* SignInGoogleHelper.swift */; };
 		53C157C52BF91494003776CB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C157C42BF91494003776CB /* SettingsView.swift */; };
+		53C8C23C2C26608500FCE34F /* AppCheckProviderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C8C23B2C26608500FCE34F /* AppCheckProviderFactory.swift */; };
 		53EE21242BF8F5EF0067CF40 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53EE21232BF8F5EF0067CF40 /* GoogleService-Info.plist */; };
 		53EE21272BF8FC240067CF40 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53EE21262BF8FC240067CF40 /* Utilities.swift */; };
 /* End PBXBuildFile section */
@@ -103,6 +104,7 @@
 		53C0E0332BF994B9008CE2AF /* PositiveWordsCollection.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PositiveWordsCollection.entitlements; sourceTree = "<group>"; };
 		53C157C22BF90997003776CB /* SignInGoogleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInGoogleHelper.swift; sourceTree = "<group>"; };
 		53C157C42BF91494003776CB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		53C8C23B2C26608500FCE34F /* AppCheckProviderFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCheckProviderFactory.swift; sourceTree = "<group>"; };
 		53EE21232BF8F5EF0067CF40 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		53EE21262BF8FC240067CF40 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -252,6 +254,7 @@
 			children = (
 				53C0E0332BF994B9008CE2AF /* PositiveWordsCollection.entitlements */,
 				53A655582BF787D200D915B5 /* PositiveWordsCollectionApp.swift */,
+				53C8C23B2C26608500FCE34F /* AppCheckProviderFactory.swift */,
 				539DD11D2BFE2EFA00D6BCBC /* Helper */,
 				53EE21252BF8FC020067CF40 /* Utilities */,
 				537CB6A32C0ADE4300E3F4F0 /* Firebase */,
@@ -403,6 +406,7 @@
 				53C157C52BF91494003776CB /* SettingsView.swift in Sources */,
 				5345D9482C0C32DD000287DF /* DataService.swift in Sources */,
 				5367F11C2C00E99700A119B7 /* SignInProfileView.swift in Sources */,
+				53C8C23C2C26608500FCE34F /* AppCheckProviderFactory.swift in Sources */,
 				539C802B2C01CCE70000BD44 /* AuthService.swift in Sources */,
 				539DD11A2BFE299900D6BCBC /* PostArrayObject.swift in Sources */,
 				5346CAC62BFFF52F000829E1 /* ProfileHeaderView.swift in Sources */,

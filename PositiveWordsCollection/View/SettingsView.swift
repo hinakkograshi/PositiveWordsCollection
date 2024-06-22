@@ -99,6 +99,7 @@ struct SettingsView: View {
                         try await DeleteService.instance.deleteAccount(userID: userID)
                         viewModel.showSignInView = true
                     } catch {
+                        print("deleteAccount Error")
                         showDeleteAccountError = true
                     }
                 }
