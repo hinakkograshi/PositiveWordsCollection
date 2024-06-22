@@ -26,14 +26,17 @@ class PostArrayObject: ObservableObject {
                 await refreshOfUser(userID: userID)
             }
     }
-
+// like
     func updateCounts() {
+        // Count
         self.postCountString = "\(self.dataArray.count)"
+        print("🩵ポスト数\(postCountString)")
         let likeCountArray = dataArray.map({ (existPost) -> Int in
             return existPost.likeCount
         })
-        print("いいね数\(likeCountArray)")
+        print("🩵いいね数\(likeCountArray)")
         let sumOfLikeCountArray = likeCountArray.reduce(0, +)
+        // Like
         self.likeCountString = "\(sumOfLikeCountArray)"
         print(likeCountString)
     }

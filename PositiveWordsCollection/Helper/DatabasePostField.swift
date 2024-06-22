@@ -13,8 +13,6 @@ struct DatabasePostField {
     static let displayName = "display_name"
     static let caption = "caption"
     static let dateCreated = "date_created"
-    static let likeCount = "like_count" // Int
-    static let likeBy = "liked_by" // Array
+    static let likedBy = "liked_by" // sub-collection
     static let comments = "comments" // sub-collection
-    static let commentCount = "comment_count" // Int
 }
