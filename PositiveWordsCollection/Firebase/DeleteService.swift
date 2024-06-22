@@ -24,8 +24,6 @@ class DeleteService {
     }
     // サブコレクションの削除が完了した後に親ドキュメントも削除する
     func deleteAccount(userID: String) async throws {
-        // Authアカウント削除
-        try await AuthService.instance.userAcountDelete()
         // UserDefault削除
         // All UserDefault Delete
         let defaultDictionary = UserDefaults.standard.dictionaryRepresentation()
@@ -39,6 +37,8 @@ class DeleteService {
         await userStorageDelete(userID: userID)
         // users Collection Delete
         try await Firestore.firestore().collection("users").document(userID).delete()
+        // Authアカウント削除
+        try await AuthService.instance.userAcountDelete()
     }
     
     private func postAllDelete(userID: String) async throws {
