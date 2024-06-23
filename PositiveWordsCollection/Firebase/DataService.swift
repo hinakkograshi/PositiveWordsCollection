@@ -10,6 +10,39 @@ import SwiftUI
 import FirebaseFirestore
 import FirebaseStorage
 
+struct Post: Codable {
+    var postId: String
+    var userId: String
+    var displayName: String
+    var caption: String
+    var dateCreated: Date
+
+    enum CodingKeys: String, CodingKey {
+        case postId = "post_id"
+        case userId = "user_id"
+        case displayName = "display_name"
+        case caption = "caption"
+        case dateCreated = "date_created"
+    }
+    
+    init(postId: String, userId: String, displayName: String, caption: String, dateCreated: Date) {
+        self.postId = postId
+        self.userId = userId
+        self.displayName = displayName
+        self.caption = caption
+        self.dateCreated = dateCreated
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.postId = try container.decode(String.self, forKey: .postId)
+        self.userId = try container.decode(String.self, forKey: .userId)
+        self.displayName = try container.decode(String.self, forKey: .displayName)
+        self.caption = try container.decode(String.self, forKey: .caption)
+        self.dateCreated = try container.decode(Date.self, forKey: .dateCreated)
+    }
+}
+
 class DataService {
     static let instance = DataService()
     private var postsREF = Firestore.firestore().collection("posts")
@@ -17,47 +50,62 @@ class DataService {
     private let userCollection = Firestore.firestore().collection("users")
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
 
+    private let encoder: Firestore.Encoder = {
+        let encoder = Firestore.Encoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        return encoder
+    }()
+
+    func createPostId() -> String {
+        let document = postsREF.document()
+        let postID = document.documentID
+        return postID
+    }
+
+    // MARK: UPDATE FUNCTION
+    func uploadPost(post: Post, image: UIImage) async {
+        // Upload image to Storage
+        do {
+            try await ImageManager.instance.uploadPostImage(postID: post.postId, image: image)
+            try postsREF.document().setData(from: post, merge: false, encoder: encoder)
+        } catch {
+            print("🟥Error uploading post image to firebase")
+        }
+    }
+
     // MARK: Get functions
     // UserIDの投稿を取得
     func downloadPostForUser(userID: String) async throws -> [PostModel] {
-        let querySnapshot = try await postsREF.whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
-        return try await getPostsFromSnapshot(querySnapshot: querySnapshot)
+        let userPosts = try await postsREF.whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments().documents.compactMap {
+            try? $0.data(as: Post.self)
+        }
+        return try await getPostsFromSnapshot(posts: userPosts)
     }
 
     // 最新の50個のポスト取得
     func downloadPostsForFeed() async throws -> [PostModel] {
         // 最新の50個しか取得しない
-        let querySnapshot = try await postsREF.order(by: DatabasePostField.dateCreated, descending: true).limit(to: 50).getDocuments()
-        return try await getPostsFromSnapshot(querySnapshot: querySnapshot)
+        let downloadPosts = try await postsREF.order(by: DatabasePostField.dateCreated, descending: true).limit(to: 50).getDocuments().documents.compactMap {
+            try? $0.data(as: Post.self)
+        }
+        return try await getPostsFromSnapshot(posts: downloadPosts)
     }
 
-    private func getPostsFromSnapshot(querySnapshot: QuerySnapshot?) async throws -> [PostModel] {
+    private func getPostsFromSnapshot(posts: [Post]) async throws -> [PostModel] {
         var postArray = [PostModel]()
-        if let snapshot = querySnapshot, snapshot.documents.count > 0 {
-            for document in snapshot.documents {
-                if let userID = document.get(DatabasePostField.userID) as? String,
-                   let displayName = document.get(DatabasePostField.displayName)as? String,
-                   let timestamp = document.get(DatabasePostField.dateCreated) as? Timestamp,
-                   let caption = document.get(DatabasePostField.caption) as? String {
-                    let date = timestamp.dateValue()
-                    let postID = document.documentID
-                    let likeCount = try await likeCount(postID: postID)
-                    let commentCount = try await commentCount(postID: postID)
+            for post in posts {
+                let likeCount = try await likeCount(postID: post.postId)
+                let commentCount = try await commentCount(postID: post.postId)
                     var likeByUser: Bool = false
                     // ❤️自分がいいねを押したか？UserID
-                    if let userID = currentUserID {
-                        likeByUser = try await DataService.instance.myLiked(postID: postID, userID: userID)
-                    }
-                    // NewPost
-                    let newPost = PostModel(postID: postID, userID: userID, username: displayName, caption: caption, dateCreated: date, likeCount: likeCount, likedByUser: likeByUser, comentsCount: commentCount)
-                    postArray.append(newPost)
+                if let userID = currentUserID {
+                    likeByUser = try await DataService.instance.myLiked(postID: post.postId, userID: userID)
                 }
+                    // NewPost
+                let newPost = PostModel(postID: post.postId, userID: post.userId, username: post.displayName, caption: post.caption, dateCreated: post.dateCreated, likeCount: likeCount, likedByUser: likeByUser, comentsCount: commentCount)
+                    postArray.append(newPost)
             }
             return postArray
-        } else {
-            print("No document is snapshot found for this user")
-            return postArray
-        }
     }
 
     func downloadComments(postID: String) async throws -> [CommentModel] {
@@ -83,27 +131,6 @@ class DataService {
         } else {
             print("No comment in document for this post")
             return commentArray
-        }
-    }
-
-    // MARK: UPDATE FUNCTION
-    func uploadPost(image: UIImage, caption: String, displayName: String, userID: String) async {
-        // Create new post document
-        let document = postsREF.document()
-        let postID = document.documentID
-        // Upload image to Storage
-        do {
-            try await ImageManager.instance.uploadPostImage(postID: postID, image: image)
-            let postData = [
-                DatabasePostField.postID: postID,
-                DatabasePostField.userID: userID,
-                DatabasePostField.displayName: displayName,
-                DatabasePostField.caption: caption,
-                DatabasePostField.dateCreated: FieldValue.serverTimestamp()
-            ] as [String: Any]
-            try await document.setData(postData)
-        } catch {
-            print("Error uploading post image to firebase")
         }
     }
     // 🟥報告

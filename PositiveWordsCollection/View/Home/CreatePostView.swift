@@ -144,7 +144,9 @@ struct CreatePostView: View {
             return
         }
         Task {
-            await DataService.instance.uploadPost(image: selectedImage, caption: bioText, displayName: displayName, userID: userID)
+            let postID = DataService.instance.createPostId()
+            let post = Post(postId: postID, userId: userID, displayName: displayName, caption: bioText, dateCreated: Date())
+            await DataService.instance.uploadPost(post: post, image: selectedImage)
             completionHandler()
         }
     }
