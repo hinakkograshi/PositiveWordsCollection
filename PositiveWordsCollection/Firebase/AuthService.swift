@@ -38,10 +38,6 @@ class AuthService {
         let userID = document.documentID
         return userID
     }
-    // Decode
-    func getUserInfo(userID: String) async throws -> DatabaseUser {
-        try await userDocument(userId: userID).getDocument(as: DatabaseUser.self)
-    }
 
     // キャメルケースをスネークケースにする
     private let encoder: Firestore.Encoder = {
@@ -50,14 +46,17 @@ class AuthService {
         return encoder
     }()
 
-    func updateUserProfileText(userID: String, displayName: String, bio: String) async throws {
-        let data: [String: Any] = [
-            DatabaseUserField.displayName: displayName,
-            DatabaseUserField.bio: bio
-        ]
-        try await userCollection.document(userID).updateData(data)
-    }
+    private let dencoder: Firestore.Decoder = {
+        let decoder = Firestore.Decoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }()
 
+    // Decode
+    func getUserInfo(userID: String) async throws -> DatabaseUser {
+        try await userDocument(userId: userID).getDocument(as: DatabaseUser.self, decoder: dencoder)
+    }
+    // Encode
     func createNewUserInDatabase(user: DatabaseUser, profileImage: UIImage) async throws {
         // Upload profile image to Storage
         do {
@@ -67,6 +66,14 @@ class AuthService {
         }
         // documentにデータを追加
         try userDocument(userId: user.userId).setData(from: user, merge: false, encoder: encoder)
+    }
+    // Update Dictionary
+    func updateUserProfileText(userID: String, displayName: String, bio: String) async throws {
+        let data: [String: Any] = [
+            DatabaseUserField.displayName: displayName,
+            DatabaseUserField.bio: bio
+        ]
+        try await userCollection.document(userID).updateData(data)
     }
 
     func signOut() throws {
