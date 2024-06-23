@@ -84,9 +84,9 @@ struct ProfileView: View {
     func getAdditionalProfileInfo() {
         Task {
             do {
-                let (returnedName, returnedBio) = try await AuthService.instance.getUserInfo(userID: profileUserID)
-                self.profileDisplayName = returnedName
-                self.profileBio = returnedBio
+                let user = try await AuthService.instance.getUserInfo(userID: profileUserID)
+                self.profileDisplayName = user.displayName
+                self.profileBio = user.bio
             } catch {
                 print("getAdditionalProfileInfo Error")
             }

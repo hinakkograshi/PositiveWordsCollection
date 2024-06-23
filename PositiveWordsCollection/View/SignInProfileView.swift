@@ -14,7 +14,6 @@ struct SignInProfileView: View {
     }
     @FocusState private var focusedField: Field?
     @ObservedObject var viewModel: AuthenticationViewModel
-    @State var selectedImage: UIImage = UIImage(named: "noImage")!
     @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
     @Environment(\.dismiss) private var dismiss
     @State var showImagePicker: Bool = false
@@ -28,7 +27,7 @@ struct SignInProfileView: View {
                     Button(action: {
                         showImagePicker.toggle()
                     }, label: {
-                        Image(uiImage: selectedImage)
+                        Image(uiImage: viewModel.selectedImage)
                             .resizable()
                             .scaledToFill()
                             .frame(width: 200, height: 200)
@@ -51,7 +50,7 @@ struct SignInProfileView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                     })
                     .sheet(isPresented: $showImagePicker) {
-                        ImagePicker(imageSelection: $selectedImage, sourceType: $sourceType)
+                        ImagePicker(imageSelection: $viewModel.selectedImage, sourceType: $sourceType)
                     }
                     VStack(alignment: .leading) {
                         Text("名前")
@@ -94,8 +93,8 @@ struct SignInProfileView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
-                        if selectedImage != UIImage(named: "noImage")!, viewModel.displayName != "" {
-                            createProfile()
+                        if viewModel.selectedImage != UIImage(named: "noImage")!, viewModel.displayName != "" {
+                            viewModel.createProfile()
                             dismiss()
                         } else {
                             showCreateProfileError = true
@@ -116,27 +115,8 @@ struct SignInProfileView: View {
             focusedField = nil
         }
     }
-    // MARK: Function
-    func createProfile() {
-        print("Create profile now")
-        Task {
-            do {
-                let returnedID = try await AuthService.instance.createNewUserInDatabase(name: viewModel.displayName, email: viewModel.email, providerID: viewModel.providerID, provider: viewModel.provider, profileImage: selectedImage, bio: viewModel.bio)
-                guard let userID = returnedID else {
-                    print("returnedID nil")
-                    return
-                }
-                print("createProfile Success")
-                // 🟥logInUserToApp
-                try await AuthService.instance.logInUserToApp(userID: userID)
-            } catch {
-                print("createProfile Error\(error)")
-                throw AsyncError(message: "createProfile Error")
-            }
-        }
     }
-}
 #Preview {
     @State var selectedImage = UIImage(named: "hiyoko")!
-    return SignInProfileView(viewModel: AuthenticationViewModel(), selectedImage: selectedImage)
+    return SignInProfileView(viewModel: AuthenticationViewModel())
 }
