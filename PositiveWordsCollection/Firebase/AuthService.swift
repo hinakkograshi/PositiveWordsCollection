@@ -16,13 +16,50 @@ struct LogInUser {
     let userID: String?
 }
 
+struct DatabaseUser: Codable {
+    let userId: String
+    let displayName: String
+    let email: String
+    let providerId: String
+    let provider: String
+    let bio: String
+    let dateCreated: Date?
+}
+
 class AuthService {
     static let instance = AuthService()
     private let userCollection = Firestore.firestore().collection("users")
     private func userDocument(userId: String) -> DocumentReference {
         userCollection.document(userId)
     }
-    
+    // キャメルケースをスネークケースにする
+    private let encoder: Firestore.Encoder = {
+        let encoder = Firestore.Encoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        return encoder
+    }()
+
+    func createUserId() -> String {
+        let document = userCollection.document()
+        let userID = document.documentID
+        return userID
+    }
+
+    func createNewUserInDatabase(user: DatabaseUser, profileImage: UIImage) async throws {
+        // document作成
+//        let document = userCollection.document()
+//        let userID = document.documentID
+
+        // Upload profile image to Storage
+        do {
+            try await ImageManager.instance.uploadProfileImage(userID: user.userId, image: profileImage)
+        } catch {
+            print("creteNewUserDBError \(error)")
+        }
+        // documentにデータを追加
+        try userDocument(userId: user.userId).setData(from: user, merge: false, encoder: encoder)
+    }
+
     func signOut() throws {
         try Auth.auth().signOut()
     }
@@ -101,32 +138,6 @@ class AuthService {
               let bio = snapshot.get(DatabaseUserField.bio) as? String else { throw URLError(.cannotFindHost)}
         print("Success getting user info")
         return (name, bio)
-    }
-
-    func createNewUserInDatabase(name: String, email: String, providerID: String, provider: String, profileImage: UIImage, bio: String) async throws -> (String?) {
-        // document作成
-        let document = userCollection.document()
-        let userID = document.documentID
-        // Upload profile image to Storage
-        do {
-            try await ImageManager.instance.uploadProfileImage(userID: userID, image: profileImage)
-        } catch {
-            print("creteNewUserDBError \(error)")
-        }
-        
-        // Upload ProfileData to Firestore
-        let userData: [String: Any] = [
-            DatabaseUserField.displayName: name,
-            DatabaseUserField.email: email,
-            DatabaseUserField.providerID: providerID,
-            DatabaseUserField.provider: provider,
-            DatabaseUserField.userID: userID,
-            DatabaseUserField.bio: bio,
-            DatabaseUserField.dateCreated: FieldValue.serverTimestamp()
-        ]
-        // documentにデータを追加
-        try await document.setData(userData)
-        return userID
     }
     
     func updateUserProfileText(userID: String, displayName: String, bio: String) async throws {
