@@ -106,7 +106,6 @@ struct PostView: View {
                 Button(action: {
                     if post.likedByUser {
                         unLikePost()
-
                     } else {
                         // ❤️+1
                         likePost()
