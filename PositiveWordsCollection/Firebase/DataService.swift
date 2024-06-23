@@ -24,7 +24,7 @@ struct Post: Codable {
         case caption = "caption"
         case dateCreated = "date_created"
     }
-    
+
     init(postId: String, userId: String, displayName: String, caption: String, dateCreated: Date) {
         self.postId = postId
         self.userId = userId
@@ -39,6 +39,39 @@ struct Post: Codable {
         self.userId = try container.decode(String.self, forKey: .userId)
         self.displayName = try container.decode(String.self, forKey: .displayName)
         self.caption = try container.decode(String.self, forKey: .caption)
+        self.dateCreated = try container.decode(Date.self, forKey: .dateCreated)
+    }
+}
+
+struct Comment: Codable {
+    var commentId: String
+    var userId: String
+    var displayName: String
+    var content: String
+    var dateCreated: Date
+
+    enum CodingKeys: String, CodingKey {
+        case commentId = "comment_id"
+        case userId = "user_id"
+        case displayName = "display_name"
+        case content = "content"
+        case dateCreated = "date_created"
+    }
+
+    init(commentId: String, userId: String, displayName: String, content: String, dateCreated: Date) {
+        self.commentId = commentId
+        self.userId = userId
+        self.displayName = displayName
+        self.content = content
+        self.dateCreated = dateCreated
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.commentId = try container.decode(String.self, forKey: .commentId)
+        self.userId = try container.decode(String.self, forKey: .userId)
+        self.displayName = try container.decode(String.self, forKey: .displayName)
+        self.content = try container.decode(String.self, forKey: .content)
         self.dateCreated = try container.decode(Date.self, forKey: .dateCreated)
     }
 }
@@ -108,31 +141,26 @@ class DataService {
             return postArray
     }
 
-    func downloadComments(postID: String) async throws -> [CommentModel] {
-        let querySnapshot = try await postsREF.document(postID).collection(DatabasePostField.comments).order(by: DatabaseCommentsField.dateCreated, descending: false).getDocuments()
-        return getCommentsFromSnapshot(querySnapshot: querySnapshot)
+    private func getCommentsFromSnapshot(comments: [Comment]) -> [CommentModel] {
+        var commentArray = [CommentModel]()
+        for comment in comments {
+            let commentId = comment.commentId
+            let userId = comment.userId
+            let displayName = comment.displayName
+            let content = comment.content
+            let dateCreated = comment.dateCreated
+            let newComment = CommentModel(commentID: commentId, userID: userId, username: displayName, content: content, dateCreated: dateCreated)
+            commentArray.append(newComment)
+        }
+        return commentArray
     }
 
-    private func getCommentsFromSnapshot(querySnapshot: QuerySnapshot?) -> [CommentModel] {
-        var commentArray = [CommentModel]()
-        if let snapshot = querySnapshot, snapshot.documents.count > 0 {
-            for document in snapshot.documents {
-                if let userID = document.get(DatabaseCommentsField.userID) as? String,
-                   let displayName = document.get(DatabaseCommentsField.displayName) as? String,
-                   let content = document.get(DatabaseCommentsField.content) as? String,
-                   let timestamp = document.get(DatabaseCommentsField.dateCreated) as? Timestamp {
-                    let date = timestamp.dateValue()
-                    let commentID = document.documentID
-                    let newComment = CommentModel(commentID: commentID, userID: userID, username: displayName, content: content, dateCreated: date)
-                    commentArray.append(newComment)
-                }
-            }
-            return commentArray
-        } else {
-            print("No comment in document for this post")
-            return commentArray
+    func downloadComments(postID: String) async throws -> [CommentModel] {
+        let comments = try await postsREF.document(postID).collection(DatabasePostField.comments).order(by: DatabaseCommentsField.dateCreated, descending: false).getDocuments().documents.compactMap { try? $0.data(as: Comment.self)
         }
+        return getCommentsFromSnapshot(comments: comments)
     }
+
     // 🟥報告
     func uploadReport(postID: String) async throws {
         let data: [String: Any] = [
@@ -141,19 +169,21 @@ class DataService {
         ]
         try await reportsREF.addDocument(data: data)
     }
-    // commentsSubCollection
-    func uploadComment(postID: String, content: String, displayName: String, userID: String) async throws -> String? {
+
+    func createCommentId(postID: String) -> String {
         let document = postsREF.document(postID).collection(DatabasePostField.comments).document()
         let commentID = document.documentID
-        let data: [String: Any] = [
-            DatabaseCommentsField.commentID: commentID,
-            DatabaseCommentsField.userID: userID,
-            DatabaseCommentsField.content: content,
-            DatabaseCommentsField.displayName: displayName,
-            DatabaseCommentsField.dateCreated: FieldValue.serverTimestamp()
-        ]
-        try await document.setData(data)
         return commentID
+    }
+
+    // MARK: UPDATE FUNCTION
+    // commentsSubCollection
+    func uploadComment(comment: Comment, postID: String) async {
+        do {
+            try postsREF.document(postID).collection(DatabasePostField.comments).document().setData(from: comment)
+        } catch {
+            print("uploadComment Error")
+        }
     }
     //　❤️
     func myLiked(postID: String, userID: String) async throws -> Bool {
