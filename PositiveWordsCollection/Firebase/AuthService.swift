@@ -46,7 +46,7 @@ class AuthService {
         return encoder
     }()
 
-    private let dencoder: Firestore.Decoder = {
+    private let decoder: Firestore.Decoder = {
         let decoder = Firestore.Decoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
@@ -54,7 +54,7 @@ class AuthService {
 
     // Decode
     func getUserInfo(userID: String) async throws -> DatabaseUser {
-        try await userDocument(userId: userID).getDocument(as: DatabaseUser.self, decoder: dencoder)
+        try await userDocument(userId: userID).getDocument(as: DatabaseUser.self, decoder: decoder)
     }
     // Encode
     func createNewUserInDatabase(user: DatabaseUser, profileImage: UIImage) async throws {
