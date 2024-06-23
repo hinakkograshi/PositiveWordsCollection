@@ -15,6 +15,7 @@ struct AsyncError: Error {
 
 @MainActor
 final class AuthenticationViewModel: ObservableObject {
+    @Published var selectedImage: UIImage = UIImage(named: "noImage")!
     @Published var displayName: String = ""
     @Published var email: String = ""
     @Published var providerID: String = ""
@@ -27,6 +28,7 @@ final class AuthenticationViewModel: ObservableObject {
         let helper = SignInGoogleHelper()
         let tokens = try await helper.signIn()
         let (credential, authDataResult) = try await helper.signInWithGoogle(tokens: tokens)
+        
         let firebaseUser = authDataResult.user
         guard let fullName = firebaseUser.displayName,
               let email = firebaseUser.email else { return }
@@ -37,6 +39,25 @@ final class AuthenticationViewModel: ObservableObject {
         let helper = SignInAppleHelper()
         let signInAppleResult = try await helper.startSignInWithAppleFlow()
         try await connectToFirebase(name: signInAppleResult.fullName, email: signInAppleResult.email, provider: "apple", credential: signInAppleResult.credential, completion: dissmisAction)
+    }
+    // MARK: Function
+    func createProfile() {
+        guard let currentUserId = Auth.auth().currentUser else {return}
+
+        print("Create profile now: \(currentUserId)")
+        Task {
+            do {
+                let userId = AuthService.instance.createUserId()
+                let user = DatabaseUser(userId: userId, displayName: displayName, email: email, providerId: providerID, provider: provider, bio: bio, dateCreated: Date())
+                try await AuthService.instance.createNewUserInDatabase(user: user, profileImage: selectedImage)
+                print("createProfile Success")
+                // 🟥logInUserToApp
+                try await AuthService.instance.logInUserToApp(userID: userId)
+            } catch {
+                print("createProfile Error\(error)")
+                throw AsyncError(message: "createProfile Error")
+            }
+        }
     }
 
     private func connectToFirebase(name: String, email: String, provider: String, credential: AuthCredential, completion: () -> Void) async throws {
