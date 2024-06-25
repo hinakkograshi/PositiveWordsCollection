@@ -65,7 +65,7 @@ class AuthService {
             print("creteNewUserDBError \(error)")
         }
         // documentにデータを追加
-        try userDocument(userId: user.userId).setData(from: user, merge: false, encoder: encoder)
+        try userDocument(userId: user.userId).setData(from: user, encoder: encoder)
     }
     // Update Dictionary
     func updateUserProfileText(userID: String, displayName: String, bio: String) async throws {
