@@ -18,6 +18,8 @@ class DataService {
     private func commentSubCollection(postId: String) -> CollectionReference {
         postsCollection.document(postId).collection("comments")
     }
+    private func likedBySubCollection(postId: String) -> CollectionReference { postsCollection.document(postId).collection("liked_by")
+    }
 
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
 
@@ -78,7 +80,7 @@ class DataService {
     }
 
     func downloadComments(postID: String) async throws -> [CommentModel] {
-        let comments = try await postsCollection.document(postID).collection(DatabasePostField.comments).order(by: DatabaseCommentsField.dateCreated, descending: false).getDocuments().documents.compactMap { try? $0.data(as: Comment.self)
+        let comments = try await commentSubCollection(postId: postID).order(by: DatabaseCommentsField.dateCreated, descending: false).getDocuments().documents.compactMap { try? $0.data(as: Comment.self)
         }
         return getCommentsFromSnapshot(comments: comments)
     }
@@ -98,7 +100,7 @@ class DataService {
     }
 
     func createCommentId(postID: String) -> String {
-        let document = postsCollection.document(postID).collection(DatabasePostField.comments).document()
+        let document = commentSubCollection(postId: postID).document()
         let commentID = document.documentID
         return commentID
     }
@@ -114,7 +116,7 @@ class DataService {
     }
     //　❤️
     func myLiked(postID: String, userID: String) async throws -> Bool {
-        let query = postsCollection.document(postID).collection(DatabasePostField.likedBy).whereField(DatabaseLikedByField.userID, isEqualTo: userID)
+        let query = likedBySubCollection(postId: postID).whereField(DatabaseLikedByField.userID, isEqualTo: userID)
         let countQuery = query.count
         let myLikeCountSnapshot = try await countQuery.getAggregation(source: .server)
         print(myLikeCountSnapshot.count)
@@ -127,7 +129,7 @@ class DataService {
     }
     // 💛
     func likeCount(postID: String) async throws -> Int {
-        let query = postsCollection.document(postID).collection(DatabasePostField.likedBy)
+        let query = likedBySubCollection(postId: postID)
         let countQuery = query.count
         let snapshot = try await countQuery.getAggregation(source: .server)
         print("🩵\(snapshot.count)❤️")
@@ -136,7 +138,7 @@ class DataService {
 
     // 💛
     func unLikePost(postID: String, myUserID: String) async throws {
-        let query = postsCollection.document(postID).collection(DatabasePostField.likedBy).whereField(DatabaseLikedByField.userID, isEqualTo: myUserID)
+        let query = likedBySubCollection(postId: postID).whereField(DatabaseLikedByField.userID, isEqualTo: myUserID)
         let snapShot = try await query.getDocuments()
         for document in snapShot.documents {
             try await document.reference.delete()
@@ -144,11 +146,11 @@ class DataService {
     }
 
     func uploadLikedPost(postID: String, like: Like) throws {
-        let document = postsCollection.document(postID).collection(DatabasePostField.likedBy).document(like.userId)
+        let document = likedBySubCollection(postId: postID).document(like.userId)
         try document.setData(from: like, encoder: encoder)
     }
     func commentCount(postID: String) async throws -> Int {
-        let query = postsCollection.document(postID).collection(DatabasePostField.comments)
+        let query = commentSubCollection(postId: postID)
         let countQuery = query.count
         let snapshot = try await countQuery.getAggregation(source: .server)
         print("❤️\(snapshot.count)❤️")
