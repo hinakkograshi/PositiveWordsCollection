@@ -38,10 +38,6 @@ class AuthService {
         let userID = document.documentID
         return userID
     }
-    // Decode
-    func getUserInfo(userID: String) async throws -> DatabaseUser {
-        try await userDocument(userId: userID).getDocument(as: DatabaseUser.self)
-    }
 
     // キャメルケースをスネークケースにする
     private let encoder: Firestore.Encoder = {
@@ -50,14 +46,17 @@ class AuthService {
         return encoder
     }()
 
-    func updateUserProfileText(userID: String, displayName: String, bio: String) async throws {
-        let data: [String: Any] = [
-            DatabaseUserField.displayName: displayName,
-            DatabaseUserField.bio: bio
-        ]
-        try await userCollection.document(userID).updateData(data)
-    }
+    private let decoder: Firestore.Decoder = {
+        let decoder = Firestore.Decoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }()
 
+    // Decode
+    func getUserInfo(userID: String) async throws -> DatabaseUser {
+        try await userDocument(userId: userID).getDocument(as: DatabaseUser.self, decoder: decoder)
+    }
+    // Encode
     func createNewUserInDatabase(user: DatabaseUser, profileImage: UIImage) async throws {
         // Upload profile image to Storage
         do {
@@ -66,7 +65,15 @@ class AuthService {
             print("creteNewUserDBError \(error)")
         }
         // documentにデータを追加
-        try userDocument(userId: user.userId).setData(from: user, merge: false, encoder: encoder)
+        try userDocument(userId: user.userId).setData(from: user, encoder: encoder)
+    }
+    // Update Dictionary
+    func updateUserProfileText(userID: String, displayName: String, bio: String) async throws {
+        let data: [String: Any] = [
+            DatabaseHelperField.displayName: displayName,
+            DatabaseHelperField.bio: bio
+        ]
+        try await userCollection.document(userID).updateData(data)
     }
 
     func signOut() throws {
@@ -113,7 +120,7 @@ class AuthService {
     }
     
     private func checkIfUserExistsDatabase(providerID: String, handler: @escaping(_ existingUserID: String?) -> Void) {
-        userCollection.whereField(DatabaseUserField.providerID, isEqualTo: providerID).getDocuments { querySnapshot, _ in
+        userCollection.whereField(DatabaseHelperField.providerID, isEqualTo: providerID).getDocuments { querySnapshot, _ in
             if let snapshot = querySnapshot, snapshot.count > 0, let document = snapshot.documents.first {
                 // documentIDであるusrID
                 let existingUserID = document.documentID

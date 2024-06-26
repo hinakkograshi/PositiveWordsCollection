@@ -158,10 +158,10 @@ struct EditProfileView: View {
         UserDefaults.standard.setValue(editProfileBio, forKey: CurrentUserDefaults.bio)
         // Update all of user's posts Change
         do {
-            try await DataService.instance.updateDisplayNameOnPosts(userID: userID, displayName: editProfileName)
             try await AuthService.instance.updateUserProfileText(userID: userID, displayName: editProfileName, bio: editProfileBio)
+            try await DataService.instance.updateDisplayNameOnPosts(userID: userID, displayName: editProfileName)
             try await ImageManager.instance.uploadProfileImage(userID: userID, image: selectedImage)
-            print("全て保存しました🐥")
+            print("全て保存しました\(userID)🐥")
         } catch {
             print("Update UserName ERROR")
         }

@@ -74,15 +74,12 @@ struct CommentsView: View {
     func addComment() {
         guard let userID = currentUserID, let userName = currentUserName else { return }
         Task {
-            do {
-                let returnedCommentID = try await DataService.instance.uploadComment(postID: post.postID, content: submissionText, displayName: userName, userID: userID)
-                guard let commentID = returnedCommentID else { return }
-                let newComment = CommentModel(commentID: commentID, userID: userID, username: userName, content: submissionText, dateCreated: Date())
+                let commentID = DataService.instance.createCommentId(postID: post.postID)
+                let comment = Comment(commentId: commentID, userId: userID, displayName: userName, content: submissionText, dateCreated: Date())
+                await DataService.instance.uploadComment(comment: comment, postID: post.postID)
+                let newComment = CommentModel(commentID: commentID, userID: userID, username: userName, content: submissionText, dateCreated: comment.dateCreated)
                 self.submissionText = ""
                 self.commentArray.append(newComment)
-            } catch {
-                print("Upload Comment Error")
-            }
         }
     }
     func getProfilePicture() {

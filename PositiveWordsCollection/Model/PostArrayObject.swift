@@ -45,7 +45,7 @@ class PostArrayObject: ObservableObject {
             let returnedPosts = try await DataService.instance.downloadPostsForFeed()
             self.dataArray = returnedPosts
         } catch {
-            print("refreshAllUserPosts Error")
+            print("🟥refreshAllUserPosts Error")
         }
     }
     func refreshOfUser(userID: String) async {
