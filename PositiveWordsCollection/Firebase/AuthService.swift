@@ -70,8 +70,8 @@ class AuthService {
     // Update Dictionary
     func updateUserProfileText(userID: String, displayName: String, bio: String) async throws {
         let data: [String: Any] = [
-            DatabaseUserField.displayName: displayName,
-            DatabaseUserField.bio: bio
+            DatabaseHelperField.displayName: displayName,
+            DatabaseHelperField.bio: bio
         ]
         try await userCollection.document(userID).updateData(data)
     }
@@ -120,7 +120,7 @@ class AuthService {
     }
     
     private func checkIfUserExistsDatabase(providerID: String, handler: @escaping(_ existingUserID: String?) -> Void) {
-        userCollection.whereField(DatabaseUserField.providerID, isEqualTo: providerID).getDocuments { querySnapshot, _ in
+        userCollection.whereField(DatabaseHelperField.providerID, isEqualTo: providerID).getDocuments { querySnapshot, _ in
             if let snapshot = querySnapshot, snapshot.count > 0, let document = snapshot.documents.first {
                 // documentIDであるusrID
                 let existingUserID = document.documentID
