@@ -43,8 +43,8 @@ class DeleteService {
     
     private func postAllDelete(userID: String) async throws {
         // posts Collection of userID
-        let postOfUserSnapshot =  try await Firestore.firestore().collection("posts").whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
-        
+        let postOfUserSnapshot =  try await Firestore.firestore().collection("posts").whereField(DatabaseHelperField.userID, isEqualTo: userID).getDocuments()
+
         for document in postOfUserSnapshot.documents {
             let postID = document.documentID
             // SubCollection Delete
@@ -58,7 +58,7 @@ class DeleteService {
     }
     
     private func likedBySubCollectionDelete(postID: String) async {
-        let subCollection = Firestore.firestore().collection("posts").document(postID).collection(DatabasePostField.likedBy)
+        let subCollection = Firestore.firestore().collection("posts").document(postID).collection(DatabaseHelperField.likedBy)
         do {
             let subSnapshot = try await subCollection.getDocuments()
             for subdocument in subSnapshot.documents {
@@ -103,7 +103,7 @@ class DeleteService {
     
     private func deleteUserCollection(userID: String) async {
         do {
-            let usersAccountSnapshot = try await Firestore.firestore().collection("users").whereField(DatabasePostField.userID, isEqualTo: userID).getDocuments()
+            let usersAccountSnapshot = try await Firestore.firestore().collection("users").whereField(DatabaseHelperField.userID, isEqualTo: userID).getDocuments()
             for usersDocument in usersAccountSnapshot.documents {
                 try await usersDocument.reference.delete()
             }

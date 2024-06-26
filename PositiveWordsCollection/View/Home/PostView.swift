@@ -106,7 +106,6 @@ struct PostView: View {
                 Button(action: {
                     if post.likedByUser {
                         unLikePost()
-
                     } else {
                         // ❤️+1
                         likePost()
@@ -185,8 +184,8 @@ struct PostView: View {
         print("REPORT POST NOW")
         Task {
             do {
-                try await DataService.instance.uploadReport(
-                    postID: post.postID)
+                let reports = Report(postId: post.postID, dateCreated: Date())
+                try DataService.instance.uploadReport(reports: reports)
             } catch {
                 print("REPORT POST Error")
             }
@@ -225,7 +224,8 @@ struct PostView: View {
         // Update Firebase
         Task {
             do {
-                try await DataService.instance.uploadLikedPost(postID: post.postID, userID: userID)
+                let like = Like(userId: userID, dateCreated: Date())
+                try DataService.instance.uploadLikedPost(postID: post.postID, like: like)
             } catch {
                 print("Like Error")
             }
