@@ -24,7 +24,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-      let providerFactory = MyAppCheckProviderFactory()
+      // Release Provider
+//      let providerFactory = MyAppCheckProviderFactory()
+//      AppCheck.setAppCheckProviderFactory(providerFactory)
+//      FirebaseApp.configure()
+      // Debug Provider
+      let providerFactory = AppCheckDebugProviderFactory()
       AppCheck.setAppCheckProviderFactory(providerFactory)
       FirebaseApp.configure()
     return true
