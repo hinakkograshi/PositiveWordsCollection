@@ -12,8 +12,14 @@ struct ProfilePostView: View {
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack {
-                ForEach(posts.dataArray, id: \.self) { post in
+                ForEach(posts.dataArray) { post in
                     PostView(post: post, posts: posts, headerIsActive: true, deletedDataState: .myUserLoading, comentIsActive: false)
+                    if post == posts.dataArray.last {
+                        ProgressView()
+                            .onAppear {
+                                posts.refreshUserPost(userID: post.userID)
+                            }
+                    }
                 }
             }
         }
