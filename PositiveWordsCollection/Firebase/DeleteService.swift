@@ -36,9 +36,17 @@ class DeleteService {
         // Storage削除
         await userStorageDelete(userID: userID)
         // users Collection Delete
-        try await Firestore.firestore().collection("users").document(userID).delete()
+        do {
+            try await Firestore.firestore().collection("users").document(userID).delete()
+        } catch {
+            print("users Collection Delete Error:\(error)")
+        }
         // Authアカウント削除
-        try await AuthService.instance.userAcountDelete()
+        do {
+            try await AuthService.instance.userAcountDelete()
+        } catch {
+            print("Authアカウント削除Error:\(error)")
+        }
     }
     
     private func postAllDelete(userID: String) async throws {
@@ -97,7 +105,7 @@ class DeleteService {
         do {
             try await userIDRef.delete()
         } catch {
-            print("userStorageDelete Error")
+            print("🟥userStorageDelete Error")
         }
     }
     
@@ -108,7 +116,7 @@ class DeleteService {
                 try await usersDocument.reference.delete()
             }
         } catch {
-            print("deleteUserCollection Error")
+            print("🟥deleteUserCollection Error")
         }
     }
 }

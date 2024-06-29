@@ -160,6 +160,7 @@ class DataService {
     // MARK: UPDATE USER FUNCTION
     func updateDisplayNameOnPosts(userID: String, displayName: String) async throws {
         let posts = try await downloadPostForUser(userID: userID)
+        // 100件あって一部名前変更全部成功かどうか
         for post in posts {
             self.updatePostDisplayName(postID: post.postID, displayName: displayName)
         }
