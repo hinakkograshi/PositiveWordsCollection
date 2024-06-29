@@ -8,19 +8,20 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject var posts: PostArrayObject
+    @StateObject private var posts = PostArrayObject()
     @State var showCreatePostView = false
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack {
-                ForEach(posts.dataArray, id: \.self) { post in
+                ForEach(posts.dataArray) { post in
                     PostView(post: post, posts: posts, headerIsActive: false, deletedDataState: .allUserLoading, comentIsActive: false)
+                    if post == posts.dataArray.last {
+                        ProgressView()
+                            .onAppear {
+                                posts.refreshHome()
+                            }
+                    }
                 }
-            }
-        }
-        .refreshable {
-            Task {
-                    await posts.refreshAllUserPosts()
             }
         }
         .overlay(alignment: .bottomTrailing) {
@@ -38,9 +39,10 @@ struct HomeView: View {
         .sheet(
             isPresented: $showCreatePostView,
             onDismiss: {
-                Task {
-                    await posts.refreshAllUserPosts()
-                }
+                  // 🟥 二重
+//                   posts.refreshHome()
+                posts.refreshFirst()
+
             },
             content: {
             CreatePostView()
@@ -49,15 +51,16 @@ struct HomeView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color.colorBeige, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+
         .onAppear {
-            print("HomeView表示されました")
+            print("🟩HomeView表示されました")
             Task {
-                await posts.refreshAllUserPosts()
+                posts.refreshFirst()
             }
         }
     }
 }
 
 #Preview {
-    HomeView(posts: PostArrayObject())
+    HomeView()
 }
