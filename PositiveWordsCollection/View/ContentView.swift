@@ -12,25 +12,20 @@ struct ContentView: View {
     @State private var showSignInProfileView: Bool = false
 
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
-    @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
+    @AppStorage(CurrentUserDefaults.displayName) var currentDisplayName: String?
     // ここで全部の投稿取得
-    @StateObject private var homePosts = PostArrayObject()
     var body: some View {
         TabView {
             NavigationStack {
-                HomeView(posts: homePosts)
+                HomeView()
             }
             .tabItem {
                 Image(systemName: "house.fill")
                 Text("Home")
             }
             NavigationStack {
-                if let userID = currentUserID, let displayName = currentUserName {
-                    ProfileView(
-                        isMyProfile: true,
-                        profileDisplayName: displayName,
-                        profileUserID: userID
-                    )
+                if let userID = currentUserID, let displayName = currentDisplayName {
+                    ProfileView(isMyProfile: true, profileDisplayName: displayName, profileUserID: userID)
                 }
             }
             .tabItem {

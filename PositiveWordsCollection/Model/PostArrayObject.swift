@@ -6,26 +6,46 @@
 //
 
 import Foundation
+import FirebaseFirestore
 @MainActor
 class PostArrayObject: ObservableObject {
-    @Published var dataArray = [PostModel]()
+    @Published var dataArray: [PostModel] = []
     @Published var postCountString = "0"
     @Published var likeCountString = "0"
+    private var lastDocument: DocumentSnapshot? = nil
 
-    // All User Post
-    init() {
-        print("Get All User Post Home")
+    func refreshUserPost(userID: String) {
         Task {
-            await refreshAllUserPosts()
+            do {
+                let (newPosts, lastDocument) = try await DataService.instance.downloadUserFeed(userId: userID, lastDocument: lastDocument)
+                print("🟥\(newPosts)")
+                // 最新の日付
+                let sortedPosts = newPosts.sorted { (post1, post2) -> Bool in
+                    return post1.dateCreated > post2.dateCreated
+                }
+                print("🟩\(dataArray)")
+                self.dataArray.append(contentsOf: sortedPosts)
+                print("🐥\(dataArray)")
+                self.lastDocument = lastDocument
+                self.updateCounts()
+            } catch {
+                print("🟥refreshAllUserPosts Error")
+            }
         }
     }
 
-    // USERがMyProfileの投稿を取得するために使用
-    init(userID: String) {
-            Task {
-                await refreshOfUser(userID: userID)
+    func refreshHome() {
+        Task {
+            do {
+                let (newPosts, lastDocument) = try await DataService.instance.downloadHomeScrollPostsForFeed(lastDocument: lastDocument)
+                self.dataArray.append(contentsOf: newPosts)
+                    self.lastDocument = lastDocument
+            } catch {
+                print("🟥refreshAllUserPosts Error")
             }
+        }
     }
+
 // like
     func updateCounts() {
         // Count
@@ -40,25 +60,18 @@ class PostArrayObject: ObservableObject {
         self.likeCountString = "\(sumOfLikeCountArray)"
         print(likeCountString)
     }
-    func refreshAllUserPosts() async {
-        do {
-            let returnedPosts = try await DataService.instance.downloadPostsForFeed()
-            self.dataArray = returnedPosts
-        } catch {
-            print("🟥refreshAllUserPosts Error")
-        }
-    }
-    func refreshOfUser(userID: String) async {
-        do {
-            let returnedposts = try await DataService.instance.downloadPostForUser(userID: userID)
-        // 最新の日付
-        let sortedPosts = returnedposts.sorted { (post1, post2) -> Bool in
-            return post1.dateCreated > post2.dateCreated
-        }
-        self.dataArray = sortedPosts
-        self.updateCounts()
-        } catch {
-            print("refreshOfUser Error")
+
+    func refreshFirst() {
+        Task {
+            dataArray = []
+            lastDocument = nil
+            do {
+                let (newPosts, lastDocument) = try await DataService.instance.downloadHomeScrollPostsForFeed(lastDocument: lastDocument)
+                self.dataArray.append(contentsOf: newPosts)
+                self.lastDocument = lastDocument
+            } catch {
+                print("🟥refreshFirst Error")
+            }
         }
     }
 }

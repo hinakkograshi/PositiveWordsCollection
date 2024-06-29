@@ -11,24 +11,13 @@ struct ProfileView: View {
     var isMyProfile: Bool
     @State var profileImage = UIImage(named: "loading")!
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
-    @State var profileDisplayName: String
     @State var profileBio: String = ""
+    @State var profileDisplayName: String
     var profileUserID: String
-    @StateObject var posts: PostArrayObject
+    @StateObject var posts = PostArrayObject()
     @State var showEditProfileView: Bool = false
     @Environment(\.colorScheme) var colorScheme
-    @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @State var fetchOnAppear = false
-
-    init(
-        isMyProfile: Bool,
-        profileDisplayName: String,
-        profileUserID: String) {
-            self.isMyProfile = isMyProfile
-            self.profileDisplayName = profileDisplayName
-            self.profileUserID = profileUserID
-            self._posts = StateObject(wrappedValue: PostArrayObject(userID: profileUserID))
-        }
 
     var body: some View {
         ProfileHeaderView(profileDisplayName: $profileDisplayName, profileImage: $profileImage, profileBio: $profileBio, postArray: posts)
@@ -51,20 +40,17 @@ struct ProfileView: View {
                 .tint(colorScheme == .light ? Color.MyTheme.purpleColor: Color.MyTheme.yellowColor)
                 .opacity(isMyProfile ? 1.0 : 0.0)
             }
-            .onAppear { 
-                // 二回以降のMyProfile表示時更新
-                isMyProfileUpdate()
+            .onAppear {
+                profileUpdate()
                 getProfileImage(profileUserID: profileUserID)
                 getAdditionalProfileInfo()
             }
             .sheet(
                 isPresented: $showEditProfileView,
                 onDismiss: {
-                    Task {
-                    await posts.refreshOfUser(userID: profileUserID)
+                    posts.refreshUserPost(userID: profileUserID)
                     // 画像のリロードのタイミング
-                        getProfileImage(profileUserID: profileUserID)
-                    }
+                    getProfileImage(profileUserID: profileUserID)
                 },
                 content: {
                     EditProfileView(userDisplayName: $profileDisplayName, userBio: $profileBio, userImage: $profileImage)
@@ -73,12 +59,11 @@ struct ProfileView: View {
                 })
     }
     // MARK: FUNCTION
-    func isMyProfileUpdate() {
-        guard let userID = currentUserID else {return}
+    func profileUpdate() {
         Task {
-            if isMyProfile {
-                await posts.refreshOfUser(userID: userID)
-            }
+            print("🌺UserProfile")
+            posts.refreshUserPost(userID: profileUserID)
+
         }
     }
     func getAdditionalProfileInfo() {

@@ -148,10 +148,9 @@ struct PostView: View {
                         try await DeleteService.instance.postDelete(postID: post.postID)
                         switch deletedDataState {
                         case .allUserLoading:
-
-                            await posts.refreshAllUserPosts()
+                            posts.refreshFirst()
                         case .myUserLoading:
-                            await posts.refreshOfUser(userID: post.userID)
+                            posts.refreshUserPost(userID: post.userID)
                         case .noLoading:
                             print("noLoading")
                         }
