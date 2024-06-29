@@ -76,14 +76,6 @@ class DataService {
         }
     }
 
-    // 最新の50個のポスト取得
-    func downloadPostsForFeed() async throws -> [PostModel] {
-        // 最新の50個しか取得しない
-        let downloadPosts = try await postsCollection.order(by: DatabaseHelperField.dateCreated, descending: true).limit(to: 50).getDocuments().documents.compactMap {
-            try? $0.data(as: Post.self)
-        }
-        return try await getPostsFromSnapshot(posts: downloadPosts)
-    }
     // Pagination
     func downloadHomeScrollPostsForFeed(lastDocument: DocumentSnapshot?) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
         // First FiveData
@@ -94,24 +86,18 @@ class DataService {
                 .start(afterDocument: lastDocument)
                 .getDocumentWithSnapshot(as: Post.self)
             let posts = try await getPostsFromSnapshot(posts: postsQuery)
+            print("🟩true:\(lastDocument)")
             return (posts, lastDoc)
         } else {
             let (postsQuery, lastDoc) = try await postsCollection
                 .order(by: DatabaseHelperField.dateCreated, descending: true)
                 .limit(to: 5).getDocumentWithSnapshot(as: Post.self)
             let posts = try await getPostsFromSnapshot(posts: postsQuery)
+            print("🟥false:\(lastDocument)")
             return (posts, lastDoc)
         }
     }
 
-    // Pagination
-    func downloadHomePostsForFeed() async throws -> [PostModel] {
-        // First FiveData
-        let postsQuery = try await postsCollection.order(by: DatabaseHelperField.dateCreated, descending: true).limit(to: 5).getDocuments().documents.compactMap {
-            try? $0.data(as: Post.self)
-        }
-        return try await getPostsFromSnapshot(posts: postsQuery)
-    }
     private func getPost(post: Post) async throws -> PostModel {
         let likeCount = try await likeCount(postID: post.postId)
         let commentCount = try await commentCount(postID: post.postId)
@@ -204,7 +190,6 @@ class DataService {
         let query = likedBySubCollection(postId: postID)
         let countQuery = query.count
         let snapshot = try await countQuery.getAggregation(source: .server)
-        print("🩵\(snapshot.count)❤️")
         return snapshot.count as? Int ?? 0
     }
 
@@ -225,7 +210,6 @@ class DataService {
         let query = commentSubCollection(postId: postID)
         let countQuery = query.count
         let snapshot = try await countQuery.getAggregation(source: .server)
-        print("❤️\(snapshot.count)❤️")
         return snapshot.count as? Int ?? 0
     }
 

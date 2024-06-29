@@ -17,7 +17,7 @@ struct HomeView: View {
                     PostView(post: post, posts: posts, headerIsActive: false, deletedDataState: .allUserLoading, comentIsActive: false)
                     if post == posts.dataArray.last {
                         ProgressView()
-                            .onAppear {print("🟩ViewAppend")
+                            .onAppear {
                                 posts.refreshHome()
                             }
                     }
@@ -41,7 +41,7 @@ struct HomeView: View {
             onDismiss: {
                   // 🟥 二重
 //                   posts.refreshHome()
-                posts.refreshCloseCreate()
+                posts.refreshFirst()
 
             },
             content: {
@@ -51,10 +51,11 @@ struct HomeView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color.colorBeige, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+
         .onAppear {
-            print("HomeView表示されました")
+            print("🟩HomeView表示されました")
             Task {
-                posts.refreshHome()
+                posts.refreshFirst()
             }
         }
     }
