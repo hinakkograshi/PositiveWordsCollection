@@ -18,7 +18,7 @@ struct CommentsView: View {
     var body: some View {
         VStack {
             ScrollView {
-                PostView(post: post, posts: PostArrayObject(), headerIsActive: false, deletedDataState: .noLoading, comentIsActive: true)
+                PostView(post: post, posts: PostArrayObject(), headerIsActive: false, comentIsActive: true)
                 LazyVStack {
                     ForEach(commentArray, id: \.self) { comment in
                         MessageView(comment: comment)

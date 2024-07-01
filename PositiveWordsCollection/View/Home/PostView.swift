@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-enum DeletedDataState {
-    case allUserLoading
-    case myUserLoading
-    case noLoading
-}
-
 struct PostView: View {
     @State var post: PostModel
     @StateObject var posts: PostArrayObject
@@ -23,7 +17,6 @@ struct PostView: View {
     @State var showReportsAlert: Bool = false
     @State var showDeleteAlert: Bool = false
     let headerIsActive: Bool
-    let deletedDataState: DeletedDataState
     let comentIsActive: Bool
 
     var body: some View {
@@ -144,20 +137,8 @@ struct PostView: View {
             }
             Button("削除", role: .destructive) {
                 Task {
-                    do {
-                        try await DeleteService.instance.postDelete(postID: post.postID)
-                        switch deletedDataState {
-                        case .allUserLoading:
-                            posts.refreshFirst()
-                        case .myUserLoading:
-                            posts.refreshUserPost(userID: post.userID)
-                        case .noLoading:
-                            print("noLoading")
-                        }
-                    } catch {
-                        print("投稿削除に失敗しました。")
-                    }
-                    
+                    //🟥削除メソッド
+                    deletePostView()
                 }
             }
         }, message: {
@@ -178,6 +159,20 @@ struct PostView: View {
         }
     }
     // MARK: function
+    
+    func deletePostView() {
+        Task {
+            do {
+                try await DeleteService.instance.postDelete(postID: post.postID)
+                let _ = print("前\(posts.dataArray)")
+                let deletedDataArray = posts.dataArray.filter { $0 != post }
+                posts.dataArray = deletedDataArray
+                let _ = print("後\(posts.dataArray)")
+            } catch {
+                print("投稿削除に失敗しました。")
+            }
+        }
+    }
     // 報告
     func reportPost() {
         print("REPORT POST NOW")
@@ -288,5 +283,5 @@ struct PostView: View {
 
 #Preview {
     let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
-    return PostView(post: post, posts: PostArrayObject(), headerIsActive: true, deletedDataState: .noLoading, comentIsActive: false)
+    return PostView(post: post, posts: PostArrayObject(), headerIsActive: true, comentIsActive: false)
 }

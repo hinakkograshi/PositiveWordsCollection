@@ -39,15 +39,15 @@ class PostArrayObject: ObservableObject {
             do {
                 let (newPosts, lastDocument) = try await DataService.instance.downloadHomeScrollPostsForFeed(lastDocument: lastDocument)
                 self.dataArray.append(contentsOf: newPosts)
-                    self.lastDocument = lastDocument
+                self.lastDocument = lastDocument
             } catch {
                 print("🟥refreshAllUserPosts Error")
             }
         }
     }
 
-// like
-    func updateCounts() {
+    // like
+    private func updateCounts() {
         // Count
         self.postCountString = "\(self.dataArray.count)"
         print("🩵ポスト数\(postCountString)")
@@ -59,19 +59,5 @@ class PostArrayObject: ObservableObject {
         // Like
         self.likeCountString = "\(sumOfLikeCountArray)"
         print(likeCountString)
-    }
-
-    func refreshFirst() {
-        Task {
-            dataArray = []
-            lastDocument = nil
-            do {
-                let (newPosts, lastDocument) = try await DataService.instance.downloadHomeScrollPostsForFeed(lastDocument: lastDocument)
-                self.dataArray.append(contentsOf: newPosts)
-                self.lastDocument = lastDocument
-            } catch {
-                print("🟥refreshFirst Error")
-            }
-        }
     }
 }
