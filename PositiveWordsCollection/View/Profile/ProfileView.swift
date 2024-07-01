@@ -17,7 +17,7 @@ struct ProfileView: View {
     @StateObject var posts = PostArrayObject()
     @State var showEditProfileView: Bool = false
     @Environment(\.colorScheme) var colorScheme
-    @State var fetchOnAppear = false
+    @State var firstAppear = true
 
     var body: some View {
         ProfileHeaderView(profileDisplayName: $profileDisplayName, profileImage: $profileImage, profileBio: $profileBio, postArray: posts)
@@ -41,16 +41,23 @@ struct ProfileView: View {
                 .opacity(isMyProfile ? 1.0 : 0.0)
             }
             .onAppear {
-                profileUpdate()
-                getProfileImage(profileUserID: profileUserID)
-                getAdditionalProfileInfo()
+                if firstAppear == true {
+                    firstAppear = false
+                    print("🟩初めて")
+                    Task {
+                        profileUpdate(userID: profileUserID)
+                        getProfileImage(profileUserID: profileUserID)
+                    }
+                }
             }
             .sheet(
                 isPresented: $showEditProfileView,
                 onDismiss: {
-                    posts.refreshUserPost(userID: profileUserID)
+                    profileUpdate(userID: profileUserID)
                     // 画像のリロードのタイミング
                     getProfileImage(profileUserID: profileUserID)
+                    // 名前とBio
+                    getAdditionalProfileInfo(userID: profileUserID)
                 },
                 content: {
                     EditProfileView(userDisplayName: $profileDisplayName, userBio: $profileBio, userImage: $profileImage)
@@ -59,17 +66,17 @@ struct ProfileView: View {
                 })
     }
     // MARK: FUNCTION
-    func profileUpdate() {
+    func profileUpdate(userID: String) {
         Task {
             print("🌺UserProfile")
-            posts.refreshUserPost(userID: profileUserID)
+            posts.refreshUserPost(userID: userID)
 
         }
     }
-    func getAdditionalProfileInfo() {
+    private func getAdditionalProfileInfo(userID: String) {
         Task {
             do {
-                let user = try await AuthService.instance.getUserInfo(userID: profileUserID)
+                let user = try await AuthService.instance.getUserInfo(userID: userID)
                 self.profileDisplayName = user.displayName
                 self.profileBio = user.bio
             } catch {
@@ -77,7 +84,7 @@ struct ProfileView: View {
             }
         }
     }
-    func getProfileImage(profileUserID: String) {
+    private func getProfileImage(profileUserID: String) {
         ImageManager.instance.downloadProfileImage(userID: profileUserID) { returnedImage in
             if let image = returnedImage {
                 // プロフィール画像更新

@@ -10,9 +10,9 @@ import SwiftUI
 import FirebaseFirestore
 import FirebaseStorage
 extension Query {
-    func getDocument<T>(as type: T.Type) async throws -> [T] where T: Decodable {
-        try await getDocumentWithSnapshot(as: type).products
-    }
+//    func getDocument<T>(as type: T.Type) async throws -> [T] where T: Decodable {
+//        try await getDocumentWithSnapshot(as: type).products
+//    }
 
     func getDocumentWithSnapshot<T>(as type: T.Type) async throws -> (products: [T], lastDocument: DocumentSnapshot?) where T: Decodable {
         let snapshot = try await self.getDocuments()
