@@ -8,18 +8,23 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject var posts = PostArrayObject()
+    @StateObject var posts: PostArrayObject
     @State var showCreatePostView = false
     @State var firstAppear = true
+    @State var isLastPost = false
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack {
                 ForEach(posts.dataArray) { post in
                     PostView(post: post, posts: posts, headerIsActive: false, comentIsActive: false)
-                    if post == posts.dataArray.last {
+                    if post == posts.dataArray.last, isLastPost == false {
                         ProgressView()
                             .onAppear {
-                                posts.refreshHome()
+                                print("⭐️fetching more Products")
+                                Task {
+                                    isLastPost = await posts.refreshHome()
+                                }
+                                print("⭐️isLastPost\(isLastPost)")
                             }
                     }
                 }
@@ -39,12 +44,6 @@ struct HomeView: View {
         }
         .sheet(
             isPresented: $showCreatePostView,
-            onDismiss: {
-                //🟥 投稿追加
-                //                   posts.refreshHome()
-                //                posts.refreshFirst()
-
-            },
             content: {
                 CreatePostView(posts: posts)
             })
@@ -58,7 +57,7 @@ struct HomeView: View {
             if firstAppear == true {
                 print("🟩初めて")
                 Task {
-                    posts.refreshHome()
+                    await posts.refreshHome()
                 }
             }
         }
@@ -66,5 +65,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
+    HomeView(posts: PostArrayObject())
 }

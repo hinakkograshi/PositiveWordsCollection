@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CommentsView: View {
+    @StateObject var posts: PostArrayObject
     @FocusState private var focusedField: Bool
     @State var submissionText: String = ""
     @State var commentArray = [CommentModel]()
@@ -21,7 +22,7 @@ struct CommentsView: View {
                 PostView(post: post, posts: PostArrayObject(), headerIsActive: false, comentIsActive: true)
                 LazyVStack {
                     ForEach(commentArray, id: \.self) { comment in
-                        MessageView(comment: comment)
+                        MessageView(comment: comment, posts: posts)
                     }
                 }
             }
@@ -109,6 +110,6 @@ struct CommentsView: View {
         @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
         @State var count = [CommentModel(commentID: "", userID: "", username: "", content: "HelloooooooooooooooHelloooooooooooooooHellooooooooooooooo", dateCreated: Date())]
 
-        CommentsView(commentArray: count, post: $post)
+        CommentsView(posts: PostArrayObject(), commentArray: count, post: $post)
     }
 }

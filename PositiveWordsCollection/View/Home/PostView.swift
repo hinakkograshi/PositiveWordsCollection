@@ -25,7 +25,7 @@ struct PostView: View {
             HStack {
                 NavigationLink(destination: {
                     LazyView {
-                        ProfileView(isMyProfile: false, profileDisplayName: post.username, profileUserID: post.userID)
+                        ProfileView(isMyProfile: false, profileDisplayName: post.username, profileUserID: post.userID, posts: posts)
                     }
                 }, label: {
                     Image(uiImage: profileImage)
@@ -114,7 +114,7 @@ struct PostView: View {
                 // MARK: Comment Icon
                 HStack {
                     NavigationLink(
-                        destination: CommentsView(post: $post),
+                        destination: CommentsView(posts: posts, post: $post),
                         label: {
                             Image(systemName: "bubble.middle.bottom")
                                 .font(.title3)
@@ -137,7 +137,7 @@ struct PostView: View {
             }
             Button("削除", role: .destructive) {
                 Task {
-                    //🟥削除メソッド
+                    // 🟥削除メソッド
                     deletePostView()
                 }
             }
@@ -164,10 +164,10 @@ struct PostView: View {
         Task {
             do {
                 try await DeleteService.instance.postDelete(postID: post.postID)
-                let _ = print("前\(posts.dataArray)")
                 let deletedDataArray = posts.dataArray.filter { $0 != post }
                 posts.dataArray = deletedDataArray
-                let _ = print("後\(posts.dataArray)")
+                let deletedUserArray = posts.userPostArray.filter { $0 != post }
+                posts.userPostArray = deletedUserArray
             } catch {
                 print("投稿削除に失敗しました。")
             }
