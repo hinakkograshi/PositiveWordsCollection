@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PostModel: Identifiable, Hashable, Equatable {
+struct PostModel: Identifiable, Hashable {
     var id = UUID() // identifiableに準拠させるためにすべてのポストモデルアイテムが固有のIDを設定
     var postID: String // データベース内の投稿のID
     var userID: String // データベース内のユーザーのID
@@ -18,9 +18,6 @@ struct PostModel: Identifiable, Hashable, Equatable {
     var likedByUser: Bool // ユーザーに気に入られているか
     var comentsCount: Int // 投稿数
 
-    static func == (lhs: PostModel, rhs: PostModel) -> Bool {
-        return lhs.postID == rhs.postID
-    }
     // MARK: HashTable完成
     // この関数でIDとハッシュを持つことで、識別が可能
     func hash(into hasher: inout Hasher) {

@@ -20,11 +20,9 @@ struct HomeView: View {
                     if post == posts.dataArray.last, isLastPost == false {
                         ProgressView()
                             .onAppear {
-                                print("⭐️fetching more Products")
                                 Task {
                                     isLastPost = await posts.refreshHome()
                                 }
-                                print("⭐️isLastPost\(isLastPost)")
                             }
                     }
                 }

@@ -46,23 +46,18 @@ class PostArrayObject: ObservableObject {
 
     func refreshHome() async -> (Bool) {
         var isLastPost = false
-//        print("⭐️LastDOC:\(lastDocument)")
             do {
                 let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument)
                 self.dataArray.append(contentsOf: newPosts)
                 if let lastDocument {
                     self.lastDocument = lastDocument
                 } else {
-                    // nilならば
+                    // 最後nil
                     isLastPost = true
-                    print("⭐️isLastPost TRUE")
                 }
-                // 最後nil
-//                print("⭐️ReturnDOC:\(lastDocument)")
             } catch {
                 print("🟥refreshAllUserPosts Error")
             }
-        print("⭐️isLastPost TRUE:::::\(isLastPost)")
         return isLastPost
     }
 
