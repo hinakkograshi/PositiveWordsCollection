@@ -14,7 +14,7 @@ struct ProfileView: View {
     @State var profileBio: String = ""
     @State var profileDisplayName: String
     var profileUserID: String
-    @StateObject var posts = PostArrayObject()
+    @StateObject var posts: PostArrayObject
     @State var showEditProfileView: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @State var firstAppear = true
@@ -68,9 +68,7 @@ struct ProfileView: View {
     // MARK: FUNCTION
     func profileUpdate(userID: String) {
         Task {
-            print("🌺UserProfile")
-            posts.refreshUserPost(userID: userID)
-
+            _ = await posts.refreshUserPost(userID: userID)
         }
     }
     private func getAdditionalProfileInfo(userID: String) {
@@ -97,6 +95,6 @@ struct ProfileView: View {
 #Preview {
     @State var selectedImage = UIImage(named: "hiyoko")!
     return NavigationStack {
-        ProfileView(isMyProfile: true, profileDisplayName: "hina", profileUserID: "")
+        ProfileView(isMyProfile: true, profileDisplayName: "hina", profileUserID: "", posts: PostArrayObject())
     }
 }

@@ -9,20 +9,19 @@ import SwiftUI
 
 struct ProfilePostView: View {
     @ObservedObject var posts: PostArrayObject
-    @State var lastPostId = ""
+    @State var isLastPost = false
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack {
-                ForEach(posts.dataArray) { post in
+                ForEach(posts.userPostArray) { post in
                     PostView(post: post, posts: posts, headerIsActive: true, comentIsActive: false)
-                    if post == posts.dataArray.last {
-//                        if lastPostId != post {
-//                            lastPostId = post
-                            ProgressView()
-                                .onAppear {
-                                    posts.refreshUserPost(userID: post.userID)
+                    if post == posts.userPostArray.last, isLastPost == false {
+                        ProgressView()
+                            .onAppear {
+                                Task {
+                                    isLastPost = await posts.refreshUserPost(userID: post.userID)
                                 }
-//                        }
+                            }
                     }
                 }
             }

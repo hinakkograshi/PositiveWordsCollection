@@ -56,7 +56,7 @@ class DataService {
         return try await getPostsFromSnapshot(posts: userPosts)
     }
     // UserIDの投稿を取得
-    func downloadUserFeed(userId: String, lastDocument: DocumentSnapshot?) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
+    func getUserFeed(userId: String, lastDocument: DocumentSnapshot?) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
         // First FiveData
         if let lastDocument {
             let (postsQuery, lastDoc) = try await postsCollection
@@ -77,7 +77,7 @@ class DataService {
     }
 
     // Pagination
-    func downloadHomeScrollPostsForFeed(lastDocument: DocumentSnapshot?) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
+    func getHomeScrollPostsForFeed(lastDocument: DocumentSnapshot?) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
         // First FiveData
         if let lastDocument {
             let (postsQuery, lastDoc) = try await postsCollection
@@ -86,14 +86,14 @@ class DataService {
                 .start(afterDocument: lastDocument)
                 .getDocumentWithSnapshot(as: Post.self)
             let posts = try await getPostsFromSnapshot(posts: postsQuery)
-            print("🟩true:\(lastDocument)")
+//            print("🟩true:\(lastDocument)")
             return (posts, lastDoc)
         } else {
             let (postsQuery, lastDoc) = try await postsCollection
                 .order(by: DatabaseHelperField.dateCreated, descending: true)
                 .limit(to: 5).getDocumentWithSnapshot(as: Post.self)
             let posts = try await getPostsFromSnapshot(posts: postsQuery)
-            print("🟥false:\(lastDocument)")
+//            print("🟥false:\(lastDocument)")
             return (posts, lastDoc)
         }
     }

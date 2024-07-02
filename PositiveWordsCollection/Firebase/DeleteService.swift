@@ -48,7 +48,20 @@ class DeleteService {
             print("Authアカウント削除Error:\(error)")
         }
     }
-    
+//    private func deleteAccount() async throws -> Bool {
+//        var errorMessage = ""
+//        do {
+//            guard let user = Auth.auth().currentUser else {throw URLError(.badURL)}
+//            try await user?.delete()
+//            errorMessage = ""
+//        } catch {
+//            errorMessage = error.localizedDescription
+//        }
+//        return false
+////            guard let user = Auth.auth().currentUser else {throw URLError(.badURL)}
+////            try await user.delete()
+//    }
+
     private func postAllDelete(userID: String) async throws {
         // posts Collection of userID
         let postOfUserSnapshot =  try await Firestore.firestore().collection("posts").whereField(DatabaseHelperField.userID, isEqualTo: userID).getDocuments()
