@@ -99,9 +99,11 @@ struct PostView: View {
                 Button(action: {
                     if post.likedByUser {
                         unLikePost()
+                        print("🌷likeBYUSER:\(post.likedByUser)")
                     } else {
                         // ❤️+1
                         likePost()
+                        print("🌷likeBYUSER:\(post.likedByUser)")
                     }
                 }, label: {
                     Image(systemName: post.likedByUser ? "heart.fill" : "heart")
@@ -243,33 +245,7 @@ struct PostView: View {
             }
         }
     }
-
-//    func likeByPost() {
-//        guard let userID = currentUserID else { return }
-//        Task {
-//            do {
-//                try await DataService.instance.uploadLikedPost(postID: post.postID, userID: userID)
-//                let likeCount = try await DataService.instance.likeCount(postID: post.postID)
-//                let likeByUser = try await DataService.instance.myLiked(postID: post.postID, userID: userID)
-//                print("likeCount💛\(likeCount)❤️")
-//            } catch {
-//                print("❤️Upload Like Error")
-//            }
-//        }
-//    }
-//    func unLike() {
-//        guard let userID = currentUserID else { return }
-//        Task {
-//            do {
-//                let count = try await DataService.instance.unLikeCount(postID: post.postID, myUserID: userID)
-//                print("unlikeCount🩵\(count)❤️")
-//            } catch {
-//                print("❤️Upload Like Error")
-//            }
-//        }
-//    }
-
-    // MARK: 24.メソッド数個省略
+    
     // X等にコピーする内容
 //    func sharePost() {
 //        let message = "Check out this post on DogGram"
