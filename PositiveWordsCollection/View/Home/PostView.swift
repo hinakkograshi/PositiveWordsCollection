@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-enum DeletedDataState {
-    case allUserLoading
-    case myUserLoading
-    case noLoading
-}
-
 struct PostView: View {
     @State var post: PostModel
     @StateObject var posts: PostArrayObject
@@ -23,7 +17,6 @@ struct PostView: View {
     @State var showReportsAlert: Bool = false
     @State var showDeleteAlert: Bool = false
     let headerIsActive: Bool
-    let deletedDataState: DeletedDataState
     let comentIsActive: Bool
 
     var body: some View {
@@ -31,8 +24,12 @@ struct PostView: View {
             // header
             HStack {
                 NavigationLink(destination: {
-                    LazyView {
-                        ProfileView(isMyProfile: false, profileDisplayName: post.username, profileUserID: post.userID)
+                    if let myUserID = currentUserID {
+                        if post.userID == myUserID {
+                            ProfileView(isMyProfile: true, profileDisplayName: post.username, profileUserID: post.userID, posts: posts)
+                        } else {
+                            ProfileView(isMyProfile: false, profileDisplayName: post.username, profileUserID: post.userID, posts: posts)
+                        }
                     }
                 }, label: {
                     Image(uiImage: profileImage)
@@ -51,11 +48,11 @@ struct PostView: View {
                         .foregroundStyle(.black)
                         .padding(.leading, 10)
                     // Time
-//                    Text("2s")
-//                        .foregroundStyle(.gray)
-//                        .font(.caption)
-//                    // light and dark mode対応
-//                        .foregroundStyle(.primary)
+                    //                    Text("2s")
+                    //                        .foregroundStyle(.gray)
+                    //                        .font(.caption)
+                    //                    // light and dark mode対応
+                    //                        .foregroundStyle(.primary)
                 })
                 .disabled(headerIsActive)
                 Spacer()
@@ -106,9 +103,11 @@ struct PostView: View {
                 Button(action: {
                     if post.likedByUser {
                         unLikePost()
+                        print("🌷likeBYUSER:\(post.likedByUser)")
                     } else {
                         // ❤️+1
                         likePost()
+                        print("🌷likeBYUSER:\(post.likedByUser)")
                     }
                 }, label: {
                     Image(systemName: post.likedByUser ? "heart.fill" : "heart")
@@ -121,7 +120,7 @@ struct PostView: View {
                 // MARK: Comment Icon
                 HStack {
                     NavigationLink(
-                        destination: CommentsView(post: $post),
+                        destination: CommentsView(posts: posts, post: $post),
                         label: {
                             Image(systemName: "bubble.middle.bottom")
                                 .font(.title3)
@@ -131,8 +130,8 @@ struct PostView: View {
                     // 🟩Comentの数
                     Text("\(post.comentsCount)")
                     .font(.subheadline)                }
-//                Image(systemName: "paperplane")
-//                    .font(.title3)
+                //                Image(systemName: "paperplane")
+                //                    .font(.title3)
                 Spacer()
             }
             Rectangle()
@@ -140,24 +139,12 @@ struct PostView: View {
         }
         .alert("投稿を削除", isPresented: $showDeleteAlert, actions: {
             Button("戻る", role: .cancel) {
-                
+
             }
             Button("削除", role: .destructive) {
                 Task {
-                    do {
-                        try await DeleteService.instance.postDelete(postID: post.postID)
-                        switch deletedDataState {
-                        case .allUserLoading:
-                            posts.refreshFirst()
-                        case .myUserLoading:
-                            posts.refreshUserPost(userID: post.userID)
-                        case .noLoading:
-                            print("noLoading")
-                        }
-                    } catch {
-                        print("投稿削除に失敗しました。")
-                    }
-                    
+                    // 🟥削除メソッド
+                    deletePostView()
                 }
             }
         }, message: {
@@ -165,7 +152,7 @@ struct PostView: View {
         })
         .alert("違反を報告", isPresented: $showReportsAlert, actions: {
             Button("戻る", role: .cancel) {
-                
+
             }
             Button("報告する", role: .destructive) {
                 reportPost()
@@ -178,6 +165,20 @@ struct PostView: View {
         }
     }
     // MARK: function
+
+    func deletePostView() {
+        Task {
+            do {
+                try await DeleteService.instance.postDelete(postID: post.postID)
+                let deletedDataArray = posts.dataArray.filter { $0 != post }
+                posts.dataArray = deletedDataArray
+                let deletedUserArray = posts.myUserPostArray.filter { $0 != post }
+                posts.myUserPostArray = deletedUserArray
+            } catch {
+                print("投稿削除に失敗しました。")
+            }
+        }
+    }
     // 報告
     func reportPost() {
         print("REPORT POST NOW")
@@ -205,88 +206,66 @@ struct PostView: View {
             }
         }
     }
-
+    // 💛
     func likePost() {
         guard let userID = currentUserID else {
             print("Cannot find userID while unliking post")
             return
         }
-        // Update the local data
-        let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount + 1, likedByUser: true, comentsCount: post.comentsCount)
-        self.post = updatePost
-        print("postの中身\(self.post)")
-        // Animate UI
-        animateLike = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-            animateLike = false
-        }
-        // Update Firebase
-        Task {
-            do {
-                let like = Like(userId: userID, dateCreated: Date())
-                try DataService.instance.uploadLikedPost(postID: post.postID, like: like)
-            } catch {
-                print("Like Error")
+        if userID != post.userID {
+            // Update the local data
+            let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount + 1, likedByUser: true, comentsCount: post.comentsCount)
+            self.post = updatePost
+            print("postの中身\(self.post)")
+            // Animate UI
+            animateLike = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                animateLike = false
+            }
+            // Update Firebase
+            Task {
+                do {
+                    let like = Like(userId: userID, dateCreated: Date())
+                    try DataService.instance.uploadLikedPost(postID: post.postID, like: like)
+                } catch {
+                    print("Like Error")
+                }
             }
         }
     }
-
+    // 💛
     func unLikePost() {
         guard let userID = currentUserID else {
             print("Cannot find userID while unliking post")
             return
         }
-        // Update the local data
-        let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount - 1, likedByUser: false, comentsCount: post.comentsCount)
-        self.post = updatePost
-        // Update Firebase
-        Task {
-            do {
-                try await DataService.instance.unLikePost(postID: post.postID, myUserID: userID)
-            } catch {
-                print("unLikePost Error")
+        if userID != post.userID {
+            // Update the local data
+            let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount - 1, likedByUser: false, comentsCount: post.comentsCount)
+            self.post = updatePost
+            // Update Firebase
+            Task {
+                do {
+                    try await DataService.instance.unLikePost(postID: post.postID, myUserID: userID)
+                } catch {
+                    print("unLikePost Error")
+                }
             }
         }
     }
 
-//    func likeByPost() {
-//        guard let userID = currentUserID else { return }
-//        Task {
-//            do {
-//                try await DataService.instance.uploadLikedPost(postID: post.postID, userID: userID)
-//                let likeCount = try await DataService.instance.likeCount(postID: post.postID)
-//                let likeByUser = try await DataService.instance.myLiked(postID: post.postID, userID: userID)
-//                print("likeCount💛\(likeCount)❤️")
-//            } catch {
-//                print("❤️Upload Like Error")
-//            }
-//        }
-//    }
-//    func unLike() {
-//        guard let userID = currentUserID else { return }
-//        Task {
-//            do {
-//                let count = try await DataService.instance.unLikeCount(postID: post.postID, myUserID: userID)
-//                print("unlikeCount🩵\(count)❤️")
-//            } catch {
-//                print("❤️Upload Like Error")
-//            }
-//        }
-//    }
-
-    // MARK: 24.メソッド数個省略
     // X等にコピーする内容
-//    func sharePost() {
-//        let message = "Check out this post on DogGram"
-//        let image = postImage
-//        let link = URL(string: "https://www.google.com")!
-//        let activityViewController =  UIActivityViewController(activityItems: [message, image, link], applicationActivities: nil)
-//        let viewController =  UIApplication.shared.windows.first?.rootViewController
-//        viewController?.present(activityViewController, animated: true, completion: nil)
-//    }
+    //    func sharePost() {
+    //        let message = "Check out this post on DogGram"
+    //        let image = postImage
+    //        let link = URL(string: "https://www.google.com")!
+    //        let activityViewController =  UIActivityViewController(activityItems: [message, image, link], applicationActivities: nil)
+    //        let viewController =  UIApplication.shared.windows.first?.rootViewController
+    //        viewController?.present(activityViewController, animated: true, completion: nil)
+    //    }
 }
 
 #Preview {
     let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
-    return PostView(post: post, posts: PostArrayObject(), headerIsActive: true, deletedDataState: .noLoading, comentIsActive: false)
+    return PostView(post: post, posts: PostArrayObject(), headerIsActive: true, comentIsActive: false)
 }

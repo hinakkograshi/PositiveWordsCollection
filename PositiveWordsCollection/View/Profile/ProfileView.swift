@@ -11,21 +11,22 @@ struct ProfileView: View {
     var isMyProfile: Bool
     @State var profileImage = UIImage(named: "loading")!
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
+    @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @State var profileBio: String = ""
     @State var profileDisplayName: String
     var profileUserID: String
-    @StateObject var posts = PostArrayObject()
+    @StateObject var posts: PostArrayObject
     @State var showEditProfileView: Bool = false
     @Environment(\.colorScheme) var colorScheme
-    @State var fetchOnAppear = false
+    @State var firstAppear = true
 
     var body: some View {
-        ProfileHeaderView(profileDisplayName: $profileDisplayName, profileImage: $profileImage, profileBio: $profileBio, postArray: posts)
+        ProfileHeaderView(profileUserID: profileUserID, profileDisplayName: $profileDisplayName, profileImage: $profileImage, profileBio: $profileBio, isMyProfile: isMyProfile, posts: posts)
             .padding(.top, 10)
         Rectangle()
             .foregroundStyle(.orange)
             .frame(height: 2)
-        ProfilePostView(posts: posts)
+        ProfilePostView(posts: posts, isMyProfile: isMyProfile)
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.colorBeige, for: .navigationBar)
@@ -41,16 +42,23 @@ struct ProfileView: View {
                 .opacity(isMyProfile ? 1.0 : 0.0)
             }
             .onAppear {
-                profileUpdate()
-                getProfileImage(profileUserID: profileUserID)
-                getAdditionalProfileInfo()
+                if firstAppear == true {
+                    firstAppear = false
+                    print("🟩初めて")
+                    Task {
+                        profileUpdate(userID: profileUserID)
+                        getProfileImage(profileUserID: profileUserID)
+                    }
+                }
             }
             .sheet(
                 isPresented: $showEditProfileView,
                 onDismiss: {
-                    posts.refreshUserPost(userID: profileUserID)
+                    profileUpdate(userID: profileUserID)
                     // 画像のリロードのタイミング
                     getProfileImage(profileUserID: profileUserID)
+                    // 名前とBio
+                    getAdditionalProfileInfo(userID: profileUserID)
                 },
                 content: {
                     EditProfileView(userDisplayName: $profileDisplayName, userBio: $profileBio, userImage: $profileImage)
@@ -59,17 +67,21 @@ struct ProfileView: View {
                 })
     }
     // MARK: FUNCTION
-    func profileUpdate() {
+    func profileUpdate(userID: String) {
         Task {
-            print("🌺UserProfile")
-            posts.refreshUserPost(userID: profileUserID)
-
+            if isMyProfile {
+                _ = await posts.refreshMyUserPost(userID: userID)
+                posts.updateCounts(userID: userID)
+            } else {
+                _ = await posts.refreshUserPost(userID: userID)
+                posts.updateCounts(userID: userID)
+            }
         }
     }
-    func getAdditionalProfileInfo() {
+    private func getAdditionalProfileInfo(userID: String) {
         Task {
             do {
-                let user = try await AuthService.instance.getUserInfo(userID: profileUserID)
+                let user = try await AuthService.instance.getUserInfo(userID: userID)
                 self.profileDisplayName = user.displayName
                 self.profileBio = user.bio
             } catch {
@@ -77,7 +89,7 @@ struct ProfileView: View {
             }
         }
     }
-    func getProfileImage(profileUserID: String) {
+    private func getProfileImage(profileUserID: String) {
         ImageManager.instance.downloadProfileImage(userID: profileUserID) { returnedImage in
             if let image = returnedImage {
                 // プロフィール画像更新
@@ -90,6 +102,6 @@ struct ProfileView: View {
 #Preview {
     @State var selectedImage = UIImage(named: "hiyoko")!
     return NavigationStack {
-        ProfileView(isMyProfile: true, profileDisplayName: "hina", profileUserID: "")
+        ProfileView(isMyProfile: true, profileDisplayName: "hina", profileUserID: "", posts: PostArrayObject())
     }
 }

@@ -8,17 +8,21 @@
 import SwiftUI
 
 struct HomeView: View {
-    @StateObject private var posts = PostArrayObject()
+    @StateObject var posts: PostArrayObject
     @State var showCreatePostView = false
+    @State var firstAppear = true
+    @State var isLastPost = false
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack {
                 ForEach(posts.dataArray) { post in
-                    PostView(post: post, posts: posts, headerIsActive: false, deletedDataState: .allUserLoading, comentIsActive: false)
-                    if post == posts.dataArray.last {
+                    PostView(post: post, posts: posts, headerIsActive: false, comentIsActive: false)
+                    if post == posts.dataArray.last, isLastPost == false {
                         ProgressView()
                             .onAppear {
-                                posts.refreshHome()
+                                Task {
+                                    isLastPost = await posts.refreshHome()
+                                }
                             }
                     }
                 }
@@ -38,15 +42,9 @@ struct HomeView: View {
         }
         .sheet(
             isPresented: $showCreatePostView,
-            onDismiss: {
-                  // 🟥 二重
-//                   posts.refreshHome()
-                posts.refreshFirst()
-
-            },
             content: {
-            CreatePostView()
-        })
+                CreatePostView(posts: posts)
+            })
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color.colorBeige, for: .navigationBar)
@@ -54,13 +52,16 @@ struct HomeView: View {
 
         .onAppear {
             print("🟩HomeView表示されました")
-            Task {
-                posts.refreshFirst()
+            if firstAppear == true {
+                print("🟩初めて")
+                Task {
+                    await posts.refreshHome()
+                }
             }
         }
     }
 }
 
 #Preview {
-    HomeView()
+    HomeView(posts: PostArrayObject())
 }
