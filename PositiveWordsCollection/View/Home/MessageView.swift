@@ -68,6 +68,6 @@ struct MessageView: View {
 
 #Preview(traits: .sizeThatFitsLayout) {
     let comment = CommentModel(commentID: "", userID: "", username: "hinakko", content: "This photo is really cool. haha", dateCreated: Date())
-    @State var post = PostModel(id: "1", postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
+    @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
     return MessageView(comment: comment, posts: PostArrayObject())
 }

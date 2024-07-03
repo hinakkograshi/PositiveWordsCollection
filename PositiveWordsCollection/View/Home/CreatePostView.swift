@@ -150,7 +150,7 @@ struct CreatePostView: View {
             let post = Post(postId: postID, userId: userID, displayName: displayName, caption: bioText, dateCreated: date)
             await DataService.instance.uploadPost(post: post, image: selectedImage)
             // 確認
-            let postModel = PostModel(id: postID, postID: postID, userID: userID, username: displayName, caption: bioText, dateCreated: date, likeCount: 0, likedByUser: false, comentsCount: 0)
+            let postModel = PostModel(postID: postID, userID: userID, username: displayName, caption: bioText, dateCreated: date, likeCount: 0, likedByUser: false, comentsCount: 0)
             posts.dataArray.insert(postModel, at: 0)
             if posts.profileViewOn == true {
                 posts.userPostArray.insert(postModel, at: 0)

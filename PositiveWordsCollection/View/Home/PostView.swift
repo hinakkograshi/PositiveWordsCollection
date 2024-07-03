@@ -206,7 +206,7 @@ struct PostView: View {
             }
         }
     }
-
+    // 💛
     func likePost() {
         guard let userID = currentUserID else {
             print("Cannot find userID while unliking post")
@@ -214,7 +214,7 @@ struct PostView: View {
         }
         if userID != post.userID {
             // Update the local data
-            let updatePost = PostModel(id: post.id, postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount + 1, likedByUser: true, comentsCount: post.comentsCount)
+            let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount + 1, likedByUser: true, comentsCount: post.comentsCount)
             self.post = updatePost
             print("postの中身\(self.post)")
             // Animate UI
@@ -233,7 +233,7 @@ struct PostView: View {
             }
         }
     }
-
+    // 💛
     func unLikePost() {
         guard let userID = currentUserID else {
             print("Cannot find userID while unliking post")
@@ -241,7 +241,7 @@ struct PostView: View {
         }
         if userID != post.userID {
             // Update the local data
-            let updatePost = PostModel(id: post.id, postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount - 1, likedByUser: false, comentsCount: post.comentsCount)
+            let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount - 1, likedByUser: false, comentsCount: post.comentsCount)
             self.post = updatePost
             // Update Firebase
             Task {
@@ -266,6 +266,6 @@ struct PostView: View {
 }
 
 #Preview {
-    let post = PostModel(id: "1", postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
+    let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
     return PostView(post: post, posts: PostArrayObject(), headerIsActive: true, comentIsActive: false)
 }
