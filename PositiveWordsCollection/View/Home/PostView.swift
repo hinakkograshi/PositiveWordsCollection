@@ -24,8 +24,12 @@ struct PostView: View {
             // header
             HStack {
                 NavigationLink(destination: {
-                    LazyView {
-                        ProfileView(isMyProfile: false, profileDisplayName: post.username, profileUserID: post.userID, posts: posts)
+                    if let myUserID = currentUserID {
+                        if post.userID == myUserID {
+                            ProfileView(isMyProfile: true, profileDisplayName: post.username, profileUserID: post.userID, posts: posts)
+                        } else {
+                            ProfileView(isMyProfile: false, profileDisplayName: post.username, profileUserID: post.userID, posts: posts)
+                        }
                     }
                 }, label: {
                     Image(uiImage: profileImage)
@@ -44,11 +48,11 @@ struct PostView: View {
                         .foregroundStyle(.black)
                         .padding(.leading, 10)
                     // Time
-//                    Text("2s")
-//                        .foregroundStyle(.gray)
-//                        .font(.caption)
-//                    // light and dark mode対応
-//                        .foregroundStyle(.primary)
+                    //                    Text("2s")
+                    //                        .foregroundStyle(.gray)
+                    //                        .font(.caption)
+                    //                    // light and dark mode対応
+                    //                        .foregroundStyle(.primary)
                 })
                 .disabled(headerIsActive)
                 Spacer()
@@ -126,8 +130,8 @@ struct PostView: View {
                     // 🟩Comentの数
                     Text("\(post.comentsCount)")
                     .font(.subheadline)                }
-//                Image(systemName: "paperplane")
-//                    .font(.title3)
+                //                Image(systemName: "paperplane")
+                //                    .font(.title3)
                 Spacer()
             }
             Rectangle()
@@ -135,7 +139,7 @@ struct PostView: View {
         }
         .alert("投稿を削除", isPresented: $showDeleteAlert, actions: {
             Button("戻る", role: .cancel) {
-                
+
             }
             Button("削除", role: .destructive) {
                 Task {
@@ -148,7 +152,7 @@ struct PostView: View {
         })
         .alert("違反を報告", isPresented: $showReportsAlert, actions: {
             Button("戻る", role: .cancel) {
-                
+
             }
             Button("報告する", role: .destructive) {
                 reportPost()
@@ -161,19 +165,15 @@ struct PostView: View {
         }
     }
     // MARK: function
-    
+
     func deletePostView() {
         Task {
             do {
                 try await DeleteService.instance.postDelete(postID: post.postID)
                 let deletedDataArray = posts.dataArray.filter { $0 != post }
                 posts.dataArray = deletedDataArray
-                print("⭐️posts.userPostArray:\(posts.userPostArray)")
-                print("⭐️Post：\(post)")
-                let deletedUserArray = posts.userPostArray.filter { $0 != post }
-                print("⭐️deletedUserArray:\(deletedUserArray)")
-                posts.userPostArray = deletedUserArray
-                print("⭐️ANS:\(posts.userPostArray)")
+                let deletedUserArray = posts.myUserPostArray.filter { $0 != post }
+                posts.myUserPostArray = deletedUserArray
             } catch {
                 print("投稿削除に失敗しました。")
             }
@@ -253,16 +253,16 @@ struct PostView: View {
             }
         }
     }
-    
+
     // X等にコピーする内容
-//    func sharePost() {
-//        let message = "Check out this post on DogGram"
-//        let image = postImage
-//        let link = URL(string: "https://www.google.com")!
-//        let activityViewController =  UIActivityViewController(activityItems: [message, image, link], applicationActivities: nil)
-//        let viewController =  UIApplication.shared.windows.first?.rootViewController
-//        viewController?.present(activityViewController, animated: true, completion: nil)
-//    }
+    //    func sharePost() {
+    //        let message = "Check out this post on DogGram"
+    //        let image = postImage
+    //        let link = URL(string: "https://www.google.com")!
+    //        let activityViewController =  UIActivityViewController(activityItems: [message, image, link], applicationActivities: nil)
+    //        let viewController =  UIApplication.shared.windows.first?.rootViewController
+    //        viewController?.present(activityViewController, animated: true, completion: nil)
+    //    }
 }
 
 #Preview {

@@ -194,6 +194,21 @@ class DataService {
         return snapshot.count as? Int ?? 0
     }
 
+    // 🐥
+    func sumLikePost(userID: String) async throws -> Int {
+            let userPostModel = try await downloadPostForUser(userID: userID)
+            var sum = 0
+        print("🩵userPostModel：\(userPostModel)")
+            for post in userPostModel {
+                print("🩵userPostModel：\(post)")
+                let like = try await likeCount(postID: post.postID)
+                sum += like
+                print("🩵like：\(like)")
+                print("🩵sum：\(sum)")
+            }
+        return sum
+    }
+
     // 💛
     func unLikePost(postID: String, myUserID: String) async throws {
         let query = likedBySubCollection(postId: postID).whereField(DatabaseHelperField.userID, isEqualTo: myUserID)
@@ -211,6 +226,13 @@ class DataService {
         let query = commentSubCollection(postId: postID)
         let countQuery = query.count
         let snapshot = try await countQuery.getAggregation(source: .server)
+        return snapshot.count as? Int ?? 0
+    }
+    // 🐥
+    func sumUserPost(userID: String) async throws -> Int {
+        let query = postsCollection.whereField(DatabaseHelperField.userID, isEqualTo: userID)
+        let countQuery = query.count
+          let snapshot = try await countQuery.getAggregation(source: .server)
         return snapshot.count as? Int ?? 0
     }
 
