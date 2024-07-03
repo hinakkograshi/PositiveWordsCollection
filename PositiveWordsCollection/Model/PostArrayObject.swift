@@ -35,7 +35,7 @@ class PostArrayObject: ObservableObject {
                 print("🐥\(myUserPostArray)")
                 if let lastMyUserDocument {
                     self.lastMyUserDocument = lastMyUserDocument
-//                    self.updateCounts(userID: userID, postArray: myUserPostArray)
+//                    self.updateCounts(userID: userID)
                 } else {
                     // nilならば
                     isMyLastPost = true
@@ -61,7 +61,7 @@ class PostArrayObject: ObservableObject {
                 print("🐥\(userPostArray)")
                 if let lastUserDocument {
                     self.lastUserDocument = lastUserDocument
-//                    self.updateCounts(userID: userID, postArray: userPostArray)
+//                    self.updateCounts(userID: userID)
                 } else {
                     // nilならば
                     isLastPost = true
@@ -100,6 +100,7 @@ class PostArrayObject: ObservableObject {
                 print("🩵いいね数\(sum)")
             } catch {
                 print("🩵SumLike Error")
+                print(error)
             }
             do {
                 let postCount = try await DataService.instance.sumUserPost(userID: userID)

@@ -175,10 +175,11 @@ class DataService {
     // 🐥
     func sumLikePost(userID: String) async throws -> Int {
         let sum = try await Firestore.firestore()
-            .collection("posts")
+            .collection("posts").whereField(DatabaseHelperField.userID, isEqualTo: userID)
             .aggregate([.sum("like_count")])
             .getAggregation(source: .server)
             .get(.sum("like_count")) as? Int ?? 0
+        print("🩵\(sum)")
         return sum
     }
 
