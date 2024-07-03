@@ -99,7 +99,7 @@ class PostArrayObject: ObservableObject {
                 likeCountString = "\(sum)"
                 print("🩵いいね数\(sum)")
             } catch {
-                print("SumLike Error")
+                print("🩵SumLike Error")
             }
             do {
                 let postCount = try await DataService.instance.sumUserPost(userID: userID)
