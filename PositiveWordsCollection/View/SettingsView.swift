@@ -44,7 +44,7 @@ struct SettingsView: View {
     @State var showDeleteAccountError = false
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @Environment(\.openURL) private var openURL
-    //    @Binding var showSignInView: Bool
+    @State var showUserLogOut = false
     var body: some View {
         NavigationStack {
             Form {
@@ -67,7 +67,7 @@ struct SettingsView: View {
 
                 Section {
                     Button(role: .destructive) {
-                        viewModel.didTapLogOutButton()
+                        showUserLogOut = true
                     } label: {
                         Text("ログアウト")
                     }
@@ -90,6 +90,17 @@ struct SettingsView: View {
         })
         .fullScreenCover(isPresented: $viewModel.showSignInView, content: {
             AuthenticationView(showSignInView: $viewModel.showSignInView)
+        })
+        .alert("ログアウト", isPresented: $showUserLogOut, actions: {
+            Button("ログアウト", role: .destructive) {
+                        viewModel.didTapLogOutButton()
+                        viewModel.showSignInView = true
+            }
+            Button("キャンセル", role: .cancel) {
+                showUserLogOut = false
+            }
+        }, message: {
+            Text("ログアウトしますか？")
         })
         .alert("アカウント削除", isPresented: $showUserDelete, actions: {
             Button("アカウント削除", role: .destructive) {
