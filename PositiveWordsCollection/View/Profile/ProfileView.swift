@@ -11,6 +11,7 @@ struct ProfileView: View {
     var isMyProfile: Bool
     @State var profileImage = UIImage(named: "loading")!
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
+    @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @State var profileBio: String = ""
     @State var profileDisplayName: String
     var profileUserID: String
@@ -20,12 +21,12 @@ struct ProfileView: View {
     @State var firstAppear = true
 
     var body: some View {
-        ProfileHeaderView(profileDisplayName: $profileDisplayName, profileImage: $profileImage, profileBio: $profileBio, postArray: posts)
+        ProfileHeaderView(profileUserID: profileUserID, profileDisplayName: $profileDisplayName, profileImage: $profileImage, profileBio: $profileBio, isMyProfile: isMyProfile, posts: posts)
             .padding(.top, 10)
         Rectangle()
             .foregroundStyle(.orange)
             .frame(height: 2)
-        ProfilePostView(posts: posts)
+        ProfilePostView(posts: posts, isMyProfile: isMyProfile)
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.colorBeige, for: .navigationBar)
@@ -68,7 +69,13 @@ struct ProfileView: View {
     // MARK: FUNCTION
     func profileUpdate(userID: String) {
         Task {
-            _ = await posts.refreshUserPost(userID: userID)
+            if isMyProfile {
+                _ = await posts.refreshMyUserPost(userID: userID)
+                posts.updateCounts(userID: userID)
+            } else {
+                _ = await posts.refreshUserPost(userID: userID)
+                posts.updateCounts(userID: userID)
+            }
         }
     }
     private func getAdditionalProfileInfo(userID: String) {

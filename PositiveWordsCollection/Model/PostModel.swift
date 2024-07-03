@@ -17,16 +17,6 @@ struct PostModel: Hashable {
     var likeCount: Int // いいね数
     var likedByUser: Bool // ユーザーに気に入られているか
     var comentsCount: Int // 投稿数
-    // 投稿削除・更新できる。likeByできない
-//    static func == (lhs: PostModel, rhs: PostModel) -> Bool {
-//        return lhs.postID == rhs.postID
-//    }
-
-    // MARK: HashTable完成
-    // この関数でIDとハッシュを持つことで、識別が可能
-//    func hash(into hasher: inout Hasher) {
-//        hasher.combine(id)
-//    }
 }
 
 extension PostModel: Identifiable {
