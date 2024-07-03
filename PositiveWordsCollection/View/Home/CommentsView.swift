@@ -69,7 +69,7 @@ struct CommentsView: View {
     // 🟩追加
     func countComment() {
         // Update the local data
-        let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount, likedByUser: post.likedByUser, comentsCount: post.comentsCount + 1)
+        let updatePost = PostModel(id: post.postID, postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount, likedByUser: post.likedByUser, comentsCount: post.comentsCount + 1)
         self.post = updatePost
     }
     func addComment() {
@@ -107,7 +107,7 @@ struct CommentsView: View {
 
 #Preview {
     NavigationStack {
-        @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
+        @State var post = PostModel(id: "1", postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
         @State var count = [CommentModel(commentID: "", userID: "", username: "", content: "HelloooooooooooooooHelloooooooooooooooHellooooooooooooooo", dateCreated: Date())]
 
         CommentsView(posts: PostArrayObject(), commentArray: count, post: $post)

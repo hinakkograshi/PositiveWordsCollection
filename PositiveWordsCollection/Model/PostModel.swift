@@ -8,7 +8,7 @@
 import Foundation
 
 struct PostModel: Identifiable, Hashable {
-    var id = UUID() // identifiableに準拠させるためにすべてのポストモデルアイテムが固有のIDを設定
+    var id: String 
     var postID: String // データベース内の投稿のID
     var userID: String // データベース内のユーザーのID
     var username: String // ユーザーとデータベースのユーザー名

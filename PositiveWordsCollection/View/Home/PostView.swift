@@ -168,8 +168,12 @@ struct PostView: View {
                 try await DeleteService.instance.postDelete(postID: post.postID)
                 let deletedDataArray = posts.dataArray.filter { $0 != post }
                 posts.dataArray = deletedDataArray
+                print("⭐️posts.userPostArray:\(posts.userPostArray)")
+                print("⭐️Post：\(post)")
                 let deletedUserArray = posts.userPostArray.filter { $0 != post }
+                print("⭐️deletedUserArray:\(deletedUserArray)")
                 posts.userPostArray = deletedUserArray
+                print("⭐️ANS:\(posts.userPostArray)")
             } catch {
                 print("投稿削除に失敗しました。")
             }
@@ -208,22 +212,24 @@ struct PostView: View {
             print("Cannot find userID while unliking post")
             return
         }
-        // Update the local data
-        let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount + 1, likedByUser: true, comentsCount: post.comentsCount)
-        self.post = updatePost
-        print("postの中身\(self.post)")
-        // Animate UI
-        animateLike = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-            animateLike = false
-        }
-        // Update Firebase
-        Task {
-            do {
-                let like = Like(userId: userID, dateCreated: Date())
-                try DataService.instance.uploadLikedPost(postID: post.postID, like: like)
-            } catch {
-                print("Like Error")
+        if userID != post.userID {
+            // Update the local data
+            let updatePost = PostModel(id: post.id, postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount + 1, likedByUser: true, comentsCount: post.comentsCount)
+            self.post = updatePost
+            print("postの中身\(self.post)")
+            // Animate UI
+            animateLike = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                animateLike = false
+            }
+            // Update Firebase
+            Task {
+                do {
+                    let like = Like(userId: userID, dateCreated: Date())
+                    try DataService.instance.uploadLikedPost(postID: post.postID, like: like)
+                } catch {
+                    print("Like Error")
+                }
             }
         }
     }
@@ -233,15 +239,17 @@ struct PostView: View {
             print("Cannot find userID while unliking post")
             return
         }
-        // Update the local data
-        let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount - 1, likedByUser: false, comentsCount: post.comentsCount)
-        self.post = updatePost
-        // Update Firebase
-        Task {
-            do {
-                try await DataService.instance.unLikePost(postID: post.postID, myUserID: userID)
-            } catch {
-                print("unLikePost Error")
+        if userID != post.userID {
+            // Update the local data
+            let updatePost = PostModel(id: post.id, postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount - 1, likedByUser: false, comentsCount: post.comentsCount)
+            self.post = updatePost
+            // Update Firebase
+            Task {
+                do {
+                    try await DataService.instance.unLikePost(postID: post.postID, myUserID: userID)
+                } catch {
+                    print("unLikePost Error")
+                }
             }
         }
     }
@@ -258,6 +266,6 @@ struct PostView: View {
 }
 
 #Preview {
-    let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
+    let post = PostModel(id: "1", postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
     return PostView(post: post, posts: PostArrayObject(), headerIsActive: true, comentIsActive: false)
 }
