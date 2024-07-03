@@ -108,7 +108,7 @@ class DataService {
             likeByUser = try await DataService.instance.myLiked(postID: post.postId, userID: userID)
         }
         // NewPost
-        let newPost = PostModel(id: post.postId, postID: post.postId, userID: post.userId, username: post.displayName, caption: post.caption, dateCreated: post.dateCreated, likeCount: likeCount, likedByUser: likeByUser, comentsCount: commentCount)
+        let newPost = PostModel(postID: post.postId, userID: post.userId, username: post.displayName, caption: post.caption, dateCreated: post.dateCreated, likeCount: likeCount, likedByUser: likeByUser, comentsCount: commentCount)
         return newPost
     }
 
@@ -123,7 +123,7 @@ class DataService {
                 likeByUser = try await DataService.instance.myLiked(postID: post.postId, userID: userID)
             }
             // NewPost
-            let newPost = PostModel(id: post.postId, postID: post.postId, userID: post.userId, username: post.displayName, caption: post.caption, dateCreated: post.dateCreated, likeCount: likeCount, likedByUser: likeByUser, comentsCount: commentCount)
+            let newPost = PostModel(postID: post.postId, userID: post.userId, username: post.displayName, caption: post.caption, dateCreated: post.dateCreated, likeCount: likeCount, likedByUser: likeByUser, comentsCount: commentCount)
             postArray.append(newPost)
         }
         return postArray
