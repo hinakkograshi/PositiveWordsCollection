@@ -10,9 +10,9 @@ import SwiftUI
 import FirebaseFirestore
 import FirebaseStorage
 extension Query {
-    func getDocument<T>(as type: T.Type) async throws -> [T] where T: Decodable {
-        try await getDocumentWithSnapshot(as: type).products
-    }
+//    func getDocument<T>(as type: T.Type) async throws -> [T] where T: Decodable {
+//        try await getDocumentWithSnapshot(as: type).products
+//    }
 
     func getDocumentWithSnapshot<T>(as type: T.Type) async throws -> (products: [T], lastDocument: DocumentSnapshot?) where T: Decodable {
         let snapshot = try await self.getDocuments()
@@ -56,7 +56,7 @@ class DataService {
         return try await getPostsFromSnapshot(posts: userPosts)
     }
     // UserIDの投稿を取得
-    func downloadUserFeed(userId: String, lastDocument: DocumentSnapshot?) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
+    func getUserFeed(userId: String, lastDocument: DocumentSnapshot?) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
         // First FiveData
         if let lastDocument {
             let (postsQuery, lastDoc) = try await postsCollection
@@ -77,7 +77,7 @@ class DataService {
     }
 
     // Pagination
-    func downloadHomeScrollPostsForFeed(lastDocument: DocumentSnapshot?) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
+    func getHomeScrollPostsForFeed(lastDocument: DocumentSnapshot?) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
         // First FiveData
         if let lastDocument {
             let (postsQuery, lastDoc) = try await postsCollection
@@ -86,14 +86,15 @@ class DataService {
                 .start(afterDocument: lastDocument)
                 .getDocumentWithSnapshot(as: Post.self)
             let posts = try await getPostsFromSnapshot(posts: postsQuery)
-            print("🟩true:\(lastDocument)")
+//            print("🟩true:\(lastDocument)")
             return (posts, lastDoc)
         } else {
             let (postsQuery, lastDoc) = try await postsCollection
                 .order(by: DatabaseHelperField.dateCreated, descending: true)
                 .limit(to: 5).getDocumentWithSnapshot(as: Post.self)
+            print("🐥🐥POST:\(postsQuery)")
             let posts = try await getPostsFromSnapshot(posts: postsQuery)
-            print("🟥false:\(lastDocument)")
+//            print("🟥false:\(lastDocument)")
             return (posts, lastDoc)
         }
     }
@@ -193,6 +194,21 @@ class DataService {
         return snapshot.count as? Int ?? 0
     }
 
+    // 🐥
+    func sumLikePost(userID: String) async throws -> Int {
+            let userPostModel = try await downloadPostForUser(userID: userID)
+            var sum = 0
+        print("🩵userPostModel：\(userPostModel)")
+            for post in userPostModel {
+                print("🩵userPostModel：\(post)")
+                let like = try await likeCount(postID: post.postID)
+                sum += like
+                print("🩵like：\(like)")
+                print("🩵sum：\(sum)")
+            }
+        return sum
+    }
+
     // 💛
     func unLikePost(postID: String, myUserID: String) async throws {
         let query = likedBySubCollection(postId: postID).whereField(DatabaseHelperField.userID, isEqualTo: myUserID)
@@ -210,6 +226,13 @@ class DataService {
         let query = commentSubCollection(postId: postID)
         let countQuery = query.count
         let snapshot = try await countQuery.getAggregation(source: .server)
+        return snapshot.count as? Int ?? 0
+    }
+    // 🐥
+    func sumUserPost(userID: String) async throws -> Int {
+        let query = postsCollection.whereField(DatabaseHelperField.userID, isEqualTo: userID)
+        let countQuery = query.count
+          let snapshot = try await countQuery.getAggregation(source: .server)
         return snapshot.count as? Int ?? 0
     }
 

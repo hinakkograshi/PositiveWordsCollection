@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct ProfileHeaderView: View {
+    var profileUserID: String
     @Binding var profileDisplayName: String
     @Binding var profileImage: UIImage
     @Binding var profileBio: String
-    @ObservedObject var postArray: PostArrayObject
+    var isMyProfile: Bool
+    @ObservedObject var posts: PostArrayObject
     
     var body: some View {
         VStack(alignment: .center, spacing: 10, content: {
@@ -44,7 +46,7 @@ struct ProfileHeaderView: View {
                 VStack(alignment: .center, spacing: 5, content: {
                     HStack {
                         Image(systemName: "paperplane")
-                        Text(postArray.postCountString)
+                        Text(posts.postCountString)
                             .font(.title2)
                             .fontWeight(.bold)
                     }
@@ -62,7 +64,7 @@ struct ProfileHeaderView: View {
                     HStack {
                         Image(systemName: "heart.fill")
                             .foregroundStyle(.red)
-                        Text(postArray.likeCountString)
+                        Text(posts.likeCountString)
                             .font(.title2)
                             .fontWeight(.bold)
                     }
@@ -75,12 +77,27 @@ struct ProfileHeaderView: View {
                 })
             })
         })
+//        .onAppear {
+//            Task {
+//                do {
+//                    sumLike = try await sumLike(userID: profileUserID)
+//                } catch {
+//                    print("SumLikeError")
+//
+//                }
+//            }
+//        }
     }
+//    func sumLike(userID: String) async throws -> String {
+//            let sumOfLike = try await DataService.instance.sumLikePost(userID: userID)
+//            return String(sumOfLike)
+//    }
 }
 
 #Preview {
     @State var name: String = "hina"
+    var id: String = "1"
     @State var bio = "iOSエンジニア目指して学習をしています。"
     @State var image: UIImage = UIImage(named: "posiIcon")!
-    return ProfileHeaderView(profileDisplayName: $name, profileImage: $image, profileBio: $bio, postArray: PostArrayObject())
+    return ProfileHeaderView(profileUserID: id, profileDisplayName: $name, profileImage: $image, profileBio: $bio, isMyProfile: true, posts: PostArrayObject())
 }

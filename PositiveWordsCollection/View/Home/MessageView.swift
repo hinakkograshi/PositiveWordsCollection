@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MessageView: View {
     @State var comment: CommentModel
-
+    @StateObject var posts: PostArrayObject
     @State var profileImage = UIImage(named: "loading")!
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     var body: some View {
@@ -28,7 +28,7 @@ struct MessageView: View {
                 } else {
                     HStack {
                         NavigationLink(destination: LazyView(content: {
-                            ProfileView(isMyProfile: false, profileDisplayName: comment.username, profileUserID: comment.userID)
+                            ProfileView(isMyProfile: false, profileDisplayName: comment.username, profileUserID: comment.userID, posts: posts)
                         }), label: {
                             if let userID = currentUserID {
                                 if comment.userID != userID {
@@ -69,5 +69,5 @@ struct MessageView: View {
 #Preview(traits: .sizeThatFitsLayout) {
     let comment = CommentModel(commentID: "", userID: "", username: "hinakko", content: "This photo is really cool. haha", dateCreated: Date())
     @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
-    return MessageView(comment: comment)
+    return MessageView(comment: comment, posts: PostArrayObject())
 }
