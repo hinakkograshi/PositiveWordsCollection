@@ -92,6 +92,7 @@ class DataService {
             let (postsQuery, lastDoc) = try await postsCollection
                 .order(by: DatabaseHelperField.dateCreated, descending: true)
                 .limit(to: 5).getDocumentWithSnapshot(as: Post.self)
+            print("🐥🐥POST:\(postsQuery)")
             let posts = try await getPostsFromSnapshot(posts: postsQuery)
 //            print("🟥false:\(lastDocument)")
             return (posts, lastDoc)
@@ -107,7 +108,7 @@ class DataService {
             likeByUser = try await DataService.instance.myLiked(postID: post.postId, userID: userID)
         }
         // NewPost
-        let newPost = PostModel(postID: post.postId, userID: post.userId, username: post.displayName, caption: post.caption, dateCreated: post.dateCreated, likeCount: likeCount, likedByUser: likeByUser, comentsCount: commentCount)
+        let newPost = PostModel(id: post.postId, postID: post.postId, userID: post.userId, username: post.displayName, caption: post.caption, dateCreated: post.dateCreated, likeCount: likeCount, likedByUser: likeByUser, comentsCount: commentCount)
         return newPost
     }
 
@@ -122,7 +123,7 @@ class DataService {
                 likeByUser = try await DataService.instance.myLiked(postID: post.postId, userID: userID)
             }
             // NewPost
-            let newPost = PostModel(postID: post.postId, userID: post.userId, username: post.displayName, caption: post.caption, dateCreated: post.dateCreated, likeCount: likeCount, likedByUser: likeByUser, comentsCount: commentCount)
+            let newPost = PostModel(id: post.postId, postID: post.postId, userID: post.userId, username: post.displayName, caption: post.caption, dateCreated: post.dateCreated, likeCount: likeCount, likedByUser: likeByUser, comentsCount: commentCount)
             postArray.append(newPost)
         }
         return postArray
