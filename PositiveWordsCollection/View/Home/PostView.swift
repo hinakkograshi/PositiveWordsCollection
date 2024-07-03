@@ -227,6 +227,8 @@ struct PostView: View {
                 do {
                     let like = Like(userId: userID, dateCreated: Date())
                     try DataService.instance.uploadLikedPost(postID: post.postID, like: like)
+                    // ⭐️Update Firebase
+                    DataService.instance.likePost(postID: post.postID, currentUserID: userID)
                 } catch {
                     print("Like Error")
                 }
@@ -247,6 +249,8 @@ struct PostView: View {
             Task {
                 do {
                     try await DataService.instance.unLikePost(postID: post.postID, myUserID: userID)
+                    // 　⭐️Update Firebase
+                    DataService.instance.unlikePost(postID: post.postID, currentUserID: userID)
                 } catch {
                     print("unLikePost Error")
                 }

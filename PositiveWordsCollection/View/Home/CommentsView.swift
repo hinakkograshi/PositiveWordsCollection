@@ -68,9 +68,18 @@ struct CommentsView: View {
     // MARK: FUNCTIONS
     // 🟩追加
     func countComment() {
+        guard let userID = currentUserID else { return }
         // Update the local data
         let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount, likedByUser: post.likedByUser, comentsCount: post.comentsCount + 1)
         self.post = updatePost
+        // Update Firebase
+                Task {
+                    do {
+                        try await  DataService.instance.commentPostCount(postID: post.postID, currentUserID: userID)
+                    } catch {
+                        print("Comment UpdateError")
+                    }
+                }
     }
     func addComment() {
         guard let userID = currentUserID, let userName = currentUserName else { return }

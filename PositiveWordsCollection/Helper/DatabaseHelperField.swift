@@ -14,4 +14,6 @@ struct DatabaseHelperField {
     static let dateCreated = "date_created"
     static let providerID = "provider_id"
     static let likedBy = "liked_by"
+    static let likeCount = "like_count"
+    static let commentCount = "comment_count"
 }
