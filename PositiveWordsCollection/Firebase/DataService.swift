@@ -99,31 +99,29 @@ class DataService {
         }
     }
     
-    private func getPost(post: Post) async throws -> PostModel {
-        let likeCount = try await likeCount(postID: post.postId)
-        let commentCount = try await commentCount(postID: post.postId)
-        var likeByUser: Bool = false
-        // ❤️自分がいいねを押したか？UserID
-        if let userID = currentUserID {
-            likeByUser = try await DataService.instance.myLiked(postID: post.postId, userID: userID)
-        }
-        // NewPost
-        let newPost = PostModel(postID: post.postId, userID: post.userId, username: post.displayName, caption: post.caption, dateCreated: post.dateCreated, likeCount: likeCount, likedByUser: likeByUser, comentsCount: commentCount)
-        return newPost
-    }
+//    private func getPost(post: Post) async throws -> PostModel {
+////        let likeCount = try await likeCount(postID: post.postId)
+////        let commentCount = try await commentCount(postID: post.postId)
+//        var likeByUser: Bool = false
+//        // ❤️自分がいいねを押したか？UserID
+//        if let userID = currentUserID {
+//            likeByUser = try await DataService.instance.myLiked(postID: post.postId, userID: userID)
+//        }
+//        // NewPost
+//        let newPost = PostModel(postID: post.postId, userID: post.userId, username: post.displayName, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount, likedByUser: likeByUser, comentsCount: post.commentCount)
+//        return newPost
+//    }
     
     private func getPostsFromSnapshot(posts: [Post]) async throws -> [PostModel] {
         var postArray = [PostModel]()
         for post in posts {
-            let likeCount = try await likeCount(postID: post.postId)
-            let commentCount = try await commentCount(postID: post.postId)
             var likeByUser: Bool = false
             // ❤️自分がいいねを押したか？UserID
             if let userID = currentUserID {
                 likeByUser = try await DataService.instance.myLiked(postID: post.postId, userID: userID)
             }
             // NewPost
-            let newPost = PostModel(postID: post.postId, userID: post.userId, username: post.displayName, caption: post.caption, dateCreated: post.dateCreated, likeCount: likeCount, likedByUser: likeByUser, comentsCount: commentCount)
+            let newPost = PostModel(postID: post.postId, userID: post.userId, username: post.displayName, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount, likedByUser: likeByUser, comentsCount: post.commentCount)
             postArray.append(newPost)
         }
         return postArray
@@ -196,18 +194,28 @@ class DataService {
     
     // 🐥
     func sumLikePost(userID: String) async throws -> Int {
-        let userPostModel = try await downloadPostForUser(userID: userID)
-        var sum = 0
-        print("🩵userPostModel：\(userPostModel)")
-        for post in userPostModel {
-            print("🩵userPostModel：\(post)")
-            let like = try await likeCount(postID: post.postID)
-            sum += like
-            print("🩵like：\(like)")
-            print("🩵sum：\(sum)")
-        }
+
+        let sum = try await Firestore.firestore()
+            .collection("posts")
+            .aggregate([.sum("like_count")])
+            .getAggregation(source: .server)
+            .get(.sum("like_count")) as? Int ?? 0
         return sum
     }
+
+//    func sumLikePost(userID: String) async throws -> Int {
+//        let userPostModel = try await downloadPostForUser(userID: userID)
+//        var sum = 0
+//        print("🩵userPostModel：\(userPostModel)")
+//        for post in userPostModel {
+//            print("🩵userPostModel：\(post)")
+//            let like = try await likeCount(postID: post.postID)
+//            sum += like
+//            print("🩵like：\(like)")
+//            print("🩵sum：\(sum)")
+//        }
+//        return sum
+//    }
     
     
     // 💛
