@@ -26,9 +26,9 @@ struct PostView: View {
                 NavigationLink(destination: {
                     if let myUserID = currentUserID {
                         if post.userID == myUserID {
-                            ProfileView(isMyProfile: true, profileDisplayName: post.username, profileUserID: post.userID, posts: posts)
+                            ProfileView(isMyProfile: true, posts: posts, profileDisplayName: post.username, profileUserID: post.userID)
                         } else {
-                            ProfileView(isMyProfile: false, profileDisplayName: post.username, profileUserID: post.userID, posts: posts)
+                            ProfileView(isMyProfile: false, posts: posts, profileDisplayName: post.username, profileUserID: post.userID)
                         }
                     }
                 }, label: {
