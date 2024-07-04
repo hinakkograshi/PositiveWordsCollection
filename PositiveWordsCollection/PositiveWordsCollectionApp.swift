@@ -29,9 +29,30 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 //      AppCheck.setAppCheckProviderFactory(providerFactory)
 //      FirebaseApp.configure()
       // Debug Provider
+#if DEBUG
       let providerFactory = AppCheckDebugProviderFactory()
+#else
+      let providerFactory = MyAppCheckProviderFactory()
+#endif
       AppCheck.setAppCheckProviderFactory(providerFactory)
+
+      firebaseConfigure() 
       FirebaseApp.configure()
     return true
   }
+    private func firebaseConfigure() {
+        #if DEBUG
+            let filePath = Bundle.main.path(forResource: "GoogleService-Stage-Info", ofType: "plist")
+        #else
+            let filePath = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist")
+        #endif
+
+        guard let filePath = filePath else {
+            return
+        }
+
+        guard FirebaseOptions(contentsOfFile: filePath) != nil else {
+            return
+        }
+    }
 }
