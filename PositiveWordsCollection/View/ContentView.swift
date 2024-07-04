@@ -26,7 +26,7 @@ struct ContentView: View {
             }
             NavigationStack {
                 if let userID = currentUserID, let displayName = currentDisplayName {
-                    ProfileView(isMyProfile: true, profileDisplayName: displayName, profileUserID: userID, posts: posts)
+                    ProfileView(isMyProfile: true, posts: posts, profileDisplayName: displayName, profileUserID: userID)
                 }
             }
             .tabItem {

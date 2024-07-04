@@ -13,6 +13,8 @@ struct Post: Codable {
     var displayName: String
     var caption: String
     var dateCreated: Date
+    var likeCount: Int
+    var commentCount: Int
 
     enum CodingKeys: String, CodingKey {
         case postId = "post_id"
@@ -20,14 +22,18 @@ struct Post: Codable {
         case displayName = "display_name"
         case caption = "caption"
         case dateCreated = "date_created"
+        case likeCount = "like_count"
+        case commentCount = "comment_count"
     }
 
-    init(postId: String, userId: String, displayName: String, caption: String, dateCreated: Date) {
+    init(postId: String, userId: String, displayName: String, caption: String, dateCreated: Date, likeCount: Int, commentCount: Int) {
         self.postId = postId
         self.userId = userId
         self.displayName = displayName
         self.caption = caption
         self.dateCreated = dateCreated
+        self.likeCount = likeCount
+        self.commentCount = commentCount
     }
 
     init(from decoder: any Decoder) throws {
@@ -37,5 +43,7 @@ struct Post: Codable {
         self.displayName = try container.decode(String.self, forKey: .displayName)
         self.caption = try container.decode(String.self, forKey: .caption)
         self.dateCreated = try container.decode(Date.self, forKey: .dateCreated)
+        self.likeCount = try container.decode(Int.self, forKey: .likeCount)
+        self.commentCount = try container.decode(Int.self, forKey: .commentCount)
     }
 }
