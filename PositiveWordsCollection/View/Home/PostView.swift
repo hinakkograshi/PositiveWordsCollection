@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PostView: View {
     @State var post: PostModel
-    @StateObject var posts: PostArrayObject
+    @ObservedObject var posts: PostArrayObject
     @State var animateLike: Bool = false
     @State var profileImage = UIImage(named: "loading")!
     @State var postImage = UIImage(named: "loading")!

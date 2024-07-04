@@ -19,76 +19,105 @@ class PostArrayObject: ObservableObject {
     private var lastDocument: DocumentSnapshot? = nil
     private var lastUserDocument: DocumentSnapshot? = nil
     private var lastMyUserDocument: DocumentSnapshot? = nil
-
+    
+    func refreshUpdateHome() async {
+        dataArray = []
+        lastDocument = nil
+        do {
+            let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument)
+            self.dataArray.append(contentsOf: newPosts)
+            if let lastDocument {
+                self.lastDocument = lastDocument
+            }
+        } catch {
+            print("🟥refreshAllUserPosts Error")
+        }
+    }
+    func refreshUpdateMyUserPost(userID: String) async {
+        myUserPostArray = []
+        lastMyUserDocument = nil
+        do {
+            let (newPosts, lastMyUserDocument) = try await DataService.instance.getUserFeed(userId: userID, lastDocument: lastMyUserDocument)
+            // 最新の日付
+            let sortedPosts = newPosts.sorted { (post1, post2) -> Bool in
+                return post1.dateCreated > post2.dateCreated
+            }
+            self.myUserPostArray.append(contentsOf: sortedPosts)
+            self.lastMyUserDocument = lastMyUserDocument
+        } catch {
+            print("🟥refreshAllUserPosts Error")
+        }
+    }
+    
     func refreshMyUserPost(userID: String) async -> (Bool) {
         profileViewOn = true
         var isMyLastPost = false
-            do {
-                let (newPosts, lastMyUserDocument) = try await DataService.instance.getUserFeed(userId: userID, lastDocument: lastMyUserDocument)
-                print("🟥\(newPosts)")
-                // 最新の日付
-                let sortedPosts = newPosts.sorted { (post1, post2) -> Bool in
-                    return post1.dateCreated > post2.dateCreated
-                }
-                print("🟩\(myUserPostArray)")
-                self.myUserPostArray.append(contentsOf: sortedPosts)
-                print("🐥\(myUserPostArray)")
-                if let lastMyUserDocument {
-                    self.lastMyUserDocument = lastMyUserDocument
-//                    self.updateCounts(userID: userID)
-                } else {
-                    // nilならば
-                    isMyLastPost = true
-                }
-            } catch {
-                print("🟥refreshAllUserPosts Error")
+        do {
+            let (newPosts, lastMyUserDocument) = try await DataService.instance.getUserFeed(userId: userID, lastDocument: lastMyUserDocument)
+            print("🟥\(newPosts)")
+            // 最新の日付
+            let sortedPosts = newPosts.sorted { (post1, post2) -> Bool in
+                return post1.dateCreated > post2.dateCreated
             }
+            print("🟩\(myUserPostArray)")
+            self.myUserPostArray.append(contentsOf: sortedPosts)
+            print("🐥\(myUserPostArray)")
+            if let lastMyUserDocument {
+                self.lastMyUserDocument = lastMyUserDocument
+                //                    self.updateCounts(userID: userID)
+            } else {
+                // nilならば
+                isMyLastPost = true
+            }
+        } catch {
+            print("🟥refreshAllUserPosts Error")
+        }
         return isMyLastPost
     }
-
+    
     func refreshUserPost(userID: String) async -> (Bool) {
         profileViewOn = true
         var isLastPost = false
-            do {
-                let (newPosts, lastUserDocument) = try await DataService.instance.getUserFeed(userId: userID, lastDocument: lastUserDocument)
-                print("🟥\(newPosts)")
-                // 最新の日付
-                let sortedPosts = newPosts.sorted { (post1, post2) -> Bool in
-                    return post1.dateCreated > post2.dateCreated
-                }
-                print("🟩\(userPostArray)")
-                self.userPostArray.append(contentsOf: sortedPosts)
-                print("🐥\(userPostArray)")
-                if let lastUserDocument {
-                    self.lastUserDocument = lastUserDocument
-//                    self.updateCounts(userID: userID)
-                } else {
-                    // nilならば
-                    isLastPost = true
-                }
-            } catch {
-                print("🟥refreshAllUserPosts Error")
+        do {
+            let (newPosts, lastUserDocument) = try await DataService.instance.getUserFeed(userId: userID, lastDocument: lastUserDocument)
+            print("🟥\(newPosts)")
+            // 最新の日付
+            let sortedPosts = newPosts.sorted { (post1, post2) -> Bool in
+                return post1.dateCreated > post2.dateCreated
             }
+            print("🟩\(userPostArray)")
+            self.userPostArray.append(contentsOf: sortedPosts)
+            print("🐥\(userPostArray)")
+            if let lastUserDocument {
+                self.lastUserDocument = lastUserDocument
+                //                    self.updateCounts(userID: userID)
+            } else {
+                // nilならば
+                isLastPost = true
+            }
+        } catch {
+            print("🟥refreshAllUserPosts Error")
+        }
         return isLastPost
     }
-
+    
     func refreshHome() async -> (Bool) {
         var isLastPost = false
-            do {
-                let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument)
-                self.dataArray.append(contentsOf: newPosts)
-                if let lastDocument {
-                    self.lastDocument = lastDocument
-                } else {
-                    // 最後nil
-                    isLastPost = true
-                }
-            } catch {
-                print("🟥refreshAllUserPosts Error")
+        do {
+            let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument)
+            self.dataArray.append(contentsOf: newPosts)
+            if let lastDocument {
+                self.lastDocument = lastDocument
+            } else {
+                // 最後nil
+                isLastPost = true
             }
+        } catch {
+            print("🟥refreshAllUserPosts Error")
+        }
         return isLastPost
     }
-
+    
     // like
     func updateCounts(userID: String) {
         postCountString = "0"

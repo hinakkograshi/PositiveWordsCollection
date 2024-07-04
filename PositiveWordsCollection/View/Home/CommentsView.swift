@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CommentsView: View {
-    @StateObject var posts: PostArrayObject
+    @ObservedObject var posts: PostArrayObject
     @FocusState private var focusedField: Bool
     @State var submissionText: String = ""
     @State var commentArray = [CommentModel]()
@@ -19,7 +19,7 @@ struct CommentsView: View {
     var body: some View {
         VStack {
             ScrollView {
-                PostView(post: post, posts: PostArrayObject(), headerIsActive: false, comentIsActive: true)
+                PostView(post: post, posts: posts, headerIsActive: false, comentIsActive: true)
                 LazyVStack {
                     ForEach(commentArray, id: \.self) { comment in
                         MessageView(comment: comment, posts: posts)
