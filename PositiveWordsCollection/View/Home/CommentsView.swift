@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CommentsView: View {
-    @StateObject var posts: PostArrayObject
+    @ObservedObject var posts: PostArrayObject
     @FocusState private var focusedField: Bool
     @State var submissionText: String = ""
     @State var commentArray = [CommentModel]()
@@ -19,7 +19,7 @@ struct CommentsView: View {
     var body: some View {
         VStack {
             ScrollView {
-                PostView(post: post, posts: PostArrayObject(), headerIsActive: false, comentIsActive: true)
+                PostView(post: post, posts: posts, headerIsActive: false, comentIsActive: true)
                 LazyVStack {
                     ForEach(commentArray, id: \.self) { comment in
                         MessageView(comment: comment, posts: posts)
@@ -68,9 +68,18 @@ struct CommentsView: View {
     // MARK: FUNCTIONS
     // 🟩追加
     func countComment() {
+        guard let userID = currentUserID else { return }
         // Update the local data
         let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount, likedByUser: post.likedByUser, comentsCount: post.comentsCount + 1)
         self.post = updatePost
+        // Update Firebase
+                Task {
+                    do {
+                        try await  DataService.instance.commentPostCount(postID: post.postID, currentUserID: userID)
+                    } catch {
+                        print("Comment UpdateError")
+                    }
+                }
     }
     func addComment() {
         guard let userID = currentUserID, let userName = currentUserName else { return }

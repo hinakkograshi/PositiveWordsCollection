@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PostView: View {
     @State var post: PostModel
-    @StateObject var posts: PostArrayObject
+    @ObservedObject var posts: PostArrayObject
     @State var animateLike: Bool = false
     @State var profileImage = UIImage(named: "loading")!
     @State var postImage = UIImage(named: "loading")!
@@ -26,9 +26,9 @@ struct PostView: View {
                 NavigationLink(destination: {
                     if let myUserID = currentUserID {
                         if post.userID == myUserID {
-                            ProfileView(isMyProfile: true, profileDisplayName: post.username, profileUserID: post.userID, posts: posts)
+                            ProfileView(isMyProfile: true, posts: posts, profileDisplayName: post.username, profileUserID: post.userID)
                         } else {
-                            ProfileView(isMyProfile: false, profileDisplayName: post.username, profileUserID: post.userID, posts: posts)
+                            ProfileView(isMyProfile: false, posts: posts, profileDisplayName: post.username, profileUserID: post.userID)
                         }
                     }
                 }, label: {
@@ -227,6 +227,8 @@ struct PostView: View {
                 do {
                     let like = Like(userId: userID, dateCreated: Date())
                     try DataService.instance.uploadLikedPost(postID: post.postID, like: like)
+                    // ⭐️Update Firebase
+                    DataService.instance.likePost(postID: post.postID, currentUserID: userID)
                 } catch {
                     print("Like Error")
                 }
@@ -247,6 +249,8 @@ struct PostView: View {
             Task {
                 do {
                     try await DataService.instance.unLikePost(postID: post.postID, myUserID: userID)
+                    // 　⭐️Update Firebase
+                    DataService.instance.unlikePost(postID: post.postID, currentUserID: userID)
                 } catch {
                     print("unLikePost Error")
                 }

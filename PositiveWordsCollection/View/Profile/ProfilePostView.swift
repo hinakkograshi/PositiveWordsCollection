@@ -12,6 +12,7 @@ struct ProfilePostView: View {
     var isMyProfile: Bool
     @State var isLastPost = false
     @State var isMyLastPost = false
+
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -24,7 +25,7 @@ struct ProfilePostView: View {
                                 .onAppear {
                                     Task {
                                         Task {
-                                                isMyLastPost = await posts.refreshMyUserPost(userID: post.userID)
+                                            isMyLastPost = await posts.refreshMyUserPost(userID: post.userID)
                                         }
                                     }
                                 }

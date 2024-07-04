@@ -9,13 +9,13 @@ import SwiftUI
 
 struct ProfileView: View {
     var isMyProfile: Bool
-    @State var profileImage = UIImage(named: "loading")!
+    @ObservedObject var posts: PostArrayObject
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
+    @State var profileImage = UIImage(named: "loading")!
     @State var profileBio: String = ""
     @State var profileDisplayName: String
     var profileUserID: String
-    @StateObject var posts: PostArrayObject
     @State var showEditProfileView: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @State var firstAppear = true
@@ -54,11 +54,15 @@ struct ProfileView: View {
             .sheet(
                 isPresented: $showEditProfileView,
                 onDismiss: {
-                    profileUpdate(userID: profileUserID)
-                    // 画像のリロードのタイミング
-                    getProfileImage(profileUserID: profileUserID)
-                    // 名前とBio
-                    getAdditionalProfileInfo(userID: profileUserID)
+                    Task {
+                        profileUpdate(userID: profileUserID)
+                        // 画像のリロードのタイミング
+                        getProfileImage(profileUserID: profileUserID)
+                        // 名前とBio
+                        getAdditionalProfileInfo(userID: profileUserID)
+                        await posts.refreshUpdateHome()
+                        await posts.refreshUpdateMyUserPost(userID: profileUserID)
+                    }
                 },
                 content: {
                     EditProfileView(userDisplayName: $profileDisplayName, userBio: $profileBio, userImage: $profileImage)
@@ -102,6 +106,6 @@ struct ProfileView: View {
 #Preview {
     @State var selectedImage = UIImage(named: "hiyoko")!
     return NavigationStack {
-        ProfileView(isMyProfile: true, profileDisplayName: "hina", profileUserID: "", posts: PostArrayObject())
+        ProfileView(isMyProfile: true, posts: PostArrayObject(), profileDisplayName: "hina", profileUserID: "")
     }
 }

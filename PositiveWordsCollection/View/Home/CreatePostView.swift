@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CreatePostView: View {
     @FocusState private var focusedField: Bool
-    @StateObject var posts: PostArrayObject
+    @ObservedObject var posts: PostArrayObject
     @State var nameText = ""
     @State var bioText = ""
     @State var postStamp = UIImage(named: "noImage")!
@@ -147,7 +147,7 @@ struct CreatePostView: View {
         Task {
             let postID = DataService.instance.createPostId()
             let date = Date()
-            let post = Post(postId: postID, userId: userID, displayName: displayName, caption: bioText, dateCreated: date)
+            let post = Post(postId: postID, userId: userID, displayName: displayName, caption: bioText, dateCreated: date, likeCount: 0, commentCount: 0)
             await DataService.instance.uploadPost(post: post, image: selectedImage)
             // 確認
             let postModel = PostModel(postID: postID, userID: userID, username: displayName, caption: bioText, dateCreated: date, likeCount: 0, likedByUser: false, comentsCount: 0)
