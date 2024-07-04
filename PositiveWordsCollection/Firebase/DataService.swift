@@ -219,7 +219,7 @@ class DataService {
     }
     // 🩵
     func commentPostCount(postID: String, currentUserID: String) async throws {
-        let commentArray = try await downloadComments(postID: postID)
+        _ = try await downloadComments(postID: postID)
         let increment: Int64 = 1
         let data: [String: Any] = [
             DatabaseHelperField.commentCount: FieldValue.increment(increment)

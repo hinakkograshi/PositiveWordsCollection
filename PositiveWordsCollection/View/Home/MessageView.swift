@@ -28,7 +28,7 @@ struct MessageView: View {
                 } else {
                     HStack {
                         NavigationLink(destination: LazyView(content: {
-                            ProfileView(isMyProfile: false, profileDisplayName: comment.username, profileUserID: comment.userID, posts: posts)
+                            ProfileView(isMyProfile: false, posts: posts, profileDisplayName: comment.username, profileUserID: comment.userID)
                         }), label: {
                             if let userID = currentUserID {
                                 if comment.userID != userID {
