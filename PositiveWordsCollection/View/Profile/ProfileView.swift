@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
+    @AppStorage("hiddenUserIDs") var hiddenUserIDs: [String] = []
     var isMyProfile: Bool
     @ObservedObject var posts: PostArrayObject
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
@@ -19,6 +21,7 @@ struct ProfileView: View {
     @State var showEditProfileView: Bool = false
     @Environment(\.colorScheme) var colorScheme
     @State var firstAppear = true
+    @State var showBlockAlert = false
 
     var body: some View {
         ProfileHeaderView(profileUserID: profileUserID, profileDisplayName: $profileDisplayName, profileImage: $profileImage, profileBio: $profileBio, isMyProfile: isMyProfile, posts: posts)
@@ -33,13 +36,21 @@ struct ProfileView: View {
             .toolbarBackground(.visible, for: .navigationBar)
 
             .toolbar {
-                Button(action: {
-                    showEditProfileView = true
-                }, label: {
-                    Text("編集")
-                })
-                .tint(colorScheme == .light ? Color.MyTheme.purpleColor: Color.MyTheme.yellowColor)
-                .opacity(isMyProfile ? 1.0 : 0.0)
+                if isMyProfile {
+                    Button(action: {
+                        showEditProfileView = true
+                    }, label: {
+                        Text("編集")
+                    })
+                    .tint(Color.MyTheme.purpleColor)
+                } else {
+                    Button(action: {
+                        showBlockAlert = true
+                    }, label: {
+                        Image(systemName: "person.slash.fill")
+                            .tint(.red)
+                    })
+                }
             }
             .onAppear {
                 if firstAppear == true {
@@ -51,6 +62,19 @@ struct ProfileView: View {
                     }
                 }
             }
+            .alert("このユーザーをブロックしますか？", isPresented: $showBlockAlert, actions: {
+                Button("戻る", role: .cancel) {
+
+                }
+                Button("ブロックする", role: .destructive) {
+                    // 🟥ブロックする
+
+
+//                    reportPost()
+                }
+            }, message: {
+                Text("ブロックするとユーザーの投稿が見えなくなります。")
+            })
             .sheet(
                 isPresented: $showEditProfileView,
                 onDismiss: {
@@ -60,7 +84,7 @@ struct ProfileView: View {
                         getProfileImage(profileUserID: profileUserID)
                         // 名前とBio
                         getAdditionalProfileInfo(userID: profileUserID)
-                        await posts.refreshUpdateHome()
+                        await posts.refreshUpdateHome(hiddenPostIDs: hiddenPostIDs)
                         await posts.refreshUpdateMyUserPost(userID: profileUserID)
                     }
                 },
@@ -70,7 +94,9 @@ struct ProfileView: View {
                         .preferredColorScheme(colorScheme)
                 })
     }
+    
     // MARK: FUNCTION
+    
     func profileUpdate(userID: String) {
         Task {
             if isMyProfile {

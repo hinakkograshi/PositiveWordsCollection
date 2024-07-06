@@ -13,7 +13,7 @@ extension Query {
     //    func getDocument<T>(as type: T.Type) async throws -> [T] where T: Decodable {
     //        try await getDocumentWithSnapshot(as: type).products
     //    }
-    
+
     func getDocumentWithSnapshot<T>(as type: T.Type) async throws -> (products: [T], lastDocument: DocumentSnapshot?) where T: Decodable {
         let snapshot = try await self.getDocuments()
         let products = try snapshot.documents.map { document in
@@ -28,27 +28,31 @@ class DataService {
     private var postsCollection = Firestore.firestore().collection("posts")
     private var reportsCollection = Firestore.firestore().collection("reports")
     private let userCollection = Firestore.firestore().collection("users")
+    private func postDocument(postId: String) -> DocumentReference {
+        postsCollection.document(postId)
+    }
     private func commentSubCollection(postId: String) -> CollectionReference {
         postsCollection.document(postId).collection("comments")
     }
     private func likedBySubCollection(postId: String) -> CollectionReference { postsCollection.document(postId).collection("liked_by")
     }
-    
+
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
-    
+
     private let encoder: Firestore.Encoder = {
         let encoder = Firestore.Encoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
         return encoder
     }()
-    
+
     func createPostId() -> String {
         let document = postsCollection.document()
         let postID = document.documentID
         return postID
     }
-    
+
     // MARK: Get functions
+
     func downloadPostForUser(userID: String) async throws -> [PostModel] {
         let userPosts = try await postsCollection.whereField(DatabaseHelperField.userID, isEqualTo: userID).getDocuments().documents.compactMap {
             try? $0.data(as: Post.self)
@@ -75,30 +79,51 @@ class DataService {
             return (posts, lastDoc)
         }
     }
-    
+
     // Pagination
-    func getHomeScrollPostsForFeed(lastDocument: DocumentSnapshot?) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
+    func getHomeScrollPostsForFeed(lastDocument: DocumentSnapshot?, hiddenPostIDs: [String]) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
         // First FiveData
         if let lastDocument {
-            let (postsQuery, lastDoc) = try await postsCollection
+            let (posts, lastDoc) = try await postsCollection
                 .order(by: DatabaseHelperField.dateCreated, descending: true)
                 .limit(to: 5)
                 .start(afterDocument: lastDocument)
                 .getDocumentWithSnapshot(as: Post.self)
-            let posts = try await getPostsFromSnapshot(posts: postsQuery)
-            //            print("🟩true:\(lastDocument)")
-            return (posts, lastDoc)
+            let filterPosts = try await downloadHiddenPost(hiddenPostIDs: hiddenPostIDs, newPosts: posts)
+            let postModels = try await getPostsFromSnapshot(posts: filterPosts)
+            return (postModels, lastDoc)
         } else {
-            let (postsQuery, lastDoc) = try await postsCollection
+            let (posts, lastDoc) = try await postsCollection
                 .order(by: DatabaseHelperField.dateCreated, descending: true)
                 .limit(to: 5).getDocumentWithSnapshot(as: Post.self)
-            print("🐥🐥POST:\(postsQuery)")
-            let posts = try await getPostsFromSnapshot(posts: postsQuery)
-            //            print("🟥false:\(lastDocument)")
-            return (posts, lastDoc)
+            print("🐥🐥POST:\(posts)")
+            let filterPosts = try await downloadHiddenPost(hiddenPostIDs: hiddenPostIDs, newPosts: posts)
+            let postModels = try await getPostsFromSnapshot(posts: filterPosts)
+            return (postModels, lastDoc)
         }
     }
-    
+    private func downloadHiddenPost(hiddenPostIDs: [String], newPosts: [Post]) async throws -> [Post] {
+        var filterPosts = newPosts
+        if hiddenPostIDs != [] {
+            // hiddenPostIDsがからじゃなかったら
+            for hiddenPostID in hiddenPostIDs {
+                print("⭐️\(hiddenPostID)")
+                do {
+                    let hiddenPost = try  await postDocument(postId: hiddenPostID).getDocument().data(as: Post.self)
+                    print(hiddenPost)
+                } catch {
+                    print(error)
+                }
+                for post in filterPosts where post.postId == hiddenPostID {
+                        filterPosts.removeAll { $0 == post }
+                    print("⭐️\(filterPosts)")
+                }
+                print("⭐️\(filterPosts)")
+            }
+        }
+        return filterPosts
+    }
+
     private func getPostsFromSnapshot(posts: [Post]) async throws -> [PostModel] {
         var postArray = [PostModel]()
         for post in posts {
@@ -113,7 +138,7 @@ class DataService {
         }
         return postArray
     }
-    
+
     private func getCommentsFromSnapshot(comments: [Comment]) -> [CommentModel] {
         var commentArray = [CommentModel]()
         for comment in comments {
@@ -122,13 +147,13 @@ class DataService {
         }
         return commentArray
     }
-    
+
     func downloadComments(postID: String) async throws -> [CommentModel] {
         let comments = try await commentSubCollection(postId: postID).order(by: DatabaseHelperField.dateCreated, descending: false).getDocuments().documents.compactMap { try? $0.data(as: Comment.self)
         }
         return getCommentsFromSnapshot(comments: comments)
     }
-    
+
     // MARK: UPDATE FUNCTION
     func uploadPost(post: Post, image: UIImage) async {
         do {
@@ -142,13 +167,13 @@ class DataService {
     func uploadReport(reports: Report) throws {
         try reportsCollection.document().setData(from: reports, encoder: encoder)
     }
-    
+
     func createCommentId(postID: String) -> String {
         let document = commentSubCollection(postId: postID).document()
         let commentID = document.documentID
         return commentID
     }
-    
+
     // MARK: UPDATE FUNCTION
     // commentsSubCollection
     func uploadComment(comment: Comment, postID: String) async {
@@ -171,7 +196,7 @@ class DataService {
             return false
         }
     }
-    
+
     // 🐥
     func sumLikePost(userID: String) async throws -> Int {
         let sum = try await Firestore.firestore()
@@ -226,12 +251,12 @@ class DataService {
         ]
         try await postsCollection.document(postID).updateData(data)
     }
-    
+
     func uploadLikedPost(postID: String, like: Like) throws {
         let document = likedBySubCollection(postId: postID).document(like.userId)
         try document.setData(from: like, encoder: encoder)
     }
-    
+
     // MARK: UPDATE USER FUNCTION
     func updateDisplayNameOnPosts(userID: String, displayName: String) async throws {
         let posts = try await downloadPostForUser(userID: userID)
@@ -240,7 +265,7 @@ class DataService {
             self.updatePostDisplayName(postID: post.postID, displayName: displayName)
         }
     }
-    
+
     private func updatePostDisplayName(postID: String, displayName: String) {
         let data: [String: Any] = [
             DatabaseHelperField.displayName: displayName

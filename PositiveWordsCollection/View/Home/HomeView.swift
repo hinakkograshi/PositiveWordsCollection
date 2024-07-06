@@ -12,6 +12,7 @@ struct HomeView: View {
     @State var showCreatePostView = false
     @State var firstAppear = true
     @State var isLastPost = false
+    @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack {
@@ -21,7 +22,7 @@ struct HomeView: View {
                         ProgressView()
                             .onAppear {
                                 Task {
-                                    isLastPost = await posts.refreshHome()
+                                    isLastPost = await posts.refreshHome(hiddenPostIDs: hiddenPostIDs)
                                 }
                             }
                     }
@@ -55,7 +56,7 @@ struct HomeView: View {
             if firstAppear == true {
                 print("🟩初めて")
                 Task {
-                    await posts.refreshHome()
+                    await posts.refreshHome(hiddenPostIDs: hiddenPostIDs)
                 }
             }
         }

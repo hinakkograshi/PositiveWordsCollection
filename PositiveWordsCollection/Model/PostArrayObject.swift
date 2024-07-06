@@ -12,6 +12,7 @@ class PostArrayObject: ObservableObject {
     @Published var dataArray: [PostModel] = []
     @Published var userPostArray: [PostModel] = []
     @Published var myUserPostArray: [PostModel] = []
+
     // ProfileViewが一度も表示されていない時ポスト追加
     @Published var profileViewOn = false
     @Published var postCountString = "0"
@@ -20,11 +21,11 @@ class PostArrayObject: ObservableObject {
     private var lastUserDocument: DocumentSnapshot? = nil
     private var lastMyUserDocument: DocumentSnapshot? = nil
     
-    func refreshUpdateHome() async {
+    func refreshUpdateHome(hiddenPostIDs: [String]) async {
         dataArray = []
         lastDocument = nil
         do {
-            let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument)
+            let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument, hiddenPostIDs: hiddenPostIDs)
             self.dataArray.append(contentsOf: newPosts)
             if let lastDocument {
                 self.lastDocument = lastDocument
@@ -101,10 +102,10 @@ class PostArrayObject: ObservableObject {
         return isLastPost
     }
     
-    func refreshHome() async -> (Bool) {
+    func refreshHome(hiddenPostIDs: [String]) async -> (Bool) {
         var isLastPost = false
         do {
-            let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument)
+            let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument, hiddenPostIDs: hiddenPostIDs)
             self.dataArray.append(contentsOf: newPosts)
             if let lastDocument {
                 self.lastDocument = lastDocument
