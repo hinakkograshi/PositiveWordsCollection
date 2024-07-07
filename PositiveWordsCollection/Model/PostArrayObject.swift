@@ -31,7 +31,8 @@ class PostArrayObject: ObservableObject {
                 self.lastDocument = lastDocument
             }
         } catch {
-            print("🟥refreshAllUserPosts Error")
+            print("🟥refreshAllUserPosts Error: \(error)")
+            print("\(error)")
         }
     }
     func refreshUpdateMyUserPost(userID: String) async {
@@ -46,7 +47,7 @@ class PostArrayObject: ObservableObject {
             self.myUserPostArray.append(contentsOf: sortedPosts)
             self.lastMyUserDocument = lastMyUserDocument
         } catch {
-            print("🟥refreshAllUserPosts Error")
+            print("🟥refreshUpdateMyUserPost Error")
         }
     }
     
@@ -71,7 +72,7 @@ class PostArrayObject: ObservableObject {
                 isMyLastPost = true
             }
         } catch {
-            print("🟥refreshAllUserPosts Error")
+            print("🟥refreshMyUserPost Error")
         }
         return isMyLastPost
     }
@@ -97,7 +98,7 @@ class PostArrayObject: ObservableObject {
                 isLastPost = true
             }
         } catch {
-            print("🟥refreshAllUserPosts Error")
+            print("🟥refreshUserPost Error")
         }
         return isLastPost
     }
@@ -114,7 +115,7 @@ class PostArrayObject: ObservableObject {
                 isLastPost = true
             }
         } catch {
-            print("🟥refreshAllUserPosts Error")
+            print("🟥refreshHome: \(error)")
         }
         return isLastPost
     }

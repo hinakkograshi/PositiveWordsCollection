@@ -28,6 +28,7 @@ class DataService {
     private var postsCollection = Firestore.firestore().collection("posts")
     private var reportsCollection = Firestore.firestore().collection("reports")
     private let userCollection = Firestore.firestore().collection("users")
+//    private let blockCollection = Firestore.firestore().collection("user_blocking")
     private func postDocument(postId: String) -> DocumentReference {
         postsCollection.document(postId)
     }
@@ -35,6 +36,9 @@ class DataService {
         postsCollection.document(postId).collection("comments")
     }
     private func likedBySubCollection(postId: String) -> CollectionReference { postsCollection.document(postId).collection("liked_by")
+    }
+    private func blockSubCollection(userId: String) -> CollectionReference {
+        userCollection.document(userId).collection("block_lists")
     }
 
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
@@ -50,8 +54,6 @@ class DataService {
         let postID = document.documentID
         return postID
     }
-
-    // MARK: Get functions
 
     func downloadPostForUser(userID: String) async throws -> [PostModel] {
         let userPosts = try await postsCollection.whereField(DatabaseHelperField.userID, isEqualTo: userID).getDocuments().documents.compactMap {
@@ -102,6 +104,7 @@ class DataService {
             return (postModels, lastDoc)
         }
     }
+    
     private func downloadHiddenPost(hiddenPostIDs: [String], newPosts: [Post]) async throws -> [Post] {
         var filterPosts = newPosts
         if hiddenPostIDs != [] {
@@ -167,6 +170,7 @@ class DataService {
     func uploadReport(reports: Report) throws {
         try reportsCollection.document().setData(from: reports, encoder: encoder)
     }
+
 
     func createCommentId(postID: String) -> String {
         let document = commentSubCollection(postId: postID).document()
@@ -250,6 +254,12 @@ class DataService {
             DatabaseHelperField.commentCount: FieldValue.increment(increment)
         ]
         try await postsCollection.document(postID).updateData(data)
+    }
+
+    func blockedUser(blockedUser: BlockedUser) throws {
+        let document = blockSubCollection(userId: blockedUser.myblockingUser).document(blockedUser.blockedUser)
+        try document.setData(from: blockedUser, encoder: encoder)
+//        try blockCollection.document(blockedUser.blockedUser).setData(from: blockedUser, encoder: encoder)
     }
 
     func uploadLikedPost(postID: String, like: Like) throws {
