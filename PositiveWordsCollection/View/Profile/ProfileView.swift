@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ProfileView: View {
     @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
-    @AppStorage("hiddenUserIDs") var hiddenUserIDs: [String] = []
     var isMyProfile: Bool
     @ObservedObject var posts: PostArrayObject
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
@@ -68,7 +67,7 @@ struct ProfileView: View {
                 }
                 Button("ブロックする", role: .destructive) {
                     // 🟥ブロックする
-
+                    blockUser(profileUserID: profileUserID)
 
 //                    reportPost()
                 }
@@ -96,7 +95,21 @@ struct ProfileView: View {
     }
     
     // MARK: FUNCTION
-    
+    // Block
+    private func blockUser(profileUserID: String) {
+        Task {
+            guard let myUserID = currentUserID else { return }
+            let blockedUser = BlockedUser(myblockingUser: myUserID, blockedUser: profileUserID)
+            do {
+                try DataService.instance.blockedUser(blockedUser: blockedUser)
+            } catch {
+                print("blockUserError: \(error)")
+            }
+        }
+        print("⭐️\(profileUserID)")
+        // 投稿をリフレッシュ
+    }
+
     func profileUpdate(userID: String) {
         Task {
             if isMyProfile {
