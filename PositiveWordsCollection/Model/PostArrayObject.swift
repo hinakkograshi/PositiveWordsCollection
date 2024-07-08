@@ -21,11 +21,11 @@ class PostArrayObject: ObservableObject {
     private var lastUserDocument: DocumentSnapshot? = nil
     private var lastMyUserDocument: DocumentSnapshot? = nil
     
-    func refreshUpdateHome(hiddenPostIDs: [String]) async {
+    func refreshUpdateHome(hiddenPostIDs: [String], blockedUserIDs: [String]) async {
         dataArray = []
         lastDocument = nil
         do {
-            let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument, hiddenPostIDs: hiddenPostIDs)
+            let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument, hiddenPostIDs: hiddenPostIDs, blockedUserIDs: blockedUserIDs)
             self.dataArray.append(contentsOf: newPosts)
             if let lastDocument {
                 self.lastDocument = lastDocument
@@ -103,10 +103,10 @@ class PostArrayObject: ObservableObject {
         return isLastPost
     }
     
-    func refreshHome(hiddenPostIDs: [String]) async -> (Bool) {
+    func refreshHome(hiddenPostIDs: [String], blockedUserIDs: [String]) async -> (Bool) {
         var isLastPost = false
         do {
-            let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument, hiddenPostIDs: hiddenPostIDs)
+            let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument, hiddenPostIDs: hiddenPostIDs, blockedUserIDs: blockedUserIDs)
             self.dataArray.append(contentsOf: newPosts)
             if let lastDocument {
                 self.lastDocument = lastDocument

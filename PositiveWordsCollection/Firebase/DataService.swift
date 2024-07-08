@@ -83,25 +83,44 @@ class DataService {
     }
 
     // Pagination
-    func getHomeScrollPostsForFeed(lastDocument: DocumentSnapshot?, hiddenPostIDs: [String]) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
+    func getHomeScrollPostsForFeed(lastDocument: DocumentSnapshot?, hiddenPostIDs: [String], blockedUserIDs: [String]) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
         // First FiveData
         if let lastDocument {
-            let (posts, lastDoc) = try await postsCollection
-                .order(by: DatabaseHelperField.dateCreated, descending: true)
-                .limit(to: 5)
-                .start(afterDocument: lastDocument)
-                .getDocumentWithSnapshot(as: Post.self)
-            let filterPosts = try await downloadHiddenPost(hiddenPostIDs: hiddenPostIDs, newPosts: posts)
-            let postModels = try await getPostsFromSnapshot(posts: filterPosts)
-            return (postModels, lastDoc)
+            if blockedUserIDs == [] {
+                let (posts, lastDoc) = try await postsCollection
+                    .order(by: DatabaseHelperField.dateCreated, descending: true)
+                    .limit(to: 5)
+                    .start(afterDocument: lastDocument)
+                    .getDocumentWithSnapshot(as: Post.self)
+                let filterPosts = try await downloadHiddenPost(hiddenPostIDs: hiddenPostIDs, newPosts: posts)
+                let postModels = try await getPostsFromSnapshot(posts: filterPosts)
+                return (postModels, lastDoc)
+            } else {
+                let (postsQuery, lastDoc) = try await postsCollection
+                    .whereField(DatabaseHelperField.userID, notIn: blockedUserIDs)
+                    .limit(to: 5)
+                    .start(afterDocument: lastDocument)
+                    .getDocumentWithSnapshot(as: Post.self)
+                let posts = try await getPostsFromSnapshot(posts: postsQuery)
+                return (posts, lastDoc)
+            }
         } else {
-            let (posts, lastDoc) = try await postsCollection
-                .order(by: DatabaseHelperField.dateCreated, descending: true)
-                .limit(to: 5).getDocumentWithSnapshot(as: Post.self)
-            print("🐥🐥POST:\(posts)")
-            let filterPosts = try await downloadHiddenPost(hiddenPostIDs: hiddenPostIDs, newPosts: posts)
-            let postModels = try await getPostsFromSnapshot(posts: filterPosts)
-            return (postModels, lastDoc)
+            if blockedUserIDs == [] {
+                let (posts, lastDoc) = try await postsCollection
+                    .order(by: DatabaseHelperField.dateCreated, descending: true)
+                    .limit(to: 5).getDocumentWithSnapshot(as: Post.self)
+                print("🐥🐥POST:\(posts)")
+                let filterPosts = try await downloadHiddenPost(hiddenPostIDs: hiddenPostIDs, newPosts: posts)
+                let postModels = try await getPostsFromSnapshot(posts: filterPosts)
+                return (postModels, lastDoc)
+            } else {
+                let (postsQuery, lastDoc) = try await postsCollection
+                    .whereField(DatabaseHelperField.userID, notIn: blockedUserIDs)
+                    .limit(to: 5)
+                    .getDocumentWithSnapshot(as: Post.self)
+                let posts = try await getPostsFromSnapshot(posts: postsQuery)
+                return (posts, lastDoc)
+            }
         }
     }
     
