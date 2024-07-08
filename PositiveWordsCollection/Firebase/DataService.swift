@@ -98,10 +98,12 @@ class DataService {
             } else {
                 let (postsQuery, lastDoc) = try await postsCollection
                     .whereField(DatabaseHelperField.userID, notIn: blockedUserIDs)
+                    .order(by: DatabaseHelperField.dateCreated, descending: true)
                     .limit(to: 5)
                     .start(afterDocument: lastDocument)
                     .getDocumentWithSnapshot(as: Post.self)
-                let posts = try await getPostsFromSnapshot(posts: postsQuery)
+                let filterPosts = try await downloadHiddenPost(hiddenPostIDs: hiddenPostIDs, newPosts: postsQuery)
+                let posts = try await getPostsFromSnapshot(posts: filterPosts)
                 return (posts, lastDoc)
             }
         } else {
@@ -116,9 +118,11 @@ class DataService {
             } else {
                 let (postsQuery, lastDoc) = try await postsCollection
                     .whereField(DatabaseHelperField.userID, notIn: blockedUserIDs)
+                    .order(by: DatabaseHelperField.dateCreated, descending: true)
                     .limit(to: 5)
                     .getDocumentWithSnapshot(as: Post.self)
-                let posts = try await getPostsFromSnapshot(posts: postsQuery)
+                let filterPosts = try await downloadHiddenPost(hiddenPostIDs: hiddenPostIDs, newPosts: postsQuery)
+                let posts = try await getPostsFromSnapshot(posts: filterPosts)
                 return (posts, lastDoc)
             }
         }
