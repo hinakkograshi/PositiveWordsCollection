@@ -61,6 +61,12 @@ struct SettingsView: View {
                         }
                     }
                     .foregroundStyle(.black)
+                    Button("お問い合わせ") {
+                        if let url = URL(string: "https://forms.gle/3wn7dAvNAaciAwQj9") {
+                            openURL(url)
+                        }
+                    }
+                    .foregroundStyle(.black)
                 } header: {
                     Text("その他")
                 }
