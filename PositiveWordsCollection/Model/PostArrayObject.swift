@@ -105,6 +105,7 @@ class PostArrayObject: ObservableObject {
     
     func refreshHome(hiddenPostIDs: [String], blockedUserIDs: [String]) async -> (Bool) {
         var isLastPost = false
+
         do {
             let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument, hiddenPostIDs: hiddenPostIDs, blockedUserIDs: blockedUserIDs)
             self.dataArray.append(contentsOf: newPosts)
