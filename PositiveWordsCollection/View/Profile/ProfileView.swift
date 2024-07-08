@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
+    @AppStorage("blockedUserIDs") var blockedUserIDs: [String] = []
     var isMyProfile: Bool
     @ObservedObject var posts: PostArrayObject
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
@@ -83,7 +84,7 @@ struct ProfileView: View {
                         getProfileImage(profileUserID: profileUserID)
                         // 名前とBio
                         getAdditionalProfileInfo(userID: profileUserID)
-                        await posts.refreshUpdateHome(hiddenPostIDs: hiddenPostIDs)
+                        await posts.refreshUpdateHome(hiddenPostIDs: hiddenPostIDs, blockedUserIDs: blockedUserIDs)
                         await posts.refreshUpdateMyUserPost(userID: profileUserID)
                     }
                 },
@@ -96,8 +97,10 @@ struct ProfileView: View {
     
     // MARK: FUNCTION
     // Block
+
     private func blockUser(profileUserID: String) {
         Task {
+            blockedUserIDs.append(profileUserID)
             guard let myUserID = currentUserID else { return }
             let blockedUser = BlockedUser(myblockingUser: myUserID, blockedUser: profileUserID)
             do {
@@ -107,7 +110,7 @@ struct ProfileView: View {
             }
         }
         print("⭐️\(profileUserID)")
-        // 投稿をリフレッシュ
+        print("⭐️\(hiddenPostIDs)⭐️")
     }
 
     func profileUpdate(userID: String) {
