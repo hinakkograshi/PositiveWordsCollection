@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct PostView: View {
+    @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
     @State var post: PostModel
     @ObservedObject var posts: PostArrayObject
     @State var animateLike: Bool = false
@@ -73,10 +74,21 @@ struct PostView: View {
                             }
                         }
                     }
+                    if let userID = currentUserID {
+                        if post.userID != userID {
+                            Button {
+                                print("⭐️隠しました")
+                                hidePost()
+                            } label: {
+                                Text("この投稿を非表示にする")
+                            }
+                        }
+                    }
                 } label: {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 20))
                 }
+
                 .padding(.trailing, 10)
                 .tint(.primary)
             }
@@ -165,6 +177,12 @@ struct PostView: View {
         }
     }
     // MARK: function
+    func hidePost() {
+        hiddenPostIDs.append(post.postID)
+        let deletedDataArray = posts.dataArray.filter { $0 != post }
+        posts.dataArray = deletedDataArray
+        print("⭐️\(hiddenPostIDs)⭐️")
+    }
 
     func deletePostView() {
         Task {
