@@ -77,21 +77,7 @@ struct ProfileHeaderView: View {
                 })
             })
         })
-//        .onAppear {
-//            Task {
-//                do {
-//                    sumLike = try await sumLike(userID: profileUserID)
-//                } catch {
-//                    print("SumLikeError")
-//
-//                }
-//            }
-//        }
     }
-//    func sumLike(userID: String) async throws -> String {
-//            let sumOfLike = try await DataService.instance.sumLikePost(userID: userID)
-//            return String(sumOfLike)
-//    }
 }
 
 #Preview {
