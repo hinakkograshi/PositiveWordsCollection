@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
-    @AppStorage("blockedUserIDs") var blockedUserIDs: [String] = []
+//    @AppStorage("blockedUserIDs") var blockedUserIDs: [String] = []
     var isMyProfile: Bool
     @ObservedObject var posts: PostArrayObject
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
@@ -84,7 +84,8 @@ struct ProfileView: View {
                         getProfileImage(profileUserID: profileUserID)
                         // 名前とBio
                         getAdditionalProfileInfo(userID: profileUserID)
-                        await posts.refreshUpdateHome(hiddenPostIDs: hiddenPostIDs, blockedUserIDs: blockedUserIDs)
+                        guard let myUserId = currentUserID else {return}
+                        await posts.refreshUpdateHome(hiddenPostIDs: hiddenPostIDs, myUserID: myUserId)
                         await posts.refreshUpdateMyUserPost(userID: profileUserID)
                     }
                 },
@@ -99,18 +100,14 @@ struct ProfileView: View {
     // Block
 
     private func blockUser(profileUserID: String) {
+        guard let myUserID = currentUserID else { return }
         Task {
-            blockedUserIDs.append(profileUserID)
-            guard let myUserID = currentUserID else { return }
-            let blockedUser = BlockedUser(myblockingUser: myUserID, blockedUser: profileUserID)
             do {
-                try DataService.instance.blockedUser(blockedUser: blockedUser)
+                try await AuthService.instance.addBlockedUser(myUserID: myUserID, blockedUserID: profileUserID)
             } catch {
-                print("blockUserError: \(error)")
+                print("\(error)")
             }
         }
-        print("⭐️\(profileUserID)")
-        print("⭐️\(hiddenPostIDs)⭐️")
     }
 
     func profileUpdate(userID: String) {

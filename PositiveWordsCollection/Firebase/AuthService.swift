@@ -39,6 +39,25 @@ class AuthService {
         return userID
     }
 
+    // ブロックUser追加
+    func addBlockedUser(myUserID: String, blockedUserID: String) async throws {
+        let data: [String: Any] = [
+            "blocked_users": FieldValue.arrayUnion([blockedUserID])
+        ]
+        do {
+            try await userDocument(userId: myUserID).updateData(data)
+        } catch {
+            print("\(error)")
+        }
+    }
+
+    func getBlockedUser(myUserID: String) async throws -> [String] {
+            let docRef = userDocument(userId: myUserID)
+            let document = try await docRef.getDocument()
+            let blockedUserArray = document.get("blocked_users") as? [String] ?? []
+            return blockedUserArray
+    }
+
     // キャメルケースをスネークケースにする
     private let encoder: Firestore.Encoder = {
         let encoder = Firestore.Encoder()
