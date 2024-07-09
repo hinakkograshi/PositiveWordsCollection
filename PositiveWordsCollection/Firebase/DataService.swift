@@ -28,7 +28,7 @@ class DataService {
     private var postsCollection = Firestore.firestore().collection("posts")
     private var reportsCollection = Firestore.firestore().collection("reports")
     private let userCollection = Firestore.firestore().collection("users")
-//    private let blockCollection = Firestore.firestore().collection("user_blocking")
+
     private func postDocument(postId: String) -> DocumentReference {
         postsCollection.document(postId)
     }
@@ -37,10 +37,6 @@ class DataService {
     }
     private func likedBySubCollection(postId: String) -> CollectionReference { postsCollection.document(postId).collection("liked_by")
     }
-    private func blockSubCollection(userId: String) -> CollectionReference {
-        userCollection.document(userId).collection("block_lists")
-    }
-
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
 
     private let encoder: Firestore.Encoder = {
@@ -81,9 +77,15 @@ class DataService {
             return (posts, lastDoc)
         }
     }
+    // 🟥報告
+    func uploadReport(reports: Report) throws {
+        try reportsCollection.document().setData(from: reports, encoder: encoder)
+    }
+    
 
     // Pagination
-    func getHomeScrollPostsForFeed(lastDocument: DocumentSnapshot?, hiddenPostIDs: [String], blockedUserIDs: [String]) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
+    func getHomeScrollPostsForFeed(lastDocument: DocumentSnapshot?, hiddenPostIDs: [String], myUserID: String) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
+        let blockedUserIDs = try await AuthService.instance.getBlockedUser(myUserID: myUserID)
         // First FiveData
         if let lastDocument {
             if blockedUserIDs == [] {
@@ -127,7 +129,7 @@ class DataService {
             }
         }
     }
-    
+
     private func downloadHiddenPost(hiddenPostIDs: [String], newPosts: [Post]) async throws -> [Post] {
         var filterPosts = newPosts
         if hiddenPostIDs != [] {
@@ -189,11 +191,6 @@ class DataService {
             print("🟥Error uploading post image to firebase")
         }
     }
-    // 🟥報告
-    func uploadReport(reports: Report) throws {
-        try reportsCollection.document().setData(from: reports, encoder: encoder)
-    }
-
 
     func createCommentId(postID: String) -> String {
         let document = commentSubCollection(postId: postID).document()
@@ -279,11 +276,11 @@ class DataService {
         try await postsCollection.document(postID).updateData(data)
     }
 
-    func blockedUser(blockedUser: BlockedUser) throws {
-        let document = blockSubCollection(userId: blockedUser.myblockingUser).document(blockedUser.blockedUser)
-        try document.setData(from: blockedUser, encoder: encoder)
-//        try blockCollection.document(blockedUser.blockedUser).setData(from: blockedUser, encoder: encoder)
-    }
+//    func blockedUser(blockedUser: BlockedUser) throws {
+//        let document = blockSubCollection(userId: blockedUser.myblockingUser).document(blockedUser.blockedUser)
+//        try document.setData(from: blockedUser, encoder: encoder)
+////        try blockCollection.document(blockedUser.blockedUser).setData(from: blockedUser, encoder: encoder)
+//    }
 
     func uploadLikedPost(postID: String, like: Like) throws {
         let document = likedBySubCollection(postId: postID).document(like.userId)
