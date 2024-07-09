@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ProfileView: View {
     @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
-//    @AppStorage("blockedUserIDs") var blockedUserIDs: [String] = []
     var isMyProfile: Bool
     @ObservedObject var posts: PostArrayObject
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
@@ -68,9 +67,11 @@ struct ProfileView: View {
                 }
                 Button("ブロックする", role: .destructive) {
                     // 🟥ブロックする
-                    blockUser(profileUserID: profileUserID)
-
-//                    reportPost()
+                    Task {
+                        blockUser(profileUserID: profileUserID)
+                        guard let myUserID = currentUserID else { return }
+                        await posts.refreshUpdateHome(hiddenPostIDs: hiddenPostIDs, myUserID: myUserID)
+                    }
                 }
             }, message: {
                 Text("ブロックするとユーザーの投稿が見えなくなります。")
@@ -116,8 +117,11 @@ struct ProfileView: View {
                 _ = await posts.refreshMyUserPost(userID: userID)
                 posts.updateCounts(userID: userID)
             } else {
-                _ = await posts.refreshUserPost(userID: userID)
-                posts.updateCounts(userID: userID)
+                Task {
+                    posts.reset()
+                    _ = await posts.refreshUserPost(userID: userID)
+                    posts.updateCounts(userID: userID)
+                }
             }
         }
     }
