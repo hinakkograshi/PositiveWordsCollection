@@ -78,8 +78,17 @@ class DataService {
         }
     }
     // 🟥報告
-    func uploadReport(reports: Report) throws {
-        try reportsCollection.document().setData(from: reports, encoder: encoder)
+    func uploadReport(reports: Report, handler: @escaping (_ success: Bool) -> Void) throws {
+        try reportsCollection.document().setData(from: reports, encoder: encoder) { error in
+            if let error = error {
+                print("Error uploadomg report.\(error)")
+                handler(false)
+                return
+            } else {
+                handler(true)
+                return
+            }
+        }
     }
     
     // Pagination
