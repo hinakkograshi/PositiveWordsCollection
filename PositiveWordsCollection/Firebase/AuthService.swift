@@ -50,6 +50,16 @@ class AuthService {
             print("\(error)")
         }
     }
+    func addBlockingUser(myUserID: String, blockedUserID: String) async throws {
+        let data: [String: Any] = [
+            "blocked_users": FieldValue.arrayUnion([myUserID])
+        ]
+        do {
+            try await userDocument(userId: blockedUserID).updateData(data)
+        } catch {
+            print("\(error)")
+        }
+    }
 
     func getBlockedUser(myUserID: String) async throws -> [String] {
             let docRef = userDocument(userId: myUserID)
