@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5304DEE72C246949008400DB /* DeleteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5304DEE62C246949008400DB /* DeleteService.swift */; };
+		5325FE152C396F3900DC5A6E /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5325FE142C396F3900DC5A6E /* Array.swift */; };
 		533050D92C1430C10081B60B /* ProfilePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533050D82C1430C10081B60B /* ProfilePostView.swift */; };
 		533D40A02BF9E408005C684A /* SignInAppleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533D409F2BF9E408005C684A /* SignInAppleHelper.swift */; };
 		533D40A42BFA01D2005C684A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533D40A32BFA01D2005C684A /* HomeView.swift */; };
@@ -63,6 +64,7 @@
 
 /* Begin PBXFileReference section */
 		5304DEE62C246949008400DB /* DeleteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteService.swift; sourceTree = "<group>"; };
+		5325FE142C396F3900DC5A6E /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		533050D82C1430C10081B60B /* ProfilePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePostView.swift; sourceTree = "<group>"; };
 		533D409F2BF9E408005C684A /* SignInAppleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInAppleHelper.swift; sourceTree = "<group>"; };
 		533D40A32BFA01D2005C684A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 				537CB6A42C0AE71C00E3F4F0 /* CurrentUserDefaults.swift */,
 				5350B3102C2C356C003BDE7F /* DatabaseHelperField.swift */,
 				534261CE2C0E799F0061B9E6 /* LazyView.swift */,
+				5325FE142C396F3900DC5A6E /* Array.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -404,6 +407,7 @@
 				538BBFC82C288C99005B6A2A /* Like.swift in Sources */,
 				538BBFC42C28859A005B6A2A /* Comment.swift in Sources */,
 				53A6555B2BF787D200D915B5 /* ContentView.swift in Sources */,
+				5325FE152C396F3900DC5A6E /* Array.swift in Sources */,
 				5350B3112C2C356C003BDE7F /* DatabaseHelperField.swift in Sources */,
 				53C157C52BF91494003776CB /* SettingsView.swift in Sources */,
 				5345D9482C0C32DD000287DF /* DataService.swift in Sources */,

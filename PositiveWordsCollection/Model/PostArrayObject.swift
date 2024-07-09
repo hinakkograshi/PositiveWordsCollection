@@ -12,6 +12,7 @@ class PostArrayObject: ObservableObject {
     @Published var dataArray: [PostModel] = []
     @Published var userPostArray: [PostModel] = []
     @Published var myUserPostArray: [PostModel] = []
+
     // ProfileViewが一度も表示されていない時ポスト追加
     @Published var profileViewOn = false
     @Published var postCountString = "0"
@@ -20,17 +21,18 @@ class PostArrayObject: ObservableObject {
     private var lastUserDocument: DocumentSnapshot? = nil
     private var lastMyUserDocument: DocumentSnapshot? = nil
     
-    func refreshUpdateHome() async {
+    func refreshUpdateHome(hiddenPostIDs: [String], myUserID: String) async {
         dataArray = []
         lastDocument = nil
         do {
-            let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument)
+            let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument, hiddenPostIDs: hiddenPostIDs, myUserID: myUserID)
             self.dataArray.append(contentsOf: newPosts)
             if let lastDocument {
                 self.lastDocument = lastDocument
             }
         } catch {
-            print("🟥refreshAllUserPosts Error")
+            print("🟥refreshAllUserPosts Error: \(error)")
+            print("\(error)")
         }
     }
     func refreshUpdateMyUserPost(userID: String) async {
@@ -45,7 +47,7 @@ class PostArrayObject: ObservableObject {
             self.myUserPostArray.append(contentsOf: sortedPosts)
             self.lastMyUserDocument = lastMyUserDocument
         } catch {
-            print("🟥refreshAllUserPosts Error")
+            print("🟥refreshUpdateMyUserPost Error")
         }
     }
     
@@ -70,11 +72,17 @@ class PostArrayObject: ObservableObject {
                 isMyLastPost = true
             }
         } catch {
-            print("🟥refreshAllUserPosts Error")
+            print("🟥refreshMyUserPost Error")
         }
         return isMyLastPost
     }
-    
+
+    func reset() {
+
+        userPostArray = []
+        lastUserDocument = nil
+    }
+
     func refreshUserPost(userID: String) async -> (Bool) {
         profileViewOn = true
         var isLastPost = false
@@ -96,15 +104,15 @@ class PostArrayObject: ObservableObject {
                 isLastPost = true
             }
         } catch {
-            print("🟥refreshAllUserPosts Error")
+            print("🟥refreshUserPost Error")
         }
         return isLastPost
     }
     
-    func refreshHome() async -> (Bool) {
+    func refreshHome(hiddenPostIDs: [String], myUserID: String) async -> (Bool) {
         var isLastPost = false
         do {
-            let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument)
+            let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument, hiddenPostIDs: hiddenPostIDs, myUserID: myUserID)
             self.dataArray.append(contentsOf: newPosts)
             if let lastDocument {
                 self.lastDocument = lastDocument
@@ -113,7 +121,7 @@ class PostArrayObject: ObservableObject {
                 isLastPost = true
             }
         } catch {
-            print("🟥refreshAllUserPosts Error")
+            print("🟥refreshHome: \(error)")
         }
         return isLastPost
     }
