@@ -77,6 +77,12 @@ class PostArrayObject: ObservableObject {
         return isMyLastPost
     }
 
+    func reset() {
+
+        userPostArray = []
+        lastUserDocument = nil
+    }
+
     func refreshUserPost(userID: String) async -> (Bool) {
         profileViewOn = true
         var isLastPost = false
