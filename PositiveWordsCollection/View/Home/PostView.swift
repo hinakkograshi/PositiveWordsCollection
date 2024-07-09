@@ -16,6 +16,7 @@ struct PostView: View {
     @State var postImage = UIImage(named: "loading")!
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @State var showReportsAlert: Bool = false
+    @State var showSuccessReportsAlert: Bool = false
     @State var showDeleteAlert: Bool = false
     let headerIsActive: Bool
     let comentIsActive: Bool
@@ -70,7 +71,7 @@ struct PostView: View {
                             if post.userID == userID {
                                 Text("投稿を削除する")
                             } else {
-                                Text("違反を報告する")
+                                Text("この投稿を通報する")
                             }
                         }
                     }
@@ -162,15 +163,26 @@ struct PostView: View {
         }, message: {
             Text("この投稿を削除しますか？")
         })
-        .alert("違反を報告", isPresented: $showReportsAlert, actions: {
+        .alert("この投稿を通報", isPresented: $showReportsAlert, actions: {
             Button("戻る", role: .cancel) {
 
             }
-            Button("報告する", role: .destructive) {
-                reportPost()
+            Button("通報する", role: .destructive) {
+                do {
+                    try reportPost()
+                } catch {
+                    print("REPORT POST　Error")
+                }
             }
         }, message: {
-            Text("不適切な投稿を報告しますか？")
+            Text("不適切な投稿を通報しますか？")
+        })
+        .alert("通報完了", isPresented: $showSuccessReportsAlert, actions: {
+            Button("OK") {
+                showSuccessReportsAlert = false
+            }
+        }, message: {
+            Text("通報できました。")
         })
         .onAppear {
             getImages()
@@ -198,14 +210,16 @@ struct PostView: View {
         }
     }
     // 報告
-    func reportPost() {
+    func reportPost()  throws {
         print("REPORT POST NOW")
         Task {
-            do {
                 let reports = Report(postId: post.postID, dateCreated: Date())
-                try DataService.instance.uploadReport(reports: reports)
-            } catch {
-                print("REPORT POST Error")
+            try DataService.instance.uploadReport(reports: reports) { success in
+                if success {
+                    showSuccessReportsAlert = true
+                } else {
+                    print("REPORT Error")
+                }
             }
         }
     }
