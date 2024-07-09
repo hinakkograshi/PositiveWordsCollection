@@ -82,7 +82,6 @@ class DataService {
         try reportsCollection.document().setData(from: reports, encoder: encoder)
     }
     
-
     // Pagination
     func getHomeScrollPostsForFeed(lastDocument: DocumentSnapshot?, hiddenPostIDs: [String], myUserID: String) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
         let blockedUserIDs = try await AuthService.instance.getBlockedUser(myUserID: myUserID)
