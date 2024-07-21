@@ -4,8 +4,7 @@
 嬉しかった言葉を日記につけるようにつぶやくことで、ハッピーな気持ちをいつでも見返すことができます。
 
 ## AppStore
-[https://apps.apple.com/jp/app/weekly-todo%E3%83%AA%E3%82%B9%E3%83%88%E6%97%A5%E8%A8%98/id6464771684](https://apps.apple.com/jp/app/%E3%83%9D%E3%82%B8%E3%82%B3%E3%83%AC-positivewordscollection/id6511249150)
-
+https://apps.apple.com/jp/app/%E3%83%9D%E3%82%B8%E3%82%B3%E3%83%AC-positivewordscollection/id6511249150
 ## Framework
 SwiftUI
 
@@ -17,3 +16,13 @@ SwiftUI
 | [FirebaseFirestore](https://github.com/firebase/firebase-ios-sdk)  | データ保存 |
 | [FirebaseStorage](https://github.com/firebase/firebase-ios-sdk) | 画像保存  |
 | [FirebaseAppCheck](https://github.com/firebase/firebase-ios-sdk)  | Firebaseのバックエンドサービスの不正利用を防ぐため  |
+
+## アプリ概要
+
+| サインイン画面  | プロフィール登録画面 |　設定画面 |
+| ------------- | ------------- | ------------- |
+| ![IMG_4521](https://github.com/user-attachments/assets/abe54dc3-3f20-4b7e-aa1b-61b1ef0cd03b) | ![IMG_4522](https://github.com/user-attachments/assets/23460a8b-4ec7-4560-944b-c38fb46de806) | ![IMG_4518](https://github.com/user-attachments/assets/7ba710c2-30f7-4710-a358-ee417948f1d0) |
+
+
+
+
