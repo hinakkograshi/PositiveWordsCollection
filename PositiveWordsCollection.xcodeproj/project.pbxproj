@@ -60,6 +60,7 @@
 		53C157C52BF91494003776CB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C157C42BF91494003776CB /* SettingsView.swift */; };
 		53C8C23C2C26608500FCE34F /* AppCheckProviderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C8C23B2C26608500FCE34F /* AppCheckProviderFactory.swift */; };
 		53EE21272BF8FC240067CF40 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53EE21262BF8FC240067CF40 /* Utilities.swift */; };
+		AD1FFC082C533403007926F7 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = AD1FFC072C533403007926F7 /* InfoPlist.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -109,6 +110,7 @@
 		53C157C42BF91494003776CB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		53C8C23B2C26608500FCE34F /* AppCheckProviderFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCheckProviderFactory.swift; sourceTree = "<group>"; };
 		53EE21262BF8FC240067CF40 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		AD1FFC072C533403007926F7 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -266,6 +268,7 @@
 				53A6555C2BF787D400D915B5 /* Assets.xcassets */,
 				53A6555E2BF787D400D915B5 /* Preview Content */,
 				535C7F942BF8293000BA33D1 /* Info.plist */,
+				AD1FFC072C533403007926F7 /* InfoPlist.xcstrings */,
 				53AAEE0B2C35762500B3AA7A /* Launch Screen.storyboard */,
 			);
 			path = PositiveWordsCollection;
@@ -343,6 +346,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ja,
 			);
 			mainGroup = 53A6554C2BF787D200D915B5;
 			packageReferences = (
@@ -364,6 +368,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				53A655602BF787D400D915B5 /* Preview Assets.xcassets in Resources */,
+				AD1FFC082C533403007926F7 /* InfoPlist.xcstrings in Resources */,
 				53AAEE0C2C35762500B3AA7A /* Launch Screen.storyboard in Resources */,
 				53035C162C4CD9D1008A203B /* GoogleService-Info.plist in Resources */,
 				53A6555D2BF787D400D915B5 /* Assets.xcassets in Resources */,
@@ -495,7 +500,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -552,7 +557,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
