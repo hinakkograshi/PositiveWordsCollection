@@ -38,14 +38,11 @@ struct AuthenticationView: View {
                     .font(.headline)
                     .fontWeight(.medium)
                     .multilineTextAlignment(.center)
-
                 // MARK: Sign in with Google
                 GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .light, style: .wide, state: .normal)) {
                     Task {
                         do {
                             try await viewModel.signInGoogle(dissmisAction: dismiss.callAsFunction)
-                            // Success
-//                            showSignInView = false
                         } catch {
                             showError = true
                             print(error)
@@ -58,8 +55,6 @@ struct AuthenticationView: View {
                     Task {
                         do {
                             try await viewModel.signInApple(dissmisAction: dismiss.callAsFunction)
-                            // Success
-//                            showSignInView = false
                         } catch {
                             showError = true
                             print(error)
@@ -78,7 +73,9 @@ struct AuthenticationView: View {
             .padding()
         }
 
-        .fullScreenCover(isPresented: $viewModel.showSignInProfileView, onDismiss: {
+
+        .fullScreenCover(isPresented: $viewModel.showSignInProfileView,
+                         onDismiss: {
             dismiss()
         }, content: {
             SignInProfileView(viewModel: viewModel)
