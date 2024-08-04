@@ -72,8 +72,6 @@ struct AuthenticationView: View {
             }
             .padding()
         }
-
-
         .fullScreenCover(isPresented: $viewModel.showSignInProfileView,
                          onDismiss: {
             dismiss()
