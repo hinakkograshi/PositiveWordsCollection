@@ -14,7 +14,7 @@ struct EditProfileView: View {
     }
     @FocusState private var focusedField: Field?
     @Binding var userDisplayName: String
-    @Binding var userBio: String
+    @State var userBio: String
     @Binding var userImage: UIImage
     @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
@@ -171,5 +171,5 @@ struct EditProfileView: View {
 #Preview {
     @State var name = "Hinakkoです。よろしく"
     @State var image = UIImage(named: "hiyoko") ?? UIImage()
-    return EditProfileView(userDisplayName: $name, userBio: $name, userImage: $image)
+    return EditProfileView(userDisplayName: $name, userBio: name, userImage: $image)
 }

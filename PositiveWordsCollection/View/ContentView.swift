@@ -10,11 +10,12 @@ import SwiftUI
 struct ContentView: View {
     @State private var showSignInView: Bool = false
     @State private var showSignInProfileView: Bool = false
-
+    @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @AppStorage(CurrentUserDefaults.displayName) var currentDisplayName: String?
+    @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
     @StateObject var posts = PostArrayObject()
-    // ここで全部の投稿取得
+
     var body: some View {
         TabView {
             NavigationStack {
@@ -25,8 +26,8 @@ struct ContentView: View {
                 Text("Home")
             }
             NavigationStack {
-                if let userID = currentUserID, let displayName = currentDisplayName {
-                    ProfileView(isMyProfile: true, posts: posts, profileDisplayName: displayName, profileUserID: userID)
+                if let userID = currentUserID, let displayName = currentDisplayName, let myBio = currentBio {
+                    ProfileView(isMyProfile: true, posts: posts, profileBio: myBio, profileDisplayName: displayName, profileUserID: userID)
                 }
             }
             .tabItem {
@@ -45,7 +46,16 @@ struct ContentView: View {
         .onAppear {
             self.showSignInView = currentUserID == nil ? true : false
         }
-        .fullScreenCover(isPresented: $showSignInView, content: {
+
+        .fullScreenCover(isPresented: $showSignInView,
+                         onDismiss: {
+            if let userID = currentUserID {
+                Task {
+                    _ = await posts.refreshHome(hiddenPostIDs: hiddenPostIDs, myUserID: userID)
+                }
+            }
+        },
+                         content: {
             AuthenticationView(showSignInView: $showSignInView)
         })
     }

@@ -13,7 +13,6 @@ struct ProfilePostView: View {
     @State var isLastPost = false
     @State var isMyLastPost = false
 
-
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {

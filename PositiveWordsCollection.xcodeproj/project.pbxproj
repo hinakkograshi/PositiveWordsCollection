@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		53035C162C4CD9D1008A203B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53035C152C4CD9D1008A203B /* GoogleService-Info.plist */; };
 		5304DEE72C246949008400DB /* DeleteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5304DEE62C246949008400DB /* DeleteService.swift */; };
+		5312BF232C5EFB8F00CA648E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5312BF222C5EFB8F00CA648E /* GoogleService-Info.plist */; };
 		5325FE152C396F3900DC5A6E /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5325FE142C396F3900DC5A6E /* Array.swift */; };
 		533050D92C1430C10081B60B /* ProfilePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533050D82C1430C10081B60B /* ProfilePostView.swift */; };
 		533D40A02BF9E408005C684A /* SignInAppleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533D409F2BF9E408005C684A /* SignInAppleHelper.swift */; };
@@ -64,8 +64,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		53035C152C4CD9D1008A203B /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5304DEE62C246949008400DB /* DeleteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteService.swift; sourceTree = "<group>"; };
+		5312BF222C5EFB8F00CA648E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5325FE142C396F3900DC5A6E /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		533050D82C1430C10081B60B /* ProfilePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePostView.swift; sourceTree = "<group>"; };
 		533D409F2BF9E408005C684A /* SignInAppleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInAppleHelper.swift; sourceTree = "<group>"; };
@@ -269,6 +269,7 @@
 				53A6555E2BF787D400D915B5 /* Preview Content */,
 				535C7F942BF8293000BA33D1 /* Info.plist */,
 				AD1FFC072C533403007926F7 /* InfoPlist.xcstrings */,
+				5312BF222C5EFB8F00CA648E /* GoogleService-Info.plist */,
 				53AAEE0B2C35762500B3AA7A /* Launch Screen.storyboard */,
 			);
 			path = PositiveWordsCollection;
@@ -277,7 +278,6 @@
 		53A6555E2BF787D400D915B5 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				53035C152C4CD9D1008A203B /* GoogleService-Info.plist */,
 				53A6555F2BF787D400D915B5 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
@@ -368,9 +368,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				53A655602BF787D400D915B5 /* Preview Assets.xcassets in Resources */,
+				5312BF232C5EFB8F00CA648E /* GoogleService-Info.plist in Resources */,
 				AD1FFC082C533403007926F7 /* InfoPlist.xcstrings in Resources */,
 				53AAEE0C2C35762500B3AA7A /* Launch Screen.storyboard in Resources */,
-				53035C162C4CD9D1008A203B /* GoogleService-Info.plist in Resources */,
 				53A6555D2BF787D400D915B5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

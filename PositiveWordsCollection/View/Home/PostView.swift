@@ -15,6 +15,7 @@ struct PostView: View {
     @State var profileImage = UIImage(named: "loading")!
     @State var postImage = UIImage(named: "loading")!
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
+    @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
     @State var showReportsAlert: Bool = false
     @State var showSuccessReportsAlert: Bool = false
     @State var showDeleteAlert: Bool = false
@@ -26,11 +27,11 @@ struct PostView: View {
             // header
             HStack {
                 NavigationLink(destination: {
-                    if let myUserID = currentUserID {
+                    if let myUserID = currentUserID, let profileBio = currentBio {
                         if post.userID == myUserID {
-                            ProfileView(isMyProfile: true, posts: posts, profileDisplayName: post.username, profileUserID: post.userID)
+                            ProfileView(isMyProfile: true, posts: posts, profileBio: profileBio, profileDisplayName: post.username, profileUserID: post.userID)
                         } else {
-                            ProfileView(isMyProfile: false, posts: posts, profileDisplayName: post.username, profileUserID: post.userID)
+                            ProfileView(isMyProfile: false, posts: posts, profileBio: "", profileDisplayName: post.username, profileUserID: post.userID)
                         }
                     }
                 }, label: {
