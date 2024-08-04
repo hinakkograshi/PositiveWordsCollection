@@ -48,11 +48,6 @@ struct ProfilePostView: View {
                 }
             }
         }
-//        .onDisappear {
-//            if isMyProfile == false {
-//                posts.userPostArray = []
-//            }
-//        }
     }
 }
 
