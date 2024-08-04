@@ -11,7 +11,7 @@ struct ProfileHeaderView: View {
     var profileUserID: String
     @Binding var profileDisplayName: String
     @Binding var profileImage: UIImage
-    @Binding var profileBio: String
+    let profileBio: String
     var isMyProfile: Bool
     @ObservedObject var posts: PostArrayObject
     
@@ -83,7 +83,7 @@ struct ProfileHeaderView: View {
 #Preview {
     @State var name: String = "hina"
     var id: String = "1546332242422"
-    @State var bio = "iOSエンジニア目指して学習をしています。"
+    let bio = "iOSエンジニア目指して学習をしています。"
     @State var image: UIImage = UIImage(named: "posiIcon")!
-    return ProfileHeaderView(profileUserID: id, profileDisplayName: $name, profileImage: $image, profileBio: $bio, isMyProfile: true, posts: PostArrayObject())
+    return ProfileHeaderView(profileUserID: id, profileDisplayName: $name, profileImage: $image, profileBio: bio, isMyProfile: true, posts: PostArrayObject())
 }

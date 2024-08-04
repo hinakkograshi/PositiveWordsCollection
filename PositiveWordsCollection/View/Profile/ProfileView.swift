@@ -14,7 +14,7 @@ struct ProfileView: View {
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @State var profileImage = UIImage(named: "loading")!
-    @State var profileBio: String = ""
+    @State var profileBio: String
     @State var profileDisplayName: String
     var profileUserID: String
     @State var showEditProfileView: Bool = false
@@ -23,7 +23,7 @@ struct ProfileView: View {
     @State var showBlockAlert = false
 
     var body: some View {
-        ProfileHeaderView(profileUserID: profileUserID, profileDisplayName: $profileDisplayName, profileImage: $profileImage, profileBio: $profileBio, isMyProfile: isMyProfile, posts: posts)
+        ProfileHeaderView(profileUserID: profileUserID, profileDisplayName: $profileDisplayName, profileImage: $profileImage, profileBio: profileBio, isMyProfile: isMyProfile, posts: posts)
             .padding(.top, 10)
         Rectangle()
             .foregroundStyle(.orange)
@@ -91,7 +91,7 @@ struct ProfileView: View {
                     }
                 },
                 content: {
-                    EditProfileView(userDisplayName: $profileDisplayName, userBio: $profileBio, userImage: $profileImage)
+                    EditProfileView(userDisplayName: $profileDisplayName, userBio: profileBio, userImage: $profileImage)
                     //　なくてもdarkモード対応できそう
                         .preferredColorScheme(colorScheme)
                 })
@@ -150,6 +150,6 @@ struct ProfileView: View {
 #Preview {
     @State var selectedImage = UIImage(named: "hiyoko")!
     return NavigationStack {
-        ProfileView(isMyProfile: true, posts: PostArrayObject(), profileDisplayName: "hina", profileUserID: "")
+        ProfileView(isMyProfile: true, posts: PostArrayObject(), profileBio: "こんちゃ", profileDisplayName: "hina", profileUserID: "")
     }
 }

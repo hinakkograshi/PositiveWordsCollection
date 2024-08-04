@@ -13,6 +13,7 @@ struct ContentView: View {
     @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @AppStorage(CurrentUserDefaults.displayName) var currentDisplayName: String?
+    @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
     @StateObject var posts = PostArrayObject()
 
     var body: some View {
@@ -25,8 +26,8 @@ struct ContentView: View {
                 Text("Home")
             }
             NavigationStack {
-                if let userID = currentUserID, let displayName = currentDisplayName {
-                    ProfileView(isMyProfile: true, posts: posts, profileDisplayName: displayName, profileUserID: userID)
+                if let userID = currentUserID, let displayName = currentDisplayName, let myBio = currentBio {
+                    ProfileView(isMyProfile: true, posts: posts, profileBio: myBio, profileDisplayName: displayName, profileUserID: userID)
                 }
             }
             .tabItem {
