@@ -18,7 +18,7 @@ struct SignInProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @State var showImagePicker: Bool = false
     @State var showCreateProfileError: Bool = false
-    
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
@@ -56,7 +56,7 @@ struct SignInProfileView: View {
                 VStack(alignment: .leading) {
                     Text("名前")
                         .fontWeight(.bold)
-                    TextField("名前", text: $viewModel.displayName)
+                    TextField("名前(10文字以内)", text: $viewModel.displayName)
                         .padding(10)
                         .overlay {
                             RoundedRectangle(cornerRadius: 10)
@@ -66,9 +66,23 @@ struct SignInProfileView: View {
                         .onTapGesture {
                             focusedField = .name
                         }
+                        .onChange(of: viewModel.displayName) {
+                            viewModel.displayNameTotalCount = viewModel.displayName.count
+                        }
+                    // 10文字以上の時最後の文字を削除制限
+                        .onChange(of: viewModel.displayName) {
+                            if viewModel.displayName.count > 10 {
+                                viewModel.displayName.removeLast(viewModel.displayName.count - 10)
+                            }
+                        }
+                    HStack {
+                        Spacer()
+                        // 入力文字数の表示
+                        Text(" \(viewModel.displayNameTotalCount) / 10")
+                    }
                 }
                 VStack(alignment: .leading) {
-                    Text("自己紹介")
+                    Text("自己紹介(20文字以内)")
                         .fontWeight(.bold)
                     ZStack(alignment: .topLeading) {
                         TextEditor(text: $viewModel.bio)
@@ -82,11 +96,25 @@ struct SignInProfileView: View {
                             .onTapGesture {
                                 focusedField = .bio
                             }
+                            .onChange(of: viewModel.bio) {
+                                viewModel.bioTotalCount = viewModel.bio.count
+                            }
+                        // 20文字以上の時最後の文字を削除制限
+                            .onChange(of: viewModel.bio) {
+                                if viewModel.bio.count > 20 {
+                                    viewModel.bio.removeLast(viewModel.bio.count - 20)
+                                }
+                            }
                         if viewModel.bio.isEmpty {
-                            Text("自己紹介").foregroundStyle(Color(uiColor: .placeholderText))
+                            Text("自己紹介(20文字以内)").foregroundStyle(Color(uiColor: .placeholderText))
                                 .padding(8)
                                 .allowsHitTesting(false)
                         }
+                    }
+                    HStack {
+                        Spacer()
+                        // 入力文字数の表示
+                        Text(" \(viewModel.bioTotalCount) / 20")
                     }
                 }
             }
@@ -123,7 +151,7 @@ struct SignInProfileView: View {
             focusedField = nil
         }
     }
-    
+
     var isRegistrationButtonDisabled: Bool {
         viewModel.selectedImage != UIImage(named: "noImage")! && viewModel.displayName != ""
     }

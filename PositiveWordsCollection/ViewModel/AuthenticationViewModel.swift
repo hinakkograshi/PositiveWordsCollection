@@ -23,6 +23,8 @@ final class AuthenticationViewModel: ObservableObject {
     @Published var bio: String = ""
     @Published var showSignInProfileView: Bool = false
     @Published var showError = false
+    @Published var displayNameTotalCount = 0
+    @Published var bioTotalCount = 0
 
     func signInGoogle(dissmisAction: () -> Void) async throws {
         let helper = SignInGoogleHelper()
