@@ -94,8 +94,14 @@ struct SignInProfileView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
                         if viewModel.selectedImage != UIImage(named: "noImage")!, viewModel.displayName != "" {
-                            viewModel.createProfile()
-                            dismiss()
+                            Task {
+                                do {
+                                    try await viewModel.createProfile()
+                                    dismiss()
+                                } catch {
+                                    print("createProfile Error:\(error)")
+                                }
+                            }
                         } else {
                             showCreateProfileError = true
                         }

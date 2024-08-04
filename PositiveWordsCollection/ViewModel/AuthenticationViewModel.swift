@@ -41,23 +41,16 @@ final class AuthenticationViewModel: ObservableObject {
         try await connectToFirebase(name: signInAppleResult.fullName, email: signInAppleResult.email, provider: "apple", credential: signInAppleResult.credential, completion: dissmisAction)
     }
     // MARK: Function
-    func createProfile() {
+    func createProfile() async throws {
         guard let currentUserId = Auth.auth().currentUser else {return}
 
         print("Create profile now: \(currentUserId)")
-        Task {
-            do {
                 let userId = AuthService.instance.createUserId()
                 let user = DatabaseUser(userId: userId, displayName: displayName, email: email, providerId: providerID, provider: provider, bio: bio, dateCreated: Date())
                 try await AuthService.instance.createNewUserInDatabase(user: user, profileImage: selectedImage)
                 print("createProfile Success")
                 // 🟥logInUserToApp
                 try await AuthService.instance.logInUserToApp(userID: userId)
-            } catch {
-                print("createProfile Error\(error)")
-                throw AsyncError(message: "createProfile Error")
-            }
-        }
     }
 
     private func connectToFirebase(name: String, email: String, provider: String, credential: AuthCredential, completion: () -> Void) async throws {
