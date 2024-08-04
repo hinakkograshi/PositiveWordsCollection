@@ -26,6 +26,10 @@ struct EditProfileView: View {
     @State var showImagePicker: Bool = false
     @State var showEditProfileError = false
     @Environment(\.dismiss) private var dismiss
+    @State private var disableButton: Bool = false
+    @State var editProfileNameTotalCount = 0
+    @State var editProfileBioTotalCount = 0
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -59,44 +63,76 @@ struct EditProfileView: View {
                 }
                 .padding(.vertical, 10)
                 Divider()
-                HStack {
-                    Text("名前")
-                        .fontWeight(.bold)
-                        .padding()
-                        .padding(.trailing, 30)
-                    TextField("名前", text: $editProfileName)
-                        .padding(10)
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.black, lineWidth: 2)
+                VStack {
+                    HStack {
+                        Text("名前")
+                            .fontWeight(.bold)
+                            .padding()
+                            .padding(.trailing, 30)
+                        TextField("名前(10文字以内)", text: $editProfileName)
+                            .padding(10)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.black, lineWidth: 2)
+                            }
+                            .focused($focusedField, equals: .name)
+                            .onTapGesture {
+                                focusedField = .name
+                            }
+                    }
+                    HStack {
+                        Spacer()
+                        // 入力文字数の表示
+                        Text(" \(editProfileNameTotalCount) / 10")
+                    }
+                    .onChange(of: editProfileName) {
+                        editProfileNameTotalCount = editProfileName.count
+                    }
+                    // 10文字以上の時最後の文字を削除制限
+                    .onChange(of: editProfileName) {
+                        if editProfileName.count > 10 {
+                            editProfileName.removeLast(editProfileName.count - 10)
                         }
-                        .focused($focusedField, equals: .name)
-                        .onTapGesture {
-                            focusedField = .name
-                        }
+                    }
                 }
                 .padding(.trailing, 10)
                 Divider()
-                HStack {
-                    Text("自己紹介")
-                        .fontWeight(.bold)
-                        .padding()
-                    ZStack(alignment: .topLeading) {
-                        TextEditor(text: $editProfileBio)
-                            .frame(height: 100)
-                            .padding(5)
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 16)
-                                    .stroke(Color.black, lineWidth: 2)
+                VStack {
+                    HStack {
+                        Text("自己紹介")
+                            .fontWeight(.bold)
+                            .padding()
+                        ZStack(alignment: .topLeading) {
+                            TextEditor(text: $editProfileBio)
+                                .frame(height: 100)
+                                .padding(5)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(Color.black, lineWidth: 2)
+                                }
+                                .focused($focusedField, equals: .bio)
+                                .onTapGesture {
+                                    focusedField = .bio
+                                }
+                            if editProfileBio.isEmpty {
+                                Text("自己紹介(20文字以内)").foregroundStyle(Color(uiColor: .placeholderText))
+                                    .padding(8)
+                                    .allowsHitTesting(false)
                             }
-                            .focused($focusedField, equals: .bio)
-                            .onTapGesture {
-                                focusedField = .bio
-                            }
-                        if editProfileBio.isEmpty {
-                            Text("自己紹介").foregroundStyle(Color(uiColor: .placeholderText))
-                                .padding(8)
-                                .allowsHitTesting(false)
+                        }
+                    }
+                    HStack {
+                        Spacer()
+                        // 入力文字数の表示
+                        Text(" \(editProfileBioTotalCount) / 20")
+                    }
+                    .onChange(of: editProfileBio) {
+                        editProfileBioTotalCount = editProfileBio.count
+                    }
+                    // 10文字以上の時最後の文字を削除制限
+                    .onChange(of: editProfileBio) {
+                        if editProfileBio.count > 20 {
+                            editProfileBio.removeLast(editProfileBio.count - 20)
                         }
                     }
                 }
@@ -115,20 +151,18 @@ struct EditProfileView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
-                        if editProfileName != "" {
-                            // キャッシュバグ解消
-                            ImageManager.instance.chashRemove()
-                            Task {
-                                await saveEditProfile()
-                                dismiss()
-                            }
-                        } else {
-                            showEditProfileError = true
+                        disableButton = true
+                        // キャッシュバグ解消
+                        ImageManager.instance.chashRemove()
+                        Task {
+                            await saveEditProfile()
+                            dismiss()
                         }
                     }, label: {
                         Text("保存")
                             .tint(.primary)
                     })
+                    .disabled(disableEditButton())
                 }
             }
         }
@@ -146,8 +180,20 @@ struct EditProfileView: View {
             selectedImage = userImage
         }
     }
-    // MARK: FUNCTION
-    func saveEditProfile() async {
+
+    var isSaveButtonDisabled: Bool {
+        selectedImage != UIImage(named: "noImage")! && editProfileName != ""
+    }
+
+    private func disableEditButton() -> Bool {
+        var isDisabled = false
+        if !isSaveButtonDisabled || disableButton == true {
+            isDisabled = true
+        }
+        return isDisabled
+    }
+
+    private func saveEditProfile() async {
         guard let userID = currentUserID else { return }
         // Update UI
         userDisplayName = editProfileName

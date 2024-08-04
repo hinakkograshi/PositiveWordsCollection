@@ -18,6 +18,7 @@ struct SignInProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @State var showImagePicker: Bool = false
     @State var showCreateProfileError: Bool = false
+    @State private var disableButton: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -82,7 +83,7 @@ struct SignInProfileView: View {
                     }
                 }
                 VStack(alignment: .leading) {
-                    Text("自己紹介(20文字以内)")
+                    Text("自己紹介")
                         .fontWeight(.bold)
                     ZStack(alignment: .topLeading) {
                         TextEditor(text: $viewModel.bio)
@@ -123,6 +124,7 @@ struct SignInProfileView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
                         if viewModel.selectedImage != UIImage(named: "noImage")!, viewModel.displayName != "" {
+                            disableButton = true
                             Task {
                                 do {
                                     try await viewModel.createProfile()
@@ -140,7 +142,7 @@ struct SignInProfileView: View {
                             .fontWeight(.bold)
                             .tint(.primary)
                     })
-                    .disabled(!isRegistrationButtonDisabled)
+                    .disabled(disablePostButton())
                 }
             }
         }
@@ -154,6 +156,14 @@ struct SignInProfileView: View {
 
     var isRegistrationButtonDisabled: Bool {
         viewModel.selectedImage != UIImage(named: "noImage")! && viewModel.displayName != ""
+    }
+
+    private func disablePostButton() -> Bool {
+        var isDisabled = false
+        if !isRegistrationButtonDisabled || disableButton == true {
+            isDisabled = true
+        }
+        return isDisabled
     }
 }
 #Preview {
