@@ -14,7 +14,7 @@ struct CreatePostView: View {
     @State var showSelectStampView = false
     @State var selectedImage: UIImage = UIImage(named: "noImage")!
     @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
-    @State var disableButton: Bool = false
+    @State private var disableButton: Bool = false
     @State var showImagePicker: Bool = false
     @State var showPostContentError = false
     @Environment(\.dismiss) private var dismiss
