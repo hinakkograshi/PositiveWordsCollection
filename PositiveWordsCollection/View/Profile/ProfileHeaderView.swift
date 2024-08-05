@@ -46,9 +46,15 @@ struct ProfileHeaderView: View {
                 VStack(alignment: .center, spacing: 5, content: {
                     HStack {
                         Image(systemName: "paperplane")
-                        Text(posts.postCountString)
-                            .font(.title2)
-                            .fontWeight(.bold)
+                        if isMyProfile == true {
+                            Text(posts.myPostCountString)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                        } else {
+                            Text(posts.userPostCountString)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                        }
                     }
 
                     Capsule()
@@ -64,9 +70,15 @@ struct ProfileHeaderView: View {
                     HStack {
                         Image(systemName: "heart.fill")
                             .foregroundStyle(.red)
-                        Text(posts.likeCountString)
-                            .font(.title2)
-                            .fontWeight(.bold)
+                        if isMyProfile == true {
+                            Text(posts.myLikeCountString)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                        } else {
+                            Text(posts.userLikeCountString)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                        }
                     }
                     Capsule()
                         .fill(.red)

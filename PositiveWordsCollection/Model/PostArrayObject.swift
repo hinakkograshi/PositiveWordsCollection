@@ -12,11 +12,13 @@ class PostArrayObject: ObservableObject {
     @Published var dataArray: [PostModel] = []
     @Published var userPostArray: [PostModel] = []
     @Published var myUserPostArray: [PostModel] = []
-
+    
     // ProfileViewが一度も表示されていない時ポスト追加
     @Published var profileViewOn = false
-    @Published var postCountString = "0"
-    @Published var likeCountString = "0"
+    @Published var myPostCountString = ""
+    @Published var myLikeCountString = ""
+    @Published var userPostCountString = ""
+    @Published var userLikeCountString = ""
     private var lastDocument: DocumentSnapshot? = nil
     private var lastUserDocument: DocumentSnapshot? = nil
     private var lastMyUserDocument: DocumentSnapshot? = nil
@@ -35,6 +37,7 @@ class PostArrayObject: ObservableObject {
             print("\(error)")
         }
     }
+    
     func refreshUpdateMyUserPost(userID: String) async {
         myUserPostArray = []
         lastMyUserDocument = nil
@@ -56,17 +59,13 @@ class PostArrayObject: ObservableObject {
         var isMyLastPost = false
         do {
             let (newPosts, lastMyUserDocument) = try await DataService.instance.getUserFeed(userId: userID, lastDocument: lastMyUserDocument)
-            print("🟥\(newPosts)")
             // 最新の日付
             let sortedPosts = newPosts.sorted { (post1, post2) -> Bool in
                 return post1.dateCreated > post2.dateCreated
             }
-            print("🟩\(myUserPostArray)")
             self.myUserPostArray.append(contentsOf: sortedPosts)
-            print("🐥\(myUserPostArray)")
             if let lastMyUserDocument {
                 self.lastMyUserDocument = lastMyUserDocument
-                //                    self.updateCounts(userID: userID)
             } else {
                 // nilならば
                 isMyLastPost = true
@@ -76,29 +75,24 @@ class PostArrayObject: ObservableObject {
         }
         return isMyLastPost
     }
-
-    func reset() {
-
+    
+    func resetPostArray() {
         userPostArray = []
         lastUserDocument = nil
     }
-
+    
     func refreshUserPost(userID: String) async -> (Bool) {
         profileViewOn = true
         var isLastPost = false
         do {
             let (newPosts, lastUserDocument) = try await DataService.instance.getUserFeed(userId: userID, lastDocument: lastUserDocument)
-            print("🟥\(newPosts)")
             // 最新の日付
             let sortedPosts = newPosts.sorted { (post1, post2) -> Bool in
                 return post1.dateCreated > post2.dateCreated
             }
-            print("🟩\(userPostArray)")
             self.userPostArray.append(contentsOf: sortedPosts)
-            print("🐥\(userPostArray)")
             if let lastUserDocument {
                 self.lastUserDocument = lastUserDocument
-                //                    self.updateCounts(userID: userID)
             } else {
                 // nilならば
                 isLastPost = true
@@ -126,22 +120,40 @@ class PostArrayObject: ObservableObject {
         return isLastPost
     }
     
+    
     // like
-    func updateCounts(userID: String) {
-        postCountString = "0"
-        likeCountString = "0"
+    func updateUserCounts(userID: String) {
+        userPostCountString = ""
+        userLikeCountString = ""
         Task {
             do {
                 let sum = try await DataService.instance.sumLikePost(userID: userID)
-                likeCountString = "\(sum)"
-                print("🩵いいね数\(sum)")
+                userLikeCountString = "\(sum)"
             } catch {
-                print("🩵SumLike Error")
                 print(error)
             }
             do {
                 let postCount = try await DataService.instance.sumUserPost(userID: userID)
-                postCountString = String(postCount)
+                userPostCountString = String(postCount)
+            } catch {
+                print("PostCount Error")
+            }
+        }
+    }
+    
+    func updateMyCounts(userID: String) {
+        myPostCountString = ""
+        myLikeCountString = ""
+        Task {
+            do {
+                let sum = try await DataService.instance.sumLikePost(userID: userID)
+                myLikeCountString = "\(sum)"
+            } catch {
+                print(error)
+            }
+            do {
+                let postCount = try await DataService.instance.sumUserPost(userID: userID)
+                myPostCountString = String(postCount)
             } catch {
                 print("PostCount Error")
             }
