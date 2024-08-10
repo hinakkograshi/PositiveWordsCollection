@@ -47,11 +47,11 @@ struct ProfileHeaderView: View {
                     HStack {
                         Image(systemName: "paperplane")
                         if isMyProfile == true {
-                            Text(posts.myPostCountString)
+                            Text(posts.myPostCount)
                                 .font(.title2)
                                 .fontWeight(.bold)
                         } else {
-                            Text(posts.userPostCountString)
+                            Text(posts.userPostCount)
                                 .font(.title2)
                                 .fontWeight(.bold)
                         }
@@ -71,11 +71,11 @@ struct ProfileHeaderView: View {
                         Image(systemName: "heart.fill")
                             .foregroundStyle(.red)
                         if isMyProfile == true {
-                            Text(posts.myLikeCountString)
+                            Text(posts.myLikeCount)
                                 .font(.title2)
                                 .fontWeight(.bold)
                         } else {
-                            Text(posts.userLikeCountString)
+                            Text(posts.userLikeCount)
                                 .font(.title2)
                                 .fontWeight(.bold)
                         }
