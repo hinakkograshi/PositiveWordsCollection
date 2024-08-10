@@ -19,6 +19,7 @@ struct PostView: View {
     @State var showReportsAlert: Bool = false
     @State var showSuccessReportsAlert: Bool = false
     @State var showDeleteAlert: Bool = false
+    @State private var isPostImageViewShowing = false
     let headerIsActive: Bool
     let comentIsActive: Bool
 
@@ -97,13 +98,16 @@ struct PostView: View {
             .padding(.top, 5)
             // Content
             HStack {
-                // stamp Image
-                Image(uiImage: postImage)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 100, height: 100, alignment: .center)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                    .padding(.horizontal, 10)
+                Button {
+                    isPostImageViewShowing = true
+                } label: {
+                    Image(uiImage: postImage)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 100, height: 100, alignment: .center)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .padding(.horizontal, 10)
+                }
                 // post caption
                 Text(post.caption)
                     .font(.subheadline)
@@ -151,6 +155,12 @@ struct PostView: View {
             Rectangle()
                 .frame(height: 1)
         }
+        .sheet(isPresented: $isPostImageViewShowing,
+               content: {
+            NavigationStack {
+                PostImageView(displayingPostImage: postImage)
+            }
+        })
         .alert("投稿を削除", isPresented: $showDeleteAlert, actions: {
             Button("戻る", role: .cancel) {
 
@@ -214,7 +224,7 @@ struct PostView: View {
     func reportPost()  throws {
         print("REPORT POST NOW")
         Task {
-                let reports = Report(postId: post.postID, dateCreated: Date())
+            let reports = Report(postId: post.postID, dateCreated: Date())
             try DataService.instance.uploadReport(reports: reports) { success in
                 if success {
                     showSuccessReportsAlert = true

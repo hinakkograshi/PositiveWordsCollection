@@ -92,14 +92,10 @@ struct ProfileView: View {
                 },
                 content: {
                     EditProfileView(userDisplayName: $profileDisplayName, userBio: profileBio, userImage: $profileImage)
-                    //　なくてもdarkモード対応できそう
-                        .preferredColorScheme(colorScheme)
                 })
     }
     
     // MARK: FUNCTION
-    // Block
-    
     private func blockUser(profileUserID: String) {
         guard let myUserID = currentUserID else { return }
         Task {
