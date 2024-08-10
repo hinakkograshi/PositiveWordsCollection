@@ -32,6 +32,17 @@ struct HomeView: View {
                 }
             }
         }
+        .overlay {
+            if posts.loadingState.isLoading {
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .padding()
+                    .tint(Color.white)
+                    .background(Color.gray)
+                    .cornerRadius(8)
+                    .scaleEffect(1.2)
+            }
+        }
         .overlay(alignment: .bottomTrailing) {
             Button(action: {
                 showCreatePostView.toggle()
@@ -55,12 +66,11 @@ struct HomeView: View {
         .toolbarBackground(.visible, for: .navigationBar)
 
         .onAppear {
-            print("🟩HomeView表示されました")
             if firstAppear == true {
-                print("🟩初めて")
                 Task {
+                    firstAppear = false
                     if let myUserID = currentUserID {
-                        _ = await posts.refreshHome(hiddenPostIDs: hiddenPostIDs, myUserID: myUserID)
+                        await posts.refreshHomeFirst(hiddenPostIDs: hiddenPostIDs, myUserID: myUserID)
                     }
                 }
             }

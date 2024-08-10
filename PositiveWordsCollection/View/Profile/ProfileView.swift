@@ -70,7 +70,7 @@ struct ProfileView: View {
                     Task {
                         blockUser(profileUserID: profileUserID)
                         guard let myUserID = currentUserID else { return }
-                        await posts.refreshUpdateHome(hiddenPostIDs: hiddenPostIDs, myUserID: myUserID)
+                        await posts.refreshHomeFirst(hiddenPostIDs: hiddenPostIDs, myUserID: myUserID)
                     }
                 }
             }, message: {
@@ -86,7 +86,7 @@ struct ProfileView: View {
                         // 名前とBio
                         getAdditionalProfileInfo(userID: profileUserID)
                         guard let myUserId = currentUserID else {return}
-                        await posts.refreshUpdateHome(hiddenPostIDs: hiddenPostIDs, myUserID: myUserId)
+                        await posts.refreshHomeFirst(hiddenPostIDs: hiddenPostIDs, myUserID: myUserId)
                         await posts.refreshUpdateMyUserPost(userID: profileUserID)
                     }
                 },
@@ -119,7 +119,7 @@ struct ProfileView: View {
                 _ = await posts.refreshMyUserPost(userID: userID)
             } else {
                 Task {
-                    posts.resetPostArray()
+                    posts.resetUserPostArray()
                     posts.updateUserCounts(userID: userID)
                     _ = await posts.refreshUserPost(userID: userID)
                 }
