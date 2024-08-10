@@ -122,6 +122,27 @@ class PostArrayObject: ObservableObject {
         return isLastPost
     }
     
+<<<<<<< Updated upstream
+=======
+    func refreshHome(hiddenPostIDs: [String], myUserID: String) async -> (Bool) {
+        var isLastPost = false
+        do {
+            let (newPosts, lastDocument) = try await DataService.instance.getHomeScrollPostsForFeed(lastDocument: lastDocument, hiddenPostIDs: hiddenPostIDs, myUserID: myUserID)
+            self.dataArray.append(contentsOf: newPosts)
+            if let lastDocument {
+                self.lastDocument = lastDocument
+            } else {
+                // 最後nil
+                isLastPost = true
+            }
+        } catch {
+            print("🟥refreshHome: \(error)")
+        }
+        return isLastPost
+    }
+    
+    // like
+>>>>>>> Stashed changes
     func updateUserCounts(userID: String) {
         userPostCount = ""
         userLikeCount = ""
