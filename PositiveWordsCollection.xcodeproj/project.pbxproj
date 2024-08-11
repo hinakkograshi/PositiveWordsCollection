@@ -80,6 +80,7 @@
 		5346CAC52BFFF52F000829E1 /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
 		534A51C72C670C52004AD3E6 /* LoadingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingState.swift; sourceTree = "<group>"; };
 		534A51C92C679052004AD3E6 /* PostImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostImageView.swift; sourceTree = "<group>"; };
+		534C0FAE2C68F3DD00A96336 /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
 		5350B3102C2C356C003BDE7F /* DatabaseHelperField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseHelperField.swift; sourceTree = "<group>"; };
 		535315A62BFCDD3D00D5767A /* PostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostView.swift; sourceTree = "<group>"; };
 		535C7F8B2BF8239C00BA33D1 /* AuthenticationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationView.swift; sourceTree = "<group>"; };
@@ -160,6 +161,14 @@
 				5367F1162C00CD5900A119B7 /* EditProfileView.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		534C0FAD2C68F3B800A96336 /* ci_scripts */ = {
+			isa = PBXGroup;
+			children = (
+				534C0FAE2C68F3DD00A96336 /* ci_pre_xcodebuild.sh */,
+			);
+			path = ci_scripts;
 			sourceTree = "<group>";
 		};
 		535C7F952BF82BFE00BA33D1 /* ViewModel */ = {
@@ -261,6 +270,7 @@
 		53A655572BF787D200D915B5 /* PositiveWordsCollection */ = {
 			isa = PBXGroup;
 			children = (
+				534C0FAD2C68F3B800A96336 /* ci_scripts */,
 				53C0E0332BF994B9008CE2AF /* PositiveWordsCollection.entitlements */,
 				53A655582BF787D200D915B5 /* PositiveWordsCollectionApp.swift */,
 				53C8C23B2C26608500FCE34F /* AppCheckProviderFactory.swift */,
