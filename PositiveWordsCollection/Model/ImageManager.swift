@@ -10,11 +10,12 @@ import FirebaseStorage
 import UIKit
 
 // Objectにたくさんの画像キャッシュ
-let imageCache = NSCache<AnyObject, UIImage>()
+
 
 class ImageManager {
     static let instance = ImageManager()
     private var storageREF = Storage.storage()
+    let imageCache = NSCache<StorageReference, UIImage>()
 
     func uploadProfileImage(userID: String, image: UIImage) async throws {
         // 画像を保存する場所のパス
@@ -73,9 +74,9 @@ class ImageManager {
     }
 
     private func downloadImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
-        // キャッシュされていたらそれを使用
+        // キャッシュしていたらそれを使用
         if let cachedImage = imageCache.object(forKey: path) {
-//            print("Image found in cache")
+            print("🟩キャッシュした画像を使用")
             handler(cachedImage)
             return
         } else {
@@ -83,7 +84,7 @@ class ImageManager {
             path.getData(maxSize: 27 * 1024 * 1024) { returnedImageData, _ in
                 if let data = returnedImageData, let image = UIImage(data: data) {
                     // Success getting Image
-                    imageCache.setObject(image, forKey: path)
+                    self.imageCache.setObject(image, forKey: path)
                     handler(image)
                     return
                 } else {
