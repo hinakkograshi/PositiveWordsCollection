@@ -53,6 +53,7 @@
 		539DD11F2BFE2F1700D6BCBC /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539DD11E2BFE2F1700D6BCBC /* Extension.swift */; };
 		539DD1242BFE378400D6BCBC /* CommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539DD1232BFE378400D6BCBC /* CommentsView.swift */; };
 		539DD1272BFE383500D6BCBC /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539DD1262BFE383500D6BCBC /* MessageView.swift */; };
+		53A263B42C83562C00C43384 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53A263B32C83562C00C43384 /* GoogleService-Info.plist */; };
 		53A655592BF787D200D915B5 /* PositiveWordsCollectionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53A655582BF787D200D915B5 /* PositiveWordsCollectionApp.swift */; };
 		53A6555B2BF787D200D915B5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53A6555A2BF787D200D915B5 /* ContentView.swift */; };
 		53A6555D2BF787D400D915B5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53A6555C2BF787D400D915B5 /* Assets.xcassets */; };
@@ -103,6 +104,7 @@
 		539DD11E2BFE2F1700D6BCBC /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		539DD1232BFE378400D6BCBC /* CommentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsView.swift; sourceTree = "<group>"; };
 		539DD1262BFE383500D6BCBC /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
+		53A263B32C83562C00C43384 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		53A655552BF787D200D915B5 /* PositiveWordsCollection.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PositiveWordsCollection.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53A655582BF787D200D915B5 /* PositiveWordsCollectionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveWordsCollectionApp.swift; sourceTree = "<group>"; };
 		53A6555A2BF787D200D915B5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -275,6 +277,7 @@
 				53A6555E2BF787D400D915B5 /* Preview Content */,
 				535C7F942BF8293000BA33D1 /* Info.plist */,
 				AD1FFC072C533403007926F7 /* InfoPlist.xcstrings */,
+				53A263B32C83562C00C43384 /* GoogleService-Info.plist */,
 				53AAEE0B2C35762500B3AA7A /* Launch Screen.storyboard */,
 			);
 			path = PositiveWordsCollection;
@@ -378,6 +381,7 @@
 				AD1FFC082C533403007926F7 /* InfoPlist.xcstrings in Resources */,
 				53AAEE0C2C35762500B3AA7A /* Launch Screen.storyboard in Resources */,
 				53A6555D2BF787D400D915B5 /* Assets.xcassets in Resources */,
+				53A263B42C83562C00C43384 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
