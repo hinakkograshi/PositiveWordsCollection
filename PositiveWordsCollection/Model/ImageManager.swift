@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseStorage
 import UIKit
+import Nuke
 
 // Objectにたくさんの画像キャッシュ
 
@@ -47,7 +48,7 @@ class ImageManager {
         let path = getProfileImagePath(userID: userID)
         // Download image from path
         DispatchQueue.global(qos: .userInteractive).async {
-            self.downloadImage(path: path) { returnedImage in
+            self.downloadDiskCacheImage(path: path) { returnedImage in
                 DispatchQueue.main.async {
                     handler(returnedImage)
                 }
@@ -60,7 +61,7 @@ class ImageManager {
         let path = getPostImagePath(postID: postID)
         // Download image path
         DispatchQueue.global(qos: .userInteractive).async {
-            self.downloadImage(path: path) { returnedImage in
+            self.downloadMemoryCacheImage(path: path) { returnedImage in
                 DispatchQueue.main.async {
                     handler(returnedImage)
                 }
@@ -70,10 +71,56 @@ class ImageManager {
 
     func chashRemove() {
         imageCache.removeAllObjects()
-//        removeObject(forKey: path)
+        //        removeObject(forKey: path)
     }
 
-    private func downloadImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
+
+    func getDownloadURL(from storageReference: StorageReference, completion: @escaping (URL?) -> Void) {
+        storageReference.downloadURL { url, error in
+            if let error = error {
+                print("Error getting download URL: \(error)")
+                completion(nil)
+                return
+            }
+            completion(url)
+        }
+    }
+
+    func downloadDiskCacheImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
+        getDownloadURL(from: path) { url in
+            guard let url = url else {
+                handler(nil)
+                return
+            }
+
+            // 画像の取得リクエスト
+            let request = ImageRequest(url: url)
+
+            // ImagePipelineの設定（必要に応じて）
+            //            let pipeline = ImagePipeline.shared
+            let config: ImagePipeline.Configuration = .withDataCache
+            let pipeline = ImagePipeline(configuration: config)
+
+            // 画像の取得
+            if let cachedImage = pipeline.cache[request] {
+                print("🟩キャッシュされた画像を使用")
+                handler(cachedImage.image)
+            } else {
+                pipeline.loadImage(with: request) { result in
+                    switch result {
+                    case .success(let response):
+                        print("🟩画像を取得")
+                        handler(response.image)
+                    case .failure(let error):
+                        print("Error loading image: \(error)")
+                        handler(nil)
+                    }
+                }
+            }
+        }
+    }
+
+    private func downloadMemoryCacheImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
         // キャッシュしていたらそれを使用
         if let cachedImage = imageCache.object(forKey: path) {
             print("🟩キャッシュした画像を使用")

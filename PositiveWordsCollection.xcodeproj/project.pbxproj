@@ -36,6 +36,7 @@
 		5367F1172C00CD5900A119B7 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5367F1162C00CD5900A119B7 /* EditProfileView.swift */; };
 		5367F11C2C00E99700A119B7 /* SignInProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5367F11B2C00E99700A119B7 /* SignInProfileView.swift */; };
 		537CB6A52C0AE71C00E3F4F0 /* CurrentUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 537CB6A42C0AE71C00E3F4F0 /* CurrentUserDefaults.swift */; };
+		538321A02C83F58200309123 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 5383219F2C83F58200309123 /* Nuke */; };
 		538BBFC22C28856D005B6A2A /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 538BBFC12C28856D005B6A2A /* Post.swift */; };
 		538BBFC42C28859A005B6A2A /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 538BBFC32C28859A005B6A2A /* Comment.swift */; };
 		538BBFC62C2889D6005B6A2A /* Report.swift in Sources */ = {isa = PBXBuildFile; fileRef = 538BBFC52C2889D6005B6A2A /* Report.swift */; };
@@ -128,6 +129,7 @@
 				5361CF7E2BF7B1E900A35948 /* FirebaseAnalytics in Frameworks */,
 				535C7F932BF8289700BA33D1 /* GoogleSignInSwift in Frameworks */,
 				539C80332C01E1350000BD44 /* FirebaseStorage in Frameworks */,
+				538321A02C83F58200309123 /* Nuke in Frameworks */,
 				5361CF802BF7B1E900A35948 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
 				5361CF862BF7B1E900A35948 /* FirebaseAppCheck in Frameworks */,
 				539C802D2C01CEAD0000BD44 /* FirebaseFirestore in Frameworks */,
@@ -328,6 +330,7 @@
 				535C7F992BF82FAE00BA33D1 /* FirebaseAuth */,
 				539C802C2C01CEAD0000BD44 /* FirebaseFirestore */,
 				539C80322C01E1350000BD44 /* FirebaseStorage */,
+				5383219F2C83F58200309123 /* Nuke */,
 			);
 			productName = PositiveWordsCollection;
 			productReference = 53A655552BF787D200D915B5 /* PositiveWordsCollection.app */;
@@ -361,6 +364,7 @@
 			packageReferences = (
 				5361CF7C2BF7B1E900A35948 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				535C7F8F2BF8289700BA33D1 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				5383219E2C83F58200309123 /* XCRemoteSwiftPackageReference "Nuke" */,
 			);
 			productRefGroup = 53A655562BF787D200D915B5 /* Products */;
 			projectDirPath = "";
@@ -695,6 +699,14 @@
 				minimumVersion = 10.26.0;
 			};
 		};
+		5383219E2C83F58200309123 /* XCRemoteSwiftPackageReference "Nuke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Nuke.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.8.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -737,6 +749,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5361CF7C2BF7B1E900A35948 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAppCheck;
+		};
+		5383219F2C83F58200309123 /* Nuke */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5383219E2C83F58200309123 /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = Nuke;
 		};
 		539C802C2C01CEAD0000BD44 /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
