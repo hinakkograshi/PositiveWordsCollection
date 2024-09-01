@@ -32,6 +32,14 @@ struct HomeView: View {
                 }
             }
         }
+        .refreshable {
+            guard posts.loadingState != .loading else { return }
+            Task {
+              if let currentUserID {
+                  await posts.refreshHomeFirst(hiddenPostIDs: hiddenPostIDs, myUserID: currentUserID)
+              }
+            }
+        }
         .overlay {
             if posts.loadingState.isLoading {
                 ProgressView()
@@ -65,15 +73,10 @@ struct HomeView: View {
         .toolbarBackground(Color.colorBeige, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
 
-        .onAppear {
-            if firstAppear == true {
-                Task {
-                    firstAppear = false
-                    if let myUserID = currentUserID {
-                        await posts.refreshHomeFirst(hiddenPostIDs: hiddenPostIDs, myUserID: myUserID)
-                    }
-                }
-            }
+        .task {
+            guard firstAppear == true, let currentUserID else { return }
+            firstAppear = false
+            await posts.refreshHomeFirst(hiddenPostIDs: hiddenPostIDs, myUserID: currentUserID)
         }
     }
 }
