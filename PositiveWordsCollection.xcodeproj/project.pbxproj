@@ -12,6 +12,7 @@
 		533050D92C1430C10081B60B /* ProfilePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533050D82C1430C10081B60B /* ProfilePostView.swift */; };
 		533D40A02BF9E408005C684A /* SignInAppleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533D409F2BF9E408005C684A /* SignInAppleHelper.swift */; };
 		533D40A42BFA01D2005C684A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533D40A32BFA01D2005C684A /* HomeView.swift */; };
+		533F6AA32C851D29001774FB /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 533F6AA22C851D29001774FB /* Kingfisher */; };
 		534261CF2C0E799F0061B9E6 /* LazyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534261CE2C0E799F0061B9E6 /* LazyView.swift */; };
 		53458E782C19D62D0097643C /* BalloonText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53458E772C19D62D0097643C /* BalloonText.swift */; };
 		5345D9482C0C32DD000287DF /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5345D9472C0C32DD000287DF /* DataService.swift */; };
@@ -125,6 +126,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				533F6AA32C851D29001774FB /* Kingfisher in Frameworks */,
 				5361CF822BF7B1E900A35948 /* FirebaseAnalyticsSwift in Frameworks */,
 				5361CF7E2BF7B1E900A35948 /* FirebaseAnalytics in Frameworks */,
 				535C7F932BF8289700BA33D1 /* GoogleSignInSwift in Frameworks */,
@@ -331,6 +333,7 @@
 				539C802C2C01CEAD0000BD44 /* FirebaseFirestore */,
 				539C80322C01E1350000BD44 /* FirebaseStorage */,
 				5383219F2C83F58200309123 /* Nuke */,
+				533F6AA22C851D29001774FB /* Kingfisher */,
 			);
 			productName = PositiveWordsCollection;
 			productReference = 53A655552BF787D200D915B5 /* PositiveWordsCollection.app */;
@@ -365,6 +368,7 @@
 				5361CF7C2BF7B1E900A35948 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				535C7F8F2BF8289700BA33D1 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				5383219E2C83F58200309123 /* XCRemoteSwiftPackageReference "Nuke" */,
+				533F6AA12C851D29001774FB /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = 53A655562BF787D200D915B5 /* Products */;
 			projectDirPath = "";
@@ -683,6 +687,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		533F6AA12C851D29001774FB /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.12.0;
+			};
+		};
 		535C7F8F2BF8289700BA33D1 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
@@ -710,6 +722,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		533F6AA22C851D29001774FB /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 533F6AA12C851D29001774FB /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
 		535C7F902BF8289700BA33D1 /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 535C7F8F2BF8289700BA33D1 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;

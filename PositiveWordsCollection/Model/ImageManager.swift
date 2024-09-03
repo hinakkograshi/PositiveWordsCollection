@@ -5,10 +5,10 @@
 //  Created by Hina on 2024/05/25.
 //
 
-import Foundation
 import FirebaseStorage
 import UIKit
 import Nuke
+import Kingfisher
 
 // Objectにたくさんの画像キャッシュ
 
@@ -48,7 +48,7 @@ class ImageManager {
         let path = getProfileImagePath(userID: userID)
         // Download image from path
         DispatchQueue.global(qos: .userInteractive).async {
-            self.downloadDiskCacheImage(path: path) { returnedImage in
+            self.downloadKFDiskCacheImage(path: path) { returnedImage in
                 DispatchQueue.main.async {
                     handler(returnedImage)
                 }
@@ -86,7 +86,43 @@ class ImageManager {
         }
     }
 
-    func downloadDiskCacheImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
+    func downloadKFDiskCacheImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
+
+        getDownloadURL(from: path) { url in
+            guard let url = url else {
+                handler(nil)
+                return
+            }
+            let cacheKey = url.absoluteString
+
+            if KingfisherManager.shared.cache.isCached(forKey: cacheKey) {
+                // キャッシュ上に画像がある場合
+                KingfisherManager.shared.cache.retrieveImage(forKey: cacheKey) { result in
+                    switch result {
+                    case .success(let value):
+                        print("🟦キャッシュした画像を使用")
+                        handler(value.image)
+                    case .failure(let error):
+                        print("Error loading image: \(error)")
+                    }
+                }
+            } else {
+                // 初めてキャッシュ
+                path.getData(maxSize: 27 * 1024 * 1024) { returnedImageData, _ in
+                    if let data = returnedImageData, let image = UIImage(data: data) {
+                        print("🟦初めて使用")
+                        KingfisherManager.shared.cache.store(image, forKey: cacheKey)
+                        handler(image)
+                    } else {
+                        print("Error getting data from path for image")
+                        handler(nil)
+                    }
+                }
+            }
+        }
+    }
+
+    func downloadNukeDiskCacheImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
         getDownloadURL(from: path) { url in
             guard let url = url else {
                 handler(nil)
