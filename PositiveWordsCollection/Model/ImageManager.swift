@@ -48,7 +48,7 @@ class ImageManager {
         let path = getProfileImagePath(userID: userID)
         // Download image from path
         DispatchQueue.global(qos: .userInteractive).async {
-            self.downloadKFDiskCacheImage(path: path) { returnedImage in
+            self.downloadNukeDiskCacheImage(path: path) { returnedImage in
                 DispatchQueue.main.async {
                     handler(returnedImage)
                 }
@@ -61,7 +61,7 @@ class ImageManager {
         let path = getPostImagePath(postID: postID)
         // Download image path
         DispatchQueue.global(qos: .userInteractive).async {
-            self.downloadMemoryCacheImage(path: path) { returnedImage in
+            self.downloadNukeDiskCacheImage(path: path) { returnedImage in
                 DispatchQueue.main.async {
                     handler(returnedImage)
                 }
@@ -83,6 +83,39 @@ class ImageManager {
                 return
             }
             completion(url)
+        }
+    }
+    func downloadNukeDiskCacheImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
+        getDownloadURL(from: path) { url in
+            guard let url = url else {
+                handler(nil)
+                return
+            }
+            // 画像の取得リクエスト
+            let request = ImageRequest(url: url)
+            // URLから一意のキャッシュ名を生成
+            var config: ImagePipeline.Configuration = .withDataCache
+            config.dataCachePolicy = .storeOriginalData
+            let pipeline = ImagePipeline(configuration: config)
+            // キャッシュの確認と画像の取得
+            if let cachedImage = pipeline.cache[request] {
+                print("🟩キャッシュされた画像を使用")
+                handler(cachedImage.image)
+            } else {
+                let cacheName = url.absoluteString.hashValue
+                let dataCache = try? DataCache(path: url)
+                config.dataCache = dataCache
+                pipeline.loadImage(with: request) { result in
+                    switch result {
+                    case .success(let response):
+                        print("🟩画像を取得")
+                        handler(response.image)
+                    case .failure(let error):
+                        print("Error loading image: \(error)")
+                        handler(nil)
+                    }
+                }
+            }
         }
     }
 
@@ -122,42 +155,8 @@ class ImageManager {
         }
     }
 
-    func downloadNukeDiskCacheImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
-        getDownloadURL(from: path) { url in
-            guard let url = url else {
-                handler(nil)
-                return
-            }
-
-            // 画像の取得リクエスト
-            let request = ImageRequest(url: url)
-
-            // ImagePipelineの設定（必要に応じて）
-            //            let pipeline = ImagePipeline.shared
-            let config: ImagePipeline.Configuration = .withDataCache
-            let pipeline = ImagePipeline(configuration: config)
-
-            // 画像の取得
-            if let cachedImage = pipeline.cache[request] {
-                print("🟩キャッシュされた画像を使用")
-                handler(cachedImage.image)
-            } else {
-                pipeline.loadImage(with: request) { result in
-                    switch result {
-                    case .success(let response):
-                        print("🟩画像を取得")
-                        handler(response.image)
-                    case .failure(let error):
-                        print("Error loading image: \(error)")
-                        handler(nil)
-                    }
-                }
-            }
-        }
-    }
-
     private func downloadMemoryCacheImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
-        // キャッシュしていたらそれを使用
+//         キャッシュしていたらそれを使用
         if let cachedImage = imageCache.object(forKey: path) {
             print("🟩キャッシュした画像を使用")
             handler(cachedImage)
