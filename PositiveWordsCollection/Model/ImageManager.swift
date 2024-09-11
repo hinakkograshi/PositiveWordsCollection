@@ -7,8 +7,6 @@
 
 import FirebaseStorage
 import UIKit
-import Nuke
-import Kingfisher
 
 // Objectにたくさんの画像キャッシュ
 
@@ -48,7 +46,6 @@ class ImageManager {
         let path = getProfileImagePath(userID: userID)
         // Download image from path
         DispatchQueue.global(qos: .userInteractive).async {
-            self.downloadNukeDiskCacheImage(path: path) { returnedImage in
                 DispatchQueue.main.async {
                     handler(returnedImage)
                 }
@@ -61,7 +58,6 @@ class ImageManager {
         let path = getPostImagePath(postID: postID)
         // Download image path
         DispatchQueue.global(qos: .userInteractive).async {
-            self.downloadNukeDiskCacheImage(path: path) { returnedImage in
                 DispatchQueue.main.async {
                     handler(returnedImage)
                 }
@@ -85,69 +81,6 @@ class ImageManager {
             completion(url)
         }
     }
-    func downloadNukeDiskCacheImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
-        getDownloadURL(from: path) { url in
-            guard let url = url else {
-                handler(nil)
-                return
-            }
-            // 画像の取得リクエスト
-            let request = ImageRequest(url: url)
-            // URLから一意のキャッシュ名を生成
-            var config: ImagePipeline.Configuration = .withDataCache
-            config.dataCachePolicy = .storeOriginalData
-            let pipeline = ImagePipeline(configuration: config)
-            // キャッシュの確認と画像の取得
-            if let cachedImage = pipeline.cache[request] {
-                print("🟩キャッシュされた画像を使用")
-                handler(cachedImage.image)
-            } else {
-                let cacheName = url.absoluteString.hashValue
-                let dataCache = try? DataCache(path: url)
-                config.dataCache = dataCache
-                pipeline.loadImage(with: request) { result in
-                    switch result {
-                    case .success(let response):
-                        print("🟩画像を取得")
-                        handler(response.image)
-                    case .failure(let error):
-                        print("Error loading image: \(error)")
-                        handler(nil)
-                    }
-                }
-            }
-        }
-    }
-
-    func downloadKFDiskCacheImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
-
-        getDownloadURL(from: path) { url in
-            guard let url = url else {
-                handler(nil)
-                return
-            }
-            let cacheKey = url.absoluteString
-
-            if KingfisherManager.shared.cache.isCached(forKey: cacheKey) {
-                // キャッシュ上に画像がある場合
-                KingfisherManager.shared.cache.retrieveImage(forKey: cacheKey) { result in
-                    switch result {
-                    case .success(let value):
-                        print("🟦キャッシュした画像を使用")
-                        handler(value.image)
-                    case .failure(let error):
-                        print("Error loading image: \(error)")
-                    }
-                }
-            } else {
-                // 初めてキャッシュ
-                path.getData(maxSize: 27 * 1024 * 1024) { returnedImageData, _ in
-                    if let data = returnedImageData, let image = UIImage(data: data) {
-                        print("🟦初めて使用")
-                        KingfisherManager.shared.cache.store(image, forKey: cacheKey)
-                        handler(image)
-                    } else {
-                        print("Error getting data from path for image")
                         handler(nil)
                     }
                 }
