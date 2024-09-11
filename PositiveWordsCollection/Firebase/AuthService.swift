@@ -89,7 +89,7 @@ class AuthService {
     func createNewUserInDatabase(user: DatabaseUser, profileImage: UIImage) async throws {
         // Upload profile image to Storage
         do {
-            try await ImageManager.instance.uploadProfileImage(userID: user.userId, image: profileImage)
+            try await ImageManager.instance.createdProfileImage(userID: user.userId, image: profileImage)
         } catch {
             print("creteNewUserDBError \(error)")
         }
