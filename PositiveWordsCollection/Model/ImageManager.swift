@@ -77,17 +77,6 @@ class ImageManager {
             try FileManager.default.removeItem(at: fileURL)
     }
     
-    func getDownloadURL(from storageReference: StorageReference, completion: @escaping (URL?) -> Void) {
-        storageReference.downloadURL { url, error in
-            if let error = error {
-                print("Error getting download URL: \(error)")
-                completion(nil)
-                return
-            }
-            completion(url)
-        }
-    }
-    
     private func downloadDiskCacheImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
         let key = path.fullPath.data(using: .utf8)?.base64EncodedString() ?? UUID().uuidString
         let cacheDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
