@@ -54,7 +54,6 @@ struct ProfileView: View {
             .onAppear {
                 if firstAppear == true {
                     firstAppear = false
-                    print("🟩初めて")
                     Task {
                         profileUpdate(userID: profileUserID)
                         getProfileImage(profileUserID: profileUserID)

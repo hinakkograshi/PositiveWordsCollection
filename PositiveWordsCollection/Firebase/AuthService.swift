@@ -32,13 +32,13 @@ class AuthService {
     private func userDocument(userId: String) -> DocumentReference {
         userCollection.document(userId)
     }
-
+    
     func createUserId() -> String {
         let document = userCollection.document()
         let userID = document.documentID
         return userID
     }
-
+    
     // ブロックUser追加
     func addBlockedUser(myUserID: String, blockedUserID: String) async throws {
         let data: [String: Any] = [
@@ -50,6 +50,7 @@ class AuthService {
             print("\(error)")
         }
     }
+    
     func addBlockingUser(myUserID: String, blockedUserID: String) async throws {
         let data: [String: Any] = [
             "blocked_users": FieldValue.arrayUnion([myUserID])
@@ -60,27 +61,27 @@ class AuthService {
             print("\(error)")
         }
     }
-
+    
     func getBlockedUser(myUserID: String) async throws -> [String] {
-            let docRef = userDocument(userId: myUserID)
-            let document = try await docRef.getDocument()
-            let blockedUserArray = document.get("blocked_users") as? [String] ?? []
-            return blockedUserArray
+        let docRef = userDocument(userId: myUserID)
+        let document = try await docRef.getDocument()
+        let blockedUserArray = document.get("blocked_users") as? [String] ?? []
+        return blockedUserArray
     }
-
+    
     // キャメルケースをスネークケースにする
     private let encoder: Firestore.Encoder = {
         let encoder = Firestore.Encoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
         return encoder
     }()
-
+    
     private let decoder: Firestore.Decoder = {
         let decoder = Firestore.Decoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         return decoder
     }()
-
+    
     // Decode
     func getUserInfo(userID: String) async throws -> DatabaseUser {
         try await userDocument(userId: userID).getDocument(as: DatabaseUser.self, decoder: decoder)
@@ -89,7 +90,7 @@ class AuthService {
     func createNewUserInDatabase(user: DatabaseUser, profileImage: UIImage) async throws {
         // Upload profile image to Storage
         do {
-            try await ImageManager.instance.uploadProfileImage(userID: user.userId, image: profileImage)
+            try await ImageManager.instance.createdProfileImage(userID: user.userId, image: profileImage)
         } catch {
             print("creteNewUserDBError \(error)")
         }
@@ -104,14 +105,14 @@ class AuthService {
         ]
         try await userCollection.document(userID).updateData(data)
     }
-
+    
     func signOut() throws {
         try Auth.auth().signOut()
     }
     
     func userAcountDelete() async throws {
-            guard let user = Auth.auth().currentUser else {throw URLError(.badURL)}
-            try await user.delete()
+        guard let user = Auth.auth().currentUser else {throw URLError(.badURL)}
+        try await user.delete()
     }
     
     func asyncLogInUserToFirebase(credential: AuthCredential) async throws -> LogInUser {
@@ -135,7 +136,6 @@ class AuthService {
                 handler(nil, true, nil, nil)
                 return
             }
-            
             self.checkIfUserExistsDatabase(providerID: providerID) { returnedUserID in
                 if let userID  = returnedUserID {
                     // Userが存在

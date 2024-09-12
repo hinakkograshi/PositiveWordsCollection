@@ -153,7 +153,7 @@ struct EditProfileView: View {
                     Button(action: {
                         disableButton = true
                         // キャッシュバグ解消
-                        ImageManager.instance.chashRemove()
+//                        ImageManager.instance.chashRemove()
                         Task {
                             await saveEditProfile()
                             dismiss()

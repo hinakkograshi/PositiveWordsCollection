@@ -10,10 +10,6 @@ import SwiftUI
 import FirebaseFirestore
 import FirebaseStorage
 extension Query {
-    //    func getDocument<T>(as type: T.Type) async throws -> [T] where T: Decodable {
-    //        try await getDocumentWithSnapshot(as: type).products
-    //    }
-
     func getDocumentWithSnapshot<T>(as type: T.Type) async throws -> (products: [T], lastDocument: DocumentSnapshot?) where T: Decodable {
         let snapshot = try await self.getDocuments()
         let products = try snapshot.documents.map { document in
@@ -90,7 +86,7 @@ class DataService {
             }
         }
     }
-    
+
     // Pagination
     func getHomeScrollPostsForFeed(lastDocument: DocumentSnapshot?, hiddenPostIDs: [String], myUserID: String) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
         let blockedUserIDs = try await AuthService.instance.getBlockedUser(myUserID: myUserID)
@@ -151,7 +147,7 @@ class DataService {
                     print(error)
                 }
                 for post in filterPosts where post.postId == hiddenPostID {
-                        filterPosts.removeAll { $0 == post }
+                    filterPosts.removeAll { $0 == post }
                     print("⭐️\(filterPosts)")
                 }
                 print("⭐️\(filterPosts)")
@@ -215,7 +211,7 @@ class DataService {
             print("uploadComment Error")
         }
     }
-    //　❤️
+
     func myLiked(postID: String, userID: String) async throws -> Bool {
         let query = likedBySubCollection(postId: postID).whereField(DatabaseHelperField.userID, isEqualTo: userID)
         let countQuery = query.count
@@ -229,7 +225,6 @@ class DataService {
         }
     }
 
-    // 🐥
     func sumLikePost(userID: String) async throws -> Int {
         let sum = try await Firestore.firestore()
             .collection("posts").whereField(DatabaseHelperField.userID, isEqualTo: userID)
@@ -240,7 +235,6 @@ class DataService {
         return sum
     }
 
-    // 🐥
     func sumUserPost(userID: String) async throws -> Int {
         let query = postsCollection.whereField(DatabaseHelperField.userID, isEqualTo: userID)
         let countQuery = query.count
@@ -248,7 +242,6 @@ class DataService {
         return snapshot.count as? Int ?? 0
     }
 
-    // 💛
     func unLikePost(postID: String, myUserID: String) async throws {
         let query = likedBySubCollection(postId: postID).whereField(DatabaseHelperField.userID, isEqualTo: myUserID)
         let snapShot = try await query.getDocuments()
@@ -256,7 +249,7 @@ class DataService {
             try await document.reference.delete()
         }
     }
-    // 🩵
+
     func likePost(postID: String, currentUserID: String) {
         // Update post count
         // Update who liked
@@ -266,7 +259,7 @@ class DataService {
         ]
         postsCollection.document(postID).updateData(data)
     }
-    // 🩵
+
     func unlikePost(postID: String, currentUserID: String) {
         let decrement: Int64 = -1
         let data: [String: Any] = [
@@ -274,7 +267,7 @@ class DataService {
         ]
         postsCollection.document(postID).updateData(data)
     }
-    // 🩵
+
     func commentPostCount(postID: String, currentUserID: String) async throws {
         _ = try await downloadComments(postID: postID)
         let increment: Int64 = 1
@@ -283,12 +276,6 @@ class DataService {
         ]
         try await postsCollection.document(postID).updateData(data)
     }
-
-//    func blockedUser(blockedUser: BlockedUser) throws {
-//        let document = blockSubCollection(userId: blockedUser.myblockingUser).document(blockedUser.blockedUser)
-//        try document.setData(from: blockedUser, encoder: encoder)
-////        try blockCollection.document(blockedUser.blockedUser).setData(from: blockedUser, encoder: encoder)
-//    }
 
     func uploadLikedPost(postID: String, like: Like) throws {
         let document = likedBySubCollection(postId: postID).document(like.userId)

@@ -10,7 +10,6 @@ import UIKit
 import GoogleSignIn
 import FirebaseAuth
 
-// 構造体を作成
 struct GoogleSignInResultModel {
     let idToken: String
     let accessToken: String
