@@ -115,17 +115,14 @@ struct PostView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer()
             }
-
             // Footer
             HStack {
                 Button(action: {
                     if post.likedByUser {
                         unLikePost()
-                        print("🌷likeBYUSER:\(post.likedByUser)")
                     } else {
                         // ❤️+1
                         likePost()
-                        print("🌷likeBYUSER:\(post.likedByUser)")
                     }
                 }, label: {
                     Image(systemName: post.likedByUser ? "heart.fill" : "heart")
@@ -151,6 +148,10 @@ struct PostView: View {
                 //                Image(systemName: "paperplane")
                 //                    .font(.title3)
                 Spacer()
+                Text(stringFromCreatedDate(date: post.dateCreated))
+                    .font(.subheadline)
+                    .foregroundStyle(.gray)
+                    .padding(.trailing, 10)
             }
             Rectangle()
                 .frame(height: 1)
@@ -200,6 +201,31 @@ struct PostView: View {
         }
     }
     // MARK: function
+    private func stringFromCreatedDate(date: Date) -> String {
+        let calendar = Calendar.current
+        let now = Date()
+
+        // 現在の日時と指定された日付の差分を計算
+        let components = calendar.dateComponents([.minute, .hour, .day], from: date, to: now)
+
+        if let day = components.day, day >= 1 {
+            // 24時間以上経過している場合は通常のフォーマットで表示
+            let dateFormatter = DateFormatter()
+            dateFormatter.calendar = Calendar(identifier: .gregorian)
+            dateFormatter.dateFormat = "yyyy/M/d"
+            return dateFormatter.string(from: date)
+        } else if let hour = components.hour, hour >= 1 {
+            // 1時間以上24時間未満の場合は「◯◯時間前」
+            return "\(hour)時間前"
+        } else if let minute = components.minute, minute >= 1 {
+            // 1分以上1時間未満の場合は「◯◯分前」
+            return "\(minute)分前"
+        } else {
+            // 1分未満の場合は「たった今」
+            return "たった今"
+        }
+    }
+
     func hidePost() {
         hiddenPostIDs.append(post.postID)
         let deletedDataArray = posts.dataArray.filter { $0 != post }

@@ -59,6 +59,7 @@ class DataService {
         if let lastDocument {
             let (postsQuery, lastDoc) = try await postsCollection
                 .whereField(DatabaseHelperField.userID, isEqualTo: userId)
+                .order(by: DatabaseHelperField.dateCreated, descending: true)
                 .limit(to: 5)
                 .start(afterDocument: lastDocument)
                 .getDocumentWithSnapshot(as: Post.self)
@@ -67,23 +68,11 @@ class DataService {
         } else {
             let (postsQuery, lastDoc) = try await postsCollection
                 .whereField(DatabaseHelperField.userID, isEqualTo: userId)
+                .order(by: DatabaseHelperField.dateCreated, descending: true)
                 .limit(to: 5)
                 .getDocumentWithSnapshot(as: Post.self)
             let posts = try await getPostsFromSnapshot(posts: postsQuery)
             return (posts, lastDoc)
-        }
-    }
-    // 🟥報告
-    func uploadReport(reports: Report, handler: @escaping (_ success: Bool) -> Void) throws {
-        try reportsCollection.document().setData(from: reports, encoder: encoder) { error in
-            if let error = error {
-                print("Error uploadomg report.\(error)")
-                handler(false)
-                return
-            } else {
-                handler(true)
-                return
-            }
         }
     }
 
@@ -130,6 +119,20 @@ class DataService {
                 let filterPosts = try await downloadHiddenPost(hiddenPostIDs: hiddenPostIDs, newPosts: postsQuery)
                 let posts = try await getPostsFromSnapshot(posts: filterPosts)
                 return (posts, lastDoc)
+            }
+        }
+    }
+
+    // 🟥報告
+    func uploadReport(reports: Report, handler: @escaping (_ success: Bool) -> Void) throws {
+        try reportsCollection.document().setData(from: reports, encoder: encoder) { error in
+            if let error = error {
+                print("Error uploadomg report.\(error)")
+                handler(false)
+                return
+            } else {
+                handler(true)
+                return
             }
         }
     }
