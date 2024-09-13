@@ -62,27 +62,19 @@ class PostArrayObject: ObservableObject {
         lastMyUserDocument = nil
         do {
             let (newPosts, lastMyUserDocument) = try await DataService.instance.getUserFeed(userId: userID, lastDocument: lastMyUserDocument)
-            // 最新の日付
-            let sortedPosts = newPosts.sorted { (post1, post2) -> Bool in
-                return post1.dateCreated > post2.dateCreated
-            }
-            self.myUserPostArray.append(contentsOf: sortedPosts)
+            self.myUserPostArray.append(contentsOf: newPosts)
             self.lastMyUserDocument = lastMyUserDocument
         } catch {
             print("🟥refreshUpdateMyUserPost Error")
         }
     }
-    
+    // TODO: 並び替え
     func refreshMyUserPost(userID: String) async -> (Bool) {
         profileViewOn = true
         var isMyLastPost = false
         do {
             let (newPosts, lastMyUserDocument) = try await DataService.instance.getUserFeed(userId: userID, lastDocument: lastMyUserDocument)
-            // 最新の日付
-            let sortedPosts = newPosts.sorted { (post1, post2) -> Bool in
-                return post1.dateCreated > post2.dateCreated
-            }
-            self.myUserPostArray.append(contentsOf: sortedPosts)
+            self.myUserPostArray.append(contentsOf: newPosts)
             if let lastMyUserDocument {
                 self.lastMyUserDocument = lastMyUserDocument
             } else {
@@ -90,7 +82,7 @@ class PostArrayObject: ObservableObject {
                 isMyLastPost = true
             }
         } catch {
-            print("🟥refreshMyUserPost Error")
+            print("🟥refreshMyUserPost Error:\(error)")
         }
         return isMyLastPost
     }
@@ -99,17 +91,13 @@ class PostArrayObject: ObservableObject {
         userPostArray = []
         lastUserDocument = nil
     }
-    
+    // TODO: 並び替え
     func refreshUserPost(userID: String) async -> (Bool) {
         profileViewOn = true
         var isLastPost = false
         do {
             let (newPosts, lastUserDocument) = try await DataService.instance.getUserFeed(userId: userID, lastDocument: lastUserDocument)
-            // 最新の日付
-            let sortedPosts = newPosts.sorted { (post1, post2) -> Bool in
-                return post1.dateCreated > post2.dateCreated
-            }
-            self.userPostArray.append(contentsOf: sortedPosts)
+            self.userPostArray.append(contentsOf: newPosts)
             if let lastUserDocument {
                 self.lastUserDocument = lastUserDocument
             } else {
@@ -117,7 +105,7 @@ class PostArrayObject: ObservableObject {
                 isLastPost = true
             }
         } catch {
-            print("🟥refreshUserPost Error")
+            print("🟥refreshUserPost Error:\(error)")
         }
         return isLastPost
     }
