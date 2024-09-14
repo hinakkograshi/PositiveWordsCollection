@@ -200,6 +200,7 @@ struct PostView: View {
             getImages()
         }
     }
+    
     // MARK: function
     private func stringFromCreatedDate(date: Date) -> String {
         let calendar = Calendar.current

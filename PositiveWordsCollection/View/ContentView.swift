@@ -35,6 +35,13 @@ struct ContentView: View {
                 Text("Profile")
             }
             NavigationStack {
+                NotificationsView()
+            }
+            .tabItem {
+                Image(systemName: "bell.fill")
+                Text("Notifications")
+            }
+            NavigationStack {
                 SettingsView()
             }
             .tabItem {

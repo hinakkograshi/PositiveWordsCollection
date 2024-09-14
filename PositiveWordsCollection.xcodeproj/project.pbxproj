@@ -18,6 +18,8 @@
 		5345D9522C0C4C41000287DF /* SelectStampCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5345D9512C0C4C41000287DF /* SelectStampCell.swift */; };
 		5346CAC42BFFF054000829E1 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5346CAC32BFFF054000829E1 /* ProfileView.swift */; };
 		5346CAC62BFFF52F000829E1 /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5346CAC52BFFF52F000829E1 /* ProfileHeaderView.swift */; };
+		534A05222C950F1D00D7C2EE /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534A05212C950F1D00D7C2EE /* NotificationsView.swift */; };
+		534A05242C950F4600D7C2EE /* NotificationsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534A05232C950F4600D7C2EE /* NotificationsCell.swift */; };
 		534A51C82C670C52004AD3E6 /* LoadingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534A51C72C670C52004AD3E6 /* LoadingState.swift */; };
 		534A51CA2C679052004AD3E6 /* PostImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534A51C92C679052004AD3E6 /* PostImageView.swift */; };
 		534C0FAF2C69084700A96336 /* ci_pre_xcodebuild.sh in Resources */ = {isa = PBXBuildFile; fileRef = 534C0FAE2C68F3DD00A96336 /* ci_pre_xcodebuild.sh */; };
@@ -78,6 +80,8 @@
 		5345D9512C0C4C41000287DF /* SelectStampCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectStampCell.swift; sourceTree = "<group>"; };
 		5346CAC32BFFF054000829E1 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		5346CAC52BFFF52F000829E1 /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
+		534A05212C950F1D00D7C2EE /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
+		534A05232C950F4600D7C2EE /* NotificationsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsCell.swift; sourceTree = "<group>"; };
 		534A51C72C670C52004AD3E6 /* LoadingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingState.swift; sourceTree = "<group>"; };
 		534A51C92C679052004AD3E6 /* PostImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostImageView.swift; sourceTree = "<group>"; };
 		534C0FAE2C68F3DD00A96336 /* ci_pre_xcodebuild.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_pre_xcodebuild.sh; sourceTree = "<group>"; };
@@ -147,6 +151,7 @@
 				5367F1182C00E71B00A119B7 /* SignInView */,
 				539DD1252BFE37C000D6BCBC /* Home */,
 				5346CAC22BFFF004000829E1 /* Profile */,
+				534A05202C950EC000D7C2EE /* Notifications */,
 				53C157C42BF91494003776CB /* SettingsView.swift */,
 				539C80282C01B0E40000BD44 /* ImagePicker.swift */,
 			);
@@ -162,6 +167,15 @@
 				5367F1162C00CD5900A119B7 /* EditProfileView.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		534A05202C950EC000D7C2EE /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				534A05212C950F1D00D7C2EE /* NotificationsView.swift */,
+				534A05232C950F4600D7C2EE /* NotificationsCell.swift */,
+			);
+			path = Notifications;
 			sourceTree = "<group>";
 		};
 		535C7F952BF82BFE00BA33D1 /* ViewModel */ = {
@@ -433,6 +447,7 @@
 				539DD11A2BFE299900D6BCBC /* PostArrayObject.swift in Sources */,
 				5346CAC62BFFF52F000829E1 /* ProfileHeaderView.swift in Sources */,
 				534261CF2C0E799F0061B9E6 /* LazyView.swift in Sources */,
+				534A05242C950F4600D7C2EE /* NotificationsCell.swift in Sources */,
 				533D40A42BFA01D2005C684A /* HomeView.swift in Sources */,
 				533050D92C1430C10081B60B /* ProfilePostView.swift in Sources */,
 				538BBFC22C28856D005B6A2A /* Post.swift in Sources */,
@@ -454,6 +469,7 @@
 				5346CAC42BFFF054000829E1 /* ProfileView.swift in Sources */,
 				539C80292C01B0E40000BD44 /* ImagePicker.swift in Sources */,
 				535315A72BFCDD3D00D5767A /* PostView.swift in Sources */,
+				534A05222C950F1D00D7C2EE /* NotificationsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
