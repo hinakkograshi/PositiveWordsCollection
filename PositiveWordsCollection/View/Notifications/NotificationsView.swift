@@ -9,6 +9,7 @@ import SwiftUI
 
 struct NotificationsView: View {
     @State var notifications = [Notification]()
+    @ObservedObject var posts: PostArrayObject
     @State var isLastPost = false
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @State var loadingState: LoadingState = .idle
@@ -23,7 +24,7 @@ struct NotificationsView: View {
                         LazyVStack {
                             
                             ForEach(notifications) { notification in
-                                NotificationsCell(notifications: notification)
+                                NotificationsCell(notification: notification, posts: posts)
                             }
                         }
                     }
@@ -78,5 +79,5 @@ struct NotificationsView: View {
     let notifications = [Notification(notificationId: "1", postId: "12", userId: "23", userName: "hinakko", dateCreated: Date(), type: 1),
                          Notification(notificationId: "1", postId: "12", userId: "23", userName: "oba", dateCreated: Date(), type: 2)]
 
-    return NotificationsView(notifications: notifications)
+    return NotificationsView(notifications: notifications, posts: PostArrayObject())
 }

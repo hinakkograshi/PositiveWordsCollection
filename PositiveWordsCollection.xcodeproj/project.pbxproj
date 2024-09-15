@@ -20,6 +20,7 @@
 		5345D9522C0C4C41000287DF /* SelectStampCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5345D9512C0C4C41000287DF /* SelectStampCell.swift */; };
 		5346CAC42BFFF054000829E1 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5346CAC32BFFF054000829E1 /* ProfileView.swift */; };
 		5346CAC62BFFF52F000829E1 /* ProfileHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5346CAC52BFFF52F000829E1 /* ProfileHeaderView.swift */; };
+		53492A292C97042900D93B25 /* DateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53492A282C97042900D93B25 /* DateManager.swift */; };
 		534A05222C950F1D00D7C2EE /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534A05212C950F1D00D7C2EE /* NotificationsView.swift */; };
 		534A05242C950F4600D7C2EE /* NotificationsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534A05232C950F4600D7C2EE /* NotificationsCell.swift */; };
 		534A51C82C670C52004AD3E6 /* LoadingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534A51C72C670C52004AD3E6 /* LoadingState.swift */; };
@@ -84,6 +85,7 @@
 		5345D9512C0C4C41000287DF /* SelectStampCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectStampCell.swift; sourceTree = "<group>"; };
 		5346CAC32BFFF054000829E1 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		5346CAC52BFFF52F000829E1 /* ProfileHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderView.swift; sourceTree = "<group>"; };
+		53492A282C97042900D93B25 /* DateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateManager.swift; sourceTree = "<group>"; };
 		534A05212C950F1D00D7C2EE /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		534A05232C950F4600D7C2EE /* NotificationsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsCell.swift; sourceTree = "<group>"; };
 		534A51C72C670C52004AD3E6 /* LoadingState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingState.swift; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 				538BBFC72C288C99005B6A2A /* Like.swift */,
 				5308306B2C95A45300F1546C /* Notification.swift */,
 				539DD1192BFE299900D6BCBC /* PostArrayObject.swift */,
+				53492A282C97042900D93B25 /* DateManager.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -456,6 +459,7 @@
 				534A05242C950F4600D7C2EE /* NotificationsCell.swift in Sources */,
 				533D40A42BFA01D2005C684A /* HomeView.swift in Sources */,
 				533050D92C1430C10081B60B /* ProfilePostView.swift in Sources */,
+				53492A292C97042900D93B25 /* DateManager.swift in Sources */,
 				538BBFC22C28856D005B6A2A /* Post.swift in Sources */,
 				5308306C2C95A45400F1546C /* Notification.swift in Sources */,
 				539DD11F2BFE2F1700D6BCBC /* Extension.swift in Sources */,

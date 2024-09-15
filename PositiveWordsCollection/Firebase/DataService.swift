@@ -53,6 +53,16 @@ class DataService {
         }
         return try await getPostsFromSnapshot(posts: userPosts)
     }
+
+    func getPost(from postId: String) async -> Post? {
+        do {
+            let post = try await postsCollection.document(postId).getDocument(as: Post.self)
+            return post
+        } catch {
+            print("get post from postId")
+            return nil
+        }
+    }
     // UserIDの投稿を取得
     func getUserFeed(userId: String, lastDocument: DocumentSnapshot?) async throws -> ([PostModel], lastDocument: DocumentSnapshot?) {
         // First FiveData
@@ -157,6 +167,18 @@ class DataService {
             }
         }
         return filterPosts
+    }
+    
+    func likeByUserFromPostId(postId: String) async -> Bool {
+        var likeByUser: Bool = false
+        do {
+            if let userID = currentUserID {
+                likeByUser = try await DataService.instance.myLiked(postID: postId, userID: userID)
+            }
+        } catch {
+            print("likeByUserFromPostId Error")
+        }
+        return likeByUser
     }
 
     private func getPostsFromSnapshot(posts: [Post]) async throws -> [PostModel] {

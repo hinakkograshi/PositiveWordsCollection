@@ -12,7 +12,7 @@ struct CommentsView: View {
     @FocusState private var focusedField: Bool
     @State var submissionText: String = ""
     @State var commentArray = [CommentModel]()
-    @Binding var post: PostModel
+    @State var post: PostModel
     @State var profileImage: UIImage = UIImage(named: "loading")!
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
@@ -123,6 +123,6 @@ struct CommentsView: View {
         @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
         @State var count = [CommentModel(commentID: "", userID: "", username: "", content: "HelloooooooooooooooHelloooooooooooooooHellooooooooooooooo", dateCreated: Date())]
 
-        CommentsView(posts: PostArrayObject(), commentArray: count, post: $post)
+        CommentsView(posts: PostArrayObject(), commentArray: count, post: post)
     }
 }
