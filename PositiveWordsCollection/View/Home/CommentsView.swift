@@ -12,7 +12,7 @@ struct CommentsView: View {
     @FocusState private var focusedField: Bool
     @State var submissionText: String = ""
     @State var commentArray = [CommentModel]()
-    @Binding var post: PostModel
+    @State var post: PostModel
     @State var profileImage: UIImage = UIImage(named: "loading")!
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
@@ -88,6 +88,10 @@ struct CommentsView: View {
                 let comment = Comment(commentId: commentID, userId: userID, displayName: userName, content: submissionText, dateCreated: Date())
                 await DataService.instance.uploadComment(comment: comment, postID: post.postID)
                 let newComment = CommentModel(commentID: commentID, userID: userID, username: userName, content: submissionText, dateCreated: comment.dateCreated)
+            //通知
+            let notificationID = NotificationService.instance.createNotificationId()
+            let notification = Notification(notificationId: notificationID, postId: post.postID, userId: userID, userName: userName, dateCreated: Date(), type: 1)
+            await NotificationService.instance.uploadNotification(postedUserId: post.userID, notification: notification)
                 self.submissionText = ""
                 self.commentArray.append(newComment)
         }
@@ -119,6 +123,6 @@ struct CommentsView: View {
         @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
         @State var count = [CommentModel(commentID: "", userID: "", username: "", content: "HelloooooooooooooooHelloooooooooooooooHellooooooooooooooo", dateCreated: Date())]
 
-        CommentsView(posts: PostArrayObject(), commentArray: count, post: $post)
+        CommentsView(posts: PostArrayObject(), commentArray: count, post: post)
     }
 }
