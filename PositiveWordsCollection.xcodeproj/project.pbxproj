@@ -183,13 +183,12 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
-		534A05202C950EC000D7C2EE /* Notifications */ = {
+		53492A2A2C97142600D93B25 /* ci_scripts */ = {
 			isa = PBXGroup;
 			children = (
-				534A05212C950F1D00D7C2EE /* NotificationsView.swift */,
-				534A05232C950F4600D7C2EE /* NotificationsCell.swift */,
+				534C0FAE2C68F3DD00A96336 /* ci_pre_xcodebuild.sh */,
 			);
-			path = Notifications;
+			path = ci_scripts;
 			sourceTree = "<group>";
 		};
 		535C7F952BF82BFE00BA33D1 /* ViewModel */ = {
