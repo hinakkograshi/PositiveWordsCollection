@@ -15,20 +15,33 @@ struct HomeView: View {
     @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            LazyVStack {
-                ForEach(posts.dataArray) { post in
-                    PostView(post: post, posts: posts, headerIsActive: false, comentIsActive: false)
-                    if post == posts.dataArray.last, isLastPost == false {
-                        ProgressView()
-                            .onAppear {
-                                Task {
-                                    if let myUserID = currentUserID {
-                                        isLastPost = await posts.refreshHome(hiddenPostIDs: hiddenPostIDs, myUserID: myUserID)
+        VStack {
+            switch posts.loadingState {
+            case .idle, .loading:
+                EmptyView()
+            case .success:
+                ScrollView(.vertical, showsIndicators: false) {
+                    LazyVStack {
+                        ForEach(posts.dataArray) { post in
+                            PostView(post: post, posts: posts, headerIsActive: false, comentIsActive: false)
+                            if post == posts.dataArray.last, isLastPost == false {
+                                ProgressView()
+                                    .onAppear {
+                                        Task {
+                                            if let myUserID = currentUserID {
+                                                isLastPost = await posts.refreshHome(hiddenPostIDs: hiddenPostIDs, myUserID: myUserID)
+                                            }
+                                        }
                                     }
-                                }
                             }
+                        }
                     }
+                }
+            case .failure:
+                ContentUnavailableView {
+                    Label("通信エラー", systemImage: "magnifyingglass")
+                } description: {
+                    Text("電波の良いところで通信してください。")
                 }
             }
         }
@@ -38,6 +51,20 @@ struct HomeView: View {
               if let currentUserID {
                   await posts.refreshHomeFirst(hiddenPostIDs: hiddenPostIDs, myUserID: currentUserID)
               }
+            }
+        }
+        .overlay(alignment: .bottomTrailing) {
+            if posts.loadingState != .loading {
+                Button(action: {
+                    showCreatePostView.toggle()
+                }, label: {
+                    Image(systemName: "plus")
+                        .foregroundStyle(.white)
+                        .padding(20)
+                        .background(Color.orange)
+                        .clipShape(RoundedRectangle(cornerRadius: 100))
+                })
+                .padding(10)
             }
         }
         .overlay {
@@ -50,18 +77,6 @@ struct HomeView: View {
                     .cornerRadius(8)
                     .scaleEffect(1.2)
             }
-        }
-        .overlay(alignment: .bottomTrailing) {
-            Button(action: {
-                showCreatePostView.toggle()
-            }, label: {
-                Image(systemName: "plus")
-                    .foregroundStyle(.white)
-                    .padding(20)
-                    .background(Color.orange)
-                    .clipShape(RoundedRectangle(cornerRadius: 100))
-            })
-            .padding(10)
         }
         .sheet(
             isPresented: $showCreatePostView,
