@@ -59,7 +59,7 @@ struct NotificationsView: View {
             guard let myUserID = currentUserID else { return }
             await notify(myUserID: myUserID)
         }
-        .navigationTitle("Notifications")
+        .navigationTitle("通知")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color.colorBeige, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
