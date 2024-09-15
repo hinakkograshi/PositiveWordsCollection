@@ -164,6 +164,14 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
+		53492A2A2C97142600D93B25 /* ci_scripts */ = {
+			isa = PBXGroup;
+			children = (
+				534C0FAE2C68F3DD00A96336 /* ci_pre_xcodebuild.sh */,
+			);
+			path = ci_scripts;
+			sourceTree = "<group>";
+		};
 		535C7F952BF82BFE00BA33D1 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -246,6 +254,7 @@
 		53A6554C2BF787D200D915B5 = {
 			isa = PBXGroup;
 			children = (
+				53492A2A2C97142600D93B25 /* ci_scripts */,
 				53A655572BF787D200D915B5 /* PositiveWordsCollection */,
 				53A655562BF787D200D915B5 /* Products */,
 				535C7F982BF82FAE00BA33D1 /* Frameworks */,
@@ -263,7 +272,6 @@
 		53A655572BF787D200D915B5 /* PositiveWordsCollection */ = {
 			isa = PBXGroup;
 			children = (
-				534C0FAE2C68F3DD00A96336 /* ci_pre_xcodebuild.sh */,
 				53C0E0332BF994B9008CE2AF /* PositiveWordsCollection.entitlements */,
 				53A655582BF787D200D915B5 /* PositiveWordsCollectionApp.swift */,
 				53C8C23B2C26608500FCE34F /* AppCheckProviderFactory.swift */,
@@ -604,7 +612,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.2.0;
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinaf0224.PositiveWordsCollection;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -643,7 +651,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.2.0;
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinaf0224.PositiveWordsCollection;
 				PRODUCT_NAME = "$(TARGET_NAME)";
