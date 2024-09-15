@@ -16,6 +16,7 @@ struct PostView: View {
     @State var postImage = UIImage(named: "loading")!
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
+    @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
     @State var showReportsAlert: Bool = false
     @State var showSuccessReportsAlert: Bool = false
     @State var showDeleteAlert: Bool = false
@@ -278,10 +279,8 @@ struct PostView: View {
     }
     // 💛
     func likePost() {
-        guard let userID = currentUserID else {
-            print("Cannot find userID while unliking post")
-            return
-        }
+        guard let userID = currentUserID else { return }
+        guard let userName = currentUserName else { return }
         if userID != post.userID {
             // Update the local data
             let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount + 1, likedByUser: true, comentsCount: post.comentsCount)
@@ -299,8 +298,11 @@ struct PostView: View {
                     try DataService.instance.uploadLikedPost(postID: post.postID, like: like)
                     // ⭐️Update Firebase
                     DataService.instance.likePost(postID: post.postID, currentUserID: userID)
+                    let notificationID = NotificationService.instance.createNotificationId()
+                    let notification = Notification(notificationId: notificationID, postId: post.postID, userId: userID, userName: userName, dateCreated: Date(), type: 0)
+                    await NotificationService.instance.uploadNotification(postedUserId: post.userID, notification: notification)
                 } catch {
-                    print("Like Error")
+                    print("🟥Like Error")
                 }
             }
         }

@@ -88,6 +88,10 @@ struct CommentsView: View {
                 let comment = Comment(commentId: commentID, userId: userID, displayName: userName, content: submissionText, dateCreated: Date())
                 await DataService.instance.uploadComment(comment: comment, postID: post.postID)
                 let newComment = CommentModel(commentID: commentID, userID: userID, username: userName, content: submissionText, dateCreated: comment.dateCreated)
+            //通知
+            let notificationID = NotificationService.instance.createNotificationId()
+            let notification = Notification(notificationId: notificationID, postId: post.postID, userId: userID, userName: userName, dateCreated: Date(), type: 1)
+            await NotificationService.instance.uploadNotification(postedUserId: post.userID, notification: notification)
                 self.submissionText = ""
                 self.commentArray.append(newComment)
         }
