@@ -10,6 +10,7 @@
 		5304DEE72C246949008400DB /* DeleteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5304DEE62C246949008400DB /* DeleteService.swift */; };
 		5308306C2C95A45400F1546C /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5308306B2C95A45300F1546C /* Notification.swift */; };
 		5308306E2C95AFB400F1546C /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5308306D2C95AFB400F1546C /* NotificationService.swift */; };
+		530B62272C98E55300E2ECBA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 530B62262C98E55200E2ECBA /* GoogleService-Info.plist */; };
 		5325FE152C396F3900DC5A6E /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5325FE142C396F3900DC5A6E /* Array.swift */; };
 		533050D92C1430C10081B60B /* ProfilePostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533050D82C1430C10081B60B /* ProfilePostView.swift */; };
 		533D40A02BF9E408005C684A /* SignInAppleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 533D409F2BF9E408005C684A /* SignInAppleHelper.swift */; };
@@ -58,7 +59,6 @@
 		539DD11F2BFE2F1700D6BCBC /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539DD11E2BFE2F1700D6BCBC /* Extension.swift */; };
 		539DD1242BFE378400D6BCBC /* CommentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539DD1232BFE378400D6BCBC /* CommentsView.swift */; };
 		539DD1272BFE383500D6BCBC /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539DD1262BFE383500D6BCBC /* MessageView.swift */; };
-		53A263B42C83562C00C43384 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 53A263B32C83562C00C43384 /* GoogleService-Info.plist */; };
 		53A655592BF787D200D915B5 /* PositiveWordsCollectionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53A655582BF787D200D915B5 /* PositiveWordsCollectionApp.swift */; };
 		53A6555B2BF787D200D915B5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53A6555A2BF787D200D915B5 /* ContentView.swift */; };
 		53A6555D2BF787D400D915B5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53A6555C2BF787D400D915B5 /* Assets.xcassets */; };
@@ -75,6 +75,7 @@
 		5304DEE62C246949008400DB /* DeleteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteService.swift; sourceTree = "<group>"; };
 		5308306B2C95A45300F1546C /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		5308306D2C95AFB400F1546C /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		530B62262C98E55200E2ECBA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5325FE142C396F3900DC5A6E /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
 		533050D82C1430C10081B60B /* ProfilePostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePostView.swift; sourceTree = "<group>"; };
 		533D409F2BF9E408005C684A /* SignInAppleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInAppleHelper.swift; sourceTree = "<group>"; };
@@ -116,7 +117,6 @@
 		539DD11E2BFE2F1700D6BCBC /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		539DD1232BFE378400D6BCBC /* CommentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsView.swift; sourceTree = "<group>"; };
 		539DD1262BFE383500D6BCBC /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
-		53A263B32C83562C00C43384 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		53A655552BF787D200D915B5 /* PositiveWordsCollection.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PositiveWordsCollection.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53A655582BF787D200D915B5 /* PositiveWordsCollectionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveWordsCollectionApp.swift; sourceTree = "<group>"; };
 		53A6555A2BF787D200D915B5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -320,8 +320,8 @@
 				53A6555C2BF787D400D915B5 /* Assets.xcassets */,
 				53A6555E2BF787D400D915B5 /* Preview Content */,
 				535C7F942BF8293000BA33D1 /* Info.plist */,
+				530B62262C98E55200E2ECBA /* GoogleService-Info.plist */,
 				AD1FFC072C533403007926F7 /* InfoPlist.xcstrings */,
-				53A263B32C83562C00C43384 /* GoogleService-Info.plist */,
 				53AAEE0B2C35762500B3AA7A /* Launch Screen.storyboard */,
 			);
 			path = PositiveWordsCollection;
@@ -422,10 +422,10 @@
 			files = (
 				53A655602BF787D400D915B5 /* Preview Assets.xcassets in Resources */,
 				534C0FAF2C69084700A96336 /* ci_pre_xcodebuild.sh in Resources */,
+				530B62272C98E55300E2ECBA /* GoogleService-Info.plist in Resources */,
 				AD1FFC082C533403007926F7 /* InfoPlist.xcstrings in Resources */,
 				53AAEE0C2C35762500B3AA7A /* Launch Screen.storyboard in Resources */,
 				53A6555D2BF787D400D915B5 /* Assets.xcassets in Resources */,
-				53A263B42C83562C00C43384 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

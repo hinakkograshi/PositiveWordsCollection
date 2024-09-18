@@ -58,7 +58,7 @@ struct ContentView: View {
                          onDismiss: {
             if let userID = currentUserID {
                 Task {
-                    _ = await posts.refreshHome(hiddenPostIDs: hiddenPostIDs, myUserID: userID)
+                    _ = await posts.refreshHomeFirst(hiddenPostIDs: hiddenPostIDs, myUserID: userID)
                 }
             }
         },

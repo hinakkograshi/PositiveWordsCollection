@@ -15,11 +15,13 @@ struct HomeView: View {
     @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     var body: some View {
+
         VStack {
             switch posts.loadingState {
             case .idle, .loading:
                 EmptyView()
             case .success:
+                ZStack {
                 ScrollView(.vertical, showsIndicators: false) {
                     LazyVStack {
                         ForEach(posts.dataArray) { post in
@@ -37,6 +39,19 @@ struct HomeView: View {
                         }
                     }
                 }
+                Button(action: {
+                    showCreatePostView.toggle()
+                }, label: {
+                    Image(systemName: "plus")
+                        .foregroundStyle(.white)
+                        .padding(20)
+                        .background(Color.orange)
+                        .clipShape(RoundedRectangle(cornerRadius: 100))
+                }).frame(maxWidth: .infinity,
+                         maxHeight: .infinity,
+                         alignment: .bottomTrailing)
+                .padding(10)
+            }
             case .failure:
                 ContentUnavailableView {
                     Label("通信エラー", systemImage: "magnifyingglass")
@@ -53,20 +68,20 @@ struct HomeView: View {
               }
             }
         }
-        .overlay(alignment: .bottomTrailing) {
-            if posts.loadingState != .loading {
-                Button(action: {
-                    showCreatePostView.toggle()
-                }, label: {
-                    Image(systemName: "plus")
-                        .foregroundStyle(.white)
-                        .padding(20)
-                        .background(Color.orange)
-                        .clipShape(RoundedRectangle(cornerRadius: 100))
-                })
-                .padding(10)
-            }
-        }
+//        .overlay(alignment: .bottomTrailing) {
+//            if posts.loadingState != .loading {
+//                Button(action: {
+//                    showCreatePostView.toggle()
+//                }, label: {
+//                    Image(systemName: "plus")
+//                        .foregroundStyle(.white)
+//                        .padding(20)
+//                        .background(Color.orange)
+//                        .clipShape(RoundedRectangle(cornerRadius: 100))
+//                })
+//                .padding(10)
+//            }
+//        }
         .overlay {
             if posts.loadingState.isLoading {
                 ProgressView()
