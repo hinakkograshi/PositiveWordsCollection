@@ -73,29 +73,32 @@ struct CommentsView: View {
         let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount, likedByUser: post.likedByUser, comentsCount: post.comentsCount + 1)
         self.post = updatePost
         // Update Firebase
-                Task {
-                    do {
-                        try await  DataService.instance.commentPostCount(postID: post.postID, currentUserID: userID)
-                    } catch {
-                        print("Comment UpdateError")
-                    }
-                }
+        Task {
+            do {
+                try await  DataService.instance.commentPostCount(postID: post.postID, currentUserID: userID)
+            } catch {
+                print("Comment UpdateError")
+            }
+        }
     }
     func addComment() {
         guard let userID = currentUserID, let userName = currentUserName else { return }
         Task {
-                let commentID = DataService.instance.createCommentId(postID: post.postID)
-                let comment = Comment(commentId: commentID, userId: userID, displayName: userName, content: submissionText, dateCreated: Date())
-                await DataService.instance.uploadComment(comment: comment, postID: post.postID)
-                let newComment = CommentModel(commentID: commentID, userID: userID, username: userName, content: submissionText, dateCreated: comment.dateCreated)
+            let commentID = DataService.instance.createCommentId(postID: post.postID)
+            let comment = Comment(commentId: commentID, userId: userID, displayName: userName, content: submissionText, dateCreated: Date())
+            await DataService.instance.uploadComment(comment: comment, postID: post.postID)
+            let newComment = CommentModel(commentID: commentID, userID: userID, username: userName, content: submissionText, dateCreated: comment.dateCreated)
             //通知
             let notificationID = NotificationService.instance.createNotificationId()
             let notification = Notification(notificationId: notificationID, postId: post.postID, userId: userID, userName: userName, dateCreated: Date(), type: 1)
-            await NotificationService.instance.uploadNotification(postedUserId: post.userID, notification: notification)
-                self.submissionText = ""
-                self.commentArray.append(newComment)
+            if userID != post.userID {
+                await NotificationService.instance.uploadNotification(postedUserId: post.userID, notification: notification)
+            }
+            self.commentArray.append(newComment)
+            self.submissionText = ""
         }
     }
+
     func getProfilePicture() {
         guard let userID = currentUserID else { return }
         ImageManager.instance.downloadProfileImage(userID: userID) { returnedImage in
@@ -104,6 +107,7 @@ struct CommentsView: View {
             }
         }
     }
+    
     func getComments() {
         // 空の場合、コメント読み込む
         guard self.commentArray.isEmpty else { return }
