@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct HomeView: View {
-    @ObservedObject var posts: PostArrayObject
+    @StateObject var posts: PostArrayObject
     @State var showCreatePostView = false
     @State var firstAppear = true
     @State var isLastPost = false
     @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
-    var body: some View {
 
+    var body: some View {
         VStack {
             switch posts.loadingState {
             case .idle, .loading:
@@ -24,8 +24,8 @@ struct HomeView: View {
                 ZStack {
                 ScrollView(.vertical, showsIndicators: false) {
                     LazyVStack {
-                        ForEach(posts.dataArray) { post in
-                            PostView(post: post, posts: posts, headerIsActive: false, comentIsActive: false)
+                        ForEach($posts.dataArray) { $post in
+                            PostView(post: $post, posts: posts, headerIsActive: false, comentIsActive: false)
                             if post == posts.dataArray.last, isLastPost == false {
                                 ProgressView()
                                     .onAppear {

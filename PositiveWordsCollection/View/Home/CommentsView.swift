@@ -8,18 +8,18 @@
 import SwiftUI
 
 struct CommentsView: View {
-    @ObservedObject var posts: PostArrayObject
+    @StateObject var posts: PostArrayObject
     @FocusState private var focusedField: Bool
     @State var submissionText: String = ""
     @State var commentArray = [CommentModel]()
-    @State var post: PostModel
+    @Binding var post: PostModel
     @State var profileImage: UIImage = UIImage(named: "loading")!
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
     var body: some View {
         VStack {
             ScrollView {
-                PostView(post: post, posts: posts, headerIsActive: false, comentIsActive: true)
+                PostView(post: $post, posts: posts, headerIsActive: false, comentIsActive: true)
                 LazyVStack {
                     ForEach(commentArray, id: \.self) { comment in
                         MessageView(comment: comment, posts: posts)
@@ -127,6 +127,6 @@ struct CommentsView: View {
         @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
         @State var count = [CommentModel(commentID: "", userID: "", username: "", content: "HelloooooooooooooooHelloooooooooooooooHellooooooooooooooo", dateCreated: Date())]
 
-        CommentsView(posts: PostArrayObject(), commentArray: count, post: post)
+        CommentsView(posts: PostArrayObject(), commentArray: count, post: $post)
     }
 }

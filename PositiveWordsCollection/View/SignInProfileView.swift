@@ -13,7 +13,7 @@ struct SignInProfileView: View {
         case bio
     }
     @FocusState private var focusedField: Field?
-    @ObservedObject var viewModel: AuthenticationViewModel
+    @StateObject var viewModel: AuthenticationViewModel
     @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
     @Environment(\.dismiss) private var dismiss
     @State var showImagePicker: Bool = false

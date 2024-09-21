@@ -10,7 +10,7 @@ import SwiftUI
 struct ProfileView: View {
     @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
     var isMyProfile: Bool
-    @ObservedObject var posts: PostArrayObject
+    @StateObject var posts: PostArrayObject
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @State var profileImage = UIImage(named: "loading")!

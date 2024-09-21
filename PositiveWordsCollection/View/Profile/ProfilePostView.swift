@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProfilePostView: View {
-    @ObservedObject var posts: PostArrayObject
+    @StateObject var posts: PostArrayObject
     var isMyProfile: Bool
     @State var isLastPost = false
     @State var isMyLastPost = false
@@ -18,8 +18,8 @@ struct ProfilePostView: View {
         ScrollView(.vertical, showsIndicators: false) {
             LazyVStack {
                 if isMyProfile {
-                    ForEach(posts.myUserPostArray) { post in
-                        PostView(post: post, posts: posts, headerIsActive: true, comentIsActive: false)
+                    ForEach($posts.myUserPostArray) { $post in
+                        PostView(post: $post, posts: posts, headerIsActive: true, comentIsActive: false)
                         if post == posts.myUserPostArray.last, isMyLastPost == false {
                             ProgressView()
                                 .onAppear {
@@ -32,8 +32,8 @@ struct ProfilePostView: View {
                         }
                     }
                 } else {
-                    ForEach(posts.userPostArray) { post in
-                        PostView(post: post, posts: posts, headerIsActive: true, comentIsActive: false)
+                    ForEach($posts.userPostArray) { $post in
+                        PostView(post: $post, posts: posts, headerIsActive: true, comentIsActive: false)
                         if post == posts.userPostArray.last, isLastPost == false {
                             ProgressView()
                                 .onAppear {

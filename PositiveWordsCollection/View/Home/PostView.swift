@@ -9,8 +9,8 @@ import SwiftUI
 
 struct PostView: View {
     @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
-    @State var post: PostModel
-    @ObservedObject var posts: PostArrayObject
+    @Binding var post: PostModel
+    @StateObject var posts: PostArrayObject
     @State var animateLike: Bool = false
     @State var profileImage = UIImage(named: "loading")!
     @State var postImage = UIImage(named: "loading")!
@@ -31,9 +31,15 @@ struct PostView: View {
                 NavigationLink(destination: {
                     if let myUserID = currentUserID, let profileBio = currentBio {
                         if post.userID == myUserID {
-                            ProfileView(isMyProfile: true, posts: posts, profileBio: profileBio, profileDisplayName: post.username, profileUserID: post.userID)
+                            // LazyView作成
+                            LazyView {
+                                ProfileView(isMyProfile: true, posts: posts, profileBio: profileBio, profileDisplayName: post.username, profileUserID: post.userID)
+                            }
                         } else {
-                            ProfileView(isMyProfile: false, posts: posts, profileBio: "", profileDisplayName: post.username, profileUserID: post.userID)
+                            // LazyView作成
+                            LazyView {
+                                ProfileView(isMyProfile: false, posts: posts, profileBio: "", profileDisplayName: post.username, profileUserID: post.userID)
+                            }
                         }
                     }
                 }, label: {
@@ -130,7 +136,10 @@ struct PostView: View {
                 // MARK: Comment Icon
                 HStack {
                     NavigationLink(
-                        destination: CommentsView(posts: posts, post: post),
+                        destination:
+                            LazyView {
+                                CommentsView(posts: posts, post: $post)
+                            },
                         label: {
                             Image(systemName: "bubble.middle.bottom")
                                 .font(.title3)
@@ -312,6 +321,6 @@ struct PostView: View {
 }
 
 #Preview {
-    let post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
-    return PostView(post: post, posts: PostArrayObject(), headerIsActive: true, comentIsActive: false)
+    @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
+    return PostView(post: $post, posts: PostArrayObject(), headerIsActive: true, comentIsActive: false)
 }

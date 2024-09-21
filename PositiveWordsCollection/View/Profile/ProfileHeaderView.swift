@@ -13,7 +13,7 @@ struct ProfileHeaderView: View {
     @Binding var profileImage: UIImage
     let profileBio: String
     var isMyProfile: Bool
-    @ObservedObject var posts: PostArrayObject
+    @StateObject var posts: PostArrayObject
     
     var body: some View {
         VStack(alignment: .center, spacing: 10, content: {

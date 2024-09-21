@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CreatePostView: View {
     @FocusState private var focusedField: Bool
-    @ObservedObject var posts: PostArrayObject
+    @StateObject var posts: PostArrayObject
     @State var contentText = ""
     @State var showSelectStampView = false
     @State var selectedImage: UIImage = UIImage(named: "noImage")!

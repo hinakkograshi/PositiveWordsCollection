@@ -9,7 +9,7 @@ import SwiftUI
 
 struct NotificationsView: View {
     @State var notifications = [Notification]()
-    @ObservedObject var posts: PostArrayObject
+    @StateObject var posts: PostArrayObject
     @State var isLastPost = false
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @State var loadingState: LoadingState = .idle

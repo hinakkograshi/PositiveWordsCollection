@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MessageView: View {
     @State var comment: CommentModel
-    @ObservedObject var posts: PostArrayObject
+    @StateObject var posts: PostArrayObject
     @State var profileImage = UIImage(named: "loading")!
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     var body: some View {
