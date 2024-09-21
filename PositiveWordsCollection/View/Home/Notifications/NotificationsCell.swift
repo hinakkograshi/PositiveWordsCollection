@@ -11,7 +11,7 @@ struct NotificationsCell: View {
     let notification: Notification
     @State private var postModel: PostModel? = nil
     @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
-    @ObservedObject var posts: PostArrayObject
+    @StateObject var posts: PostArrayObject
     @State var profileImage = UIImage(named: "loading")!
     @State private var toCommentView = false
     var body: some View {
@@ -92,9 +92,9 @@ struct NotificationsCell: View {
                 .foregroundStyle(.secondary)
         }
         .navigationDestination(isPresented: $toCommentView, destination: {
-            if let postModel = postModel {
+            if postModel != nil {
                 LazyView(content: {
-                    CommentsView(posts: posts, post: postModel)
+                    CommentsView(posts: posts, post: Binding($postModel)!)
                 })
             }
         })

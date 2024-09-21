@@ -10,9 +10,8 @@ import SwiftUI
 
 struct LazyView<Content: View>: View {
     var content: () -> Content
-// 遷移した瞬間、bodyにアクセスされる
+    // 遷移した瞬間、bodyにアクセスされる
     var body: some View {
-//        let _ = print("bodyアクセス")
         self.content()
     }
 }
