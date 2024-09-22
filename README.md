@@ -13,7 +13,7 @@ SwiftUI
 ## Library
 | ライブラリ名  | 用途 |
 | ------------- | ------------- |
-| [SwiftLint](https://github.com/realm/realm-swift) | 詳細にソースコードの静的解析によって、ソースコードをきれいに保つ |
+| [SwiftLint](https://github.com/realm/SwiftLint) | 詳細にソースコードの静的解析によって、ソースコードをきれいに保つ |
 | [FirebaseAuth](https://github.com/firebase/firebase-ios-sdk)  | Googleサインイン・Appleサインイン   |
 | [FirebaseFirestore](https://github.com/firebase/firebase-ios-sdk)  | データ保存 |
 | [FirebaseStorage](https://github.com/firebase/firebase-ios-sdk) | 画像保存  |
