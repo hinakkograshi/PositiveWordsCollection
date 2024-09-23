@@ -18,18 +18,18 @@ struct MessageView: View {
                 if comment.userID == userID {
                     HStack {
                         Spacer(minLength: 0)
-                        VStack(alignment: .trailing, spacing: 8, content: {
+                        VStack(alignment: .trailing, spacing: 8) {
                             Text(comment.username)
                                 .font(.caption)
                             BalloonText(comment.content)
-                        })
+                        }
                         .padding(.trailing, 5)
                     }
                 } else {
                     HStack {
-                        NavigationLink(destination: LazyView(content: {
+                        NavigationLink(destination: LazyView {
                             ProfileView(isMyProfile: false, posts: posts, profileBio: "", profileDisplayName: comment.username, profileUserID: comment.userID)
-                        }), label: {
+                        }) {
                             if let userID = currentUserID {
                                 if comment.userID != userID {
                                     Image(uiImage: profileImage)
@@ -39,21 +39,21 @@ struct MessageView: View {
                                         .clipShape(RoundedRectangle(cornerRadius: 20))
                                 }
                             }
-                        })
+                        }
                         .padding(.leading, 5)
-                        VStack(alignment: .leading, spacing: 8, content: {
+                        VStack(alignment: .leading, spacing: 8) {
                             Text(comment.username)
                                 .font(.caption)
                             BalloonText(comment.content, mirrored: true)
-                        })
+                        }
                         Spacer(minLength: 0)
                     }
                 }
             }
         }
-        .onAppear(perform: {
+        .onAppear {
             getProfileImage()
-        })
+        }
     }
     // MARK: FUNCTION
     func getProfileImage() {

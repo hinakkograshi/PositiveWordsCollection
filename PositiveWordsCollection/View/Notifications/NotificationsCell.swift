@@ -9,7 +9,7 @@ import SwiftUI
 
 struct NotificationsCell: View {
     let notification: Notification
-    @State private var postModel: PostModel? = nil
+    @State private var postModel: PostModel?
     @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
     @ObservedObject var posts: PostArrayObject
     @State var profileImage = UIImage(named: "loading")!
@@ -31,9 +31,9 @@ struct NotificationsCell: View {
                     }
                 }
                 NavigationLink {
-                    LazyView(content: {
+                    LazyView {
                         ProfileView(isMyProfile: false, posts: posts, profileBio: "", profileDisplayName: notification.userName, profileUserID: notification.userId)
-                    })
+                    }
                 } label: {
                     Image(uiImage: profileImage)
                         .resizable()
@@ -58,18 +58,18 @@ struct NotificationsCell: View {
                             case .like:
                                 Text(notification.userName + "さんが")
                                     .font(.subheadline)
-                                + Text("あなたの投稿に")
+                                    + Text("あなたの投稿に")
                                     .font(.subheadline)
-                                + Text("いいね").fontWeight(.bold)
-                                + Text("しました！")
+                                    + Text("いいね").fontWeight(.bold)
+                                    + Text("しました！")
                                     .font(.subheadline)
                             case .reply:
                                 Text(notification.userName + "さんが")
                                     .font(.subheadline)
-                                + Text("あなたの投稿に")
+                                    + Text("あなたの投稿に")
                                     .font(.subheadline)
-                                + Text("返信").fontWeight(.bold)
-                                + Text("しました！")
+                                    + Text("返信").fontWeight(.bold)
+                                    + Text("しました！")
                                     .font(.subheadline)
                             }
                         }
@@ -91,13 +91,13 @@ struct NotificationsCell: View {
                 .frame(height: 1)
                 .foregroundStyle(.secondary)
         }
-        .navigationDestination(isPresented: $toCommentView, destination: {
+        .navigationDestination(isPresented: $toCommentView) {
             if let postModel = postModel {
-                LazyView(content: {
+                LazyView {
                     CommentsView(posts: posts, post: postModel)
-                })
+                }
             }
-        })
+        }
         .onAppear {
             getImages()
         }

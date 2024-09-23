@@ -74,13 +74,13 @@ struct AuthenticationView: View {
         }
         .fullScreenCover(isPresented: $viewModel.showSignInProfileView,
                          onDismiss: {
-            dismiss()
-        }, content: {
-            SignInProfileView(viewModel: viewModel)
-        })
-        .alert(isPresented: $showError, content: {
-            return Alert(title: Text("サインインに失敗しました"))
-        })
+                            dismiss()
+                         }, content: {
+                            SignInProfileView(viewModel: viewModel)
+                         })
+        .alert(isPresented: $showError) {
+            Alert(title: Text("サインインに失敗しました"))
+        }
     }
 }
 

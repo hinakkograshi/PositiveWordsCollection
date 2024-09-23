@@ -22,7 +22,7 @@ struct NotificationsView: View {
                 case .success:
                     ScrollView(.vertical, showsIndicators: false) {
                         LazyVStack {
-                            
+
                             ForEach(notifications) { notification in
                                 NotificationsCell(notification: notification, posts: posts)
                             }
@@ -35,7 +35,7 @@ struct NotificationsView: View {
                         Text("電波の良いところで通信してください。")
                     }
                 }
-                
+
             } else {
                 ContentUnavailableView {
                     Label("通知なし", systemImage: "tray.fill")

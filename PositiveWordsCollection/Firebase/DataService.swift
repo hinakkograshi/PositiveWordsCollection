@@ -168,7 +168,7 @@ class DataService {
         }
         return filterPosts
     }
-    
+
     func likeByUserFromPostId(postId: String) async -> Bool {
         var likeByUser: Bool = false
         do {
@@ -208,7 +208,7 @@ class DataService {
     func downloadComments(postID: String) async throws -> [CommentModel] {
         let comments = try await commentSubCollection(postId: postID).order(by: DatabaseHelperField.dateCreated, descending: false).getDocuments().documents
             .compactMap { try? $0.data(as: Comment.self)
-        }
+            }
         return getCommentsFromSnapshot(comments: comments)
     }
 

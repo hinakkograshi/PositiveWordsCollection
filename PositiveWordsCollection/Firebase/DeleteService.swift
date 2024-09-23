@@ -12,7 +12,7 @@ import FirebaseStorage
 
 class DeleteService {
     static let instance = DeleteService()
-    
+
     func postDelete(postID: String) async throws {
         // SubCollection Delete
         await postsSubCollectionDelete(postID: postID)
@@ -48,11 +48,11 @@ class DeleteService {
             print("Authアカウント削除Error:\(error)")
         }
     }
-    
+
     private func postAllDelete(userID: String) async throws {
         // posts Collection of userID
-        let postOfUserSnapshot =  try await Firestore.firestore().collection("posts").whereField(DatabaseHelperField.userID, isEqualTo: userID).getDocuments()
-        
+        let postOfUserSnapshot = try await Firestore.firestore().collection("posts").whereField(DatabaseHelperField.userID, isEqualTo: userID).getDocuments()
+
         for document in postOfUserSnapshot.documents {
             let postID = document.documentID
             // SubCollection Delete
@@ -64,7 +64,7 @@ class DeleteService {
             await postsStorageDelete(postID: postID)
         }
     }
-    
+
     private func likedBySubCollectionDelete(postID: String) async {
         let subCollection = Firestore.firestore().collection("posts").document(postID).collection(DatabaseHelperField.likedBy)
         do {
@@ -76,7 +76,7 @@ class DeleteService {
             print("likedBySubCollectionDelete Error")
         }
     }
-    
+
     private func postsSubCollectionDelete(postID: String) async {
         let subCollection = Firestore.firestore().collection("posts").document(postID).collection("comments")
         do {
@@ -88,7 +88,7 @@ class DeleteService {
             print("subCollectionDelete Error")
         }
     }
-    
+
     private func postsStorageDelete(postID: String) async {
         let storageRef = Storage.storage().reference()
         let postIDRef = storageRef.child("posts").child(postID).child("1")
@@ -98,7 +98,7 @@ class DeleteService {
             print("postsStorageDelete Error")
         }
     }
-    
+
     private func userStorageDelete(userID: String) async {
         let storageRef = Storage.storage().reference()
         let userIDRef = storageRef.child("users").child(userID).child("profile")
@@ -108,7 +108,7 @@ class DeleteService {
             print("🟥userStorageDelete Error")
         }
     }
-    
+
     private func deleteUserCollection(userID: String) async {
         do {
             let usersAccountSnapshot = try await Firestore.firestore().collection("users").whereField(DatabaseHelperField.userID, isEqualTo: userID).getDocuments()

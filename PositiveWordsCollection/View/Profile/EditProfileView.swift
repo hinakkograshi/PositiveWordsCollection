@@ -22,7 +22,7 @@ struct EditProfileView: View {
     @State var editProfileName = ""
     @State var editProfileBio = ""
     @State var selectedImage = UIImage(named: "loading")!
-    @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
+    @State var sourceType = UIImagePickerController.SourceType.photoLibrary
     @State var showImagePicker: Bool = false
     @State var showEditProfileError = false
     @Environment(\.dismiss) private var dismiss
@@ -152,8 +152,6 @@ struct EditProfileView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
                         disableButton = true
-                        // キャッシュバグ解消
-//                        ImageManager.instance.chashRemove()
                         Task {
                             await saveEditProfile()
                             dismiss()
@@ -166,9 +164,9 @@ struct EditProfileView: View {
                 }
             }
         }
-        .alert(isPresented: $showEditProfileError, content: {
-            return Alert(title: Text("名前は空にできません。"))
-        })
+        .alert(isPresented: $showEditProfileError) {
+            Alert(title: Text("名前は空にできません。"))
+        }
         .onTapGesture {
             focusedField = nil
         }

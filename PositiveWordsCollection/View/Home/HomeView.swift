@@ -22,36 +22,36 @@ struct HomeView: View {
                 EmptyView()
             case .success:
                 ZStack {
-                ScrollView(.vertical, showsIndicators: false) {
-                    LazyVStack {
-                        ForEach($posts.dataArray) { $post in
-                            PostView(post: $post, posts: posts, headerIsActive: false, comentIsActive: false)
-                            if post == posts.dataArray.last, isLastPost == false {
-                                ProgressView()
-                                    .onAppear {
-                                        Task {
-                                            if let myUserID = currentUserID {
-                                                isLastPost = await posts.refreshHome(hiddenPostIDs: hiddenPostIDs, myUserID: myUserID)
+                    ScrollView(.vertical, showsIndicators: false) {
+                        LazyVStack {
+                            ForEach($posts.dataArray) { $post in
+                                PostView(post: $post, posts: posts, headerIsActive: false, comentIsActive: false)
+                                if post == posts.dataArray.last, isLastPost == false {
+                                    ProgressView()
+                                        .onAppear {
+                                            Task {
+                                                if let myUserID = currentUserID {
+                                                    isLastPost = await posts.refreshHome(hiddenPostIDs: hiddenPostIDs, myUserID: myUserID)
+                                                }
                                             }
                                         }
-                                    }
+                                }
                             }
                         }
                     }
+                    Button(action: {
+                        showCreatePostView.toggle()
+                    }, label: {
+                        Image(systemName: "plus")
+                            .foregroundStyle(.white)
+                            .padding(20)
+                            .background(Color.orange)
+                            .clipShape(RoundedRectangle(cornerRadius: 100))
+                    }).frame(maxWidth: .infinity,
+                             maxHeight: .infinity,
+                             alignment: .bottomTrailing)
+                    .padding(10)
                 }
-                Button(action: {
-                    showCreatePostView.toggle()
-                }, label: {
-                    Image(systemName: "plus")
-                        .foregroundStyle(.white)
-                        .padding(20)
-                        .background(Color.orange)
-                        .clipShape(RoundedRectangle(cornerRadius: 100))
-                }).frame(maxWidth: .infinity,
-                         maxHeight: .infinity,
-                         alignment: .bottomTrailing)
-                .padding(10)
-            }
             case .failure:
                 ContentUnavailableView {
                     Label("通信エラー", systemImage: "magnifyingglass")
@@ -63,25 +63,25 @@ struct HomeView: View {
         .refreshable {
             guard posts.loadingState != .loading else { return }
             Task {
-              if let currentUserID {
-                  await posts.refreshHomeFirst(hiddenPostIDs: hiddenPostIDs, myUserID: currentUserID)
-              }
+                if let currentUserID {
+                    await posts.refreshHomeFirst(hiddenPostIDs: hiddenPostIDs, myUserID: currentUserID)
+                }
             }
         }
-//        .overlay(alignment: .bottomTrailing) {
-//            if posts.loadingState != .loading {
-//                Button(action: {
-//                    showCreatePostView.toggle()
-//                }, label: {
-//                    Image(systemName: "plus")
-//                        .foregroundStyle(.white)
-//                        .padding(20)
-//                        .background(Color.orange)
-//                        .clipShape(RoundedRectangle(cornerRadius: 100))
-//                })
-//                .padding(10)
-//            }
-//        }
+        //        .overlay(alignment: .bottomTrailing) {
+        //            if posts.loadingState != .loading {
+        //                Button(action: {
+        //                    showCreatePostView.toggle()
+        //                }, label: {
+        //                    Image(systemName: "plus")
+        //                        .foregroundStyle(.white)
+        //                        .padding(20)
+        //                        .background(Color.orange)
+        //                        .clipShape(RoundedRectangle(cornerRadius: 100))
+        //                })
+        //                .padding(10)
+        //            }
+        //        }
         .overlay {
             if posts.loadingState.isLoading {
                 ProgressView()
@@ -94,10 +94,9 @@ struct HomeView: View {
             }
         }
         .sheet(
-            isPresented: $showCreatePostView,
-            content: {
-                CreatePostView(posts: posts)
-            })
+            isPresented: $showCreatePostView) {
+            CreatePostView(posts: posts)
+        }
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color.colorBeige, for: .navigationBar)

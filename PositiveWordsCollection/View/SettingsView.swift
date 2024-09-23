@@ -91,16 +91,16 @@ struct SettingsView: View {
             .toolbarBackground(Color.colorBeige, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
         }
-        .alert(isPresented: $showDeleteAccountError, content: {
-            return Alert(title: Text("アカウントの削除に失敗しました"))
-        })
-        .fullScreenCover(isPresented: $viewModel.showSignInView, content: {
+        .alert(isPresented: $showDeleteAccountError) {
+            Alert(title: Text("アカウントの削除に失敗しました"))
+        }
+        .fullScreenCover(isPresented: $viewModel.showSignInView) {
             AuthenticationView(showSignInView: $viewModel.showSignInView)
-        })
+        }
         .alert("ログアウト", isPresented: $showUserLogOut, actions: {
             Button("ログアウト", role: .destructive) {
-                        viewModel.didTapLogOutButton()
-                        viewModel.showSignInView = true
+                viewModel.didTapLogOutButton()
+                viewModel.showSignInView = true
             }
             Button("キャンセル", role: .cancel) {
                 showUserLogOut = false
@@ -127,12 +127,12 @@ struct SettingsView: View {
         }, message: {
             Text("アカウントを削除するとデータを復活できません。")
         })
-        .alert(isPresented: $viewModel.showSignOutError, content: {
-            return Alert(title: Text("ログアウトに失敗しました。"))
-        })
+        .alert(isPresented: $viewModel.showSignOutError) {
+            Alert(title: Text("ログアウトに失敗しました。"))
+        }
     }
 }
 
 #Preview {
-    return SettingsView()
+    SettingsView()
 }

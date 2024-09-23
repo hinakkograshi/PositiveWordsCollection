@@ -18,10 +18,10 @@ class PostArrayObject: ObservableObject {
     @Published var myLikeCount = ""
     @Published var userPostCount = ""
     @Published var userLikeCount = ""
-    private var lastDocument: DocumentSnapshot? = nil
-    private var lastUserDocument: DocumentSnapshot? = nil
-    private var lastMyUserDocument: DocumentSnapshot? = nil
-    
+    private var lastDocument: DocumentSnapshot?
+    private var lastUserDocument: DocumentSnapshot?
+    private var lastMyUserDocument: DocumentSnapshot?
+
     func refreshHome(hiddenPostIDs: [String], myUserID: String) async -> Bool {
         var isLastPost = false
         do {
@@ -38,7 +38,7 @@ class PostArrayObject: ObservableObject {
         }
         return isLastPost
     }
-    
+
     func refreshHomeFirst(hiddenPostIDs: [String], myUserID: String) async {
         dataArray = []
         lastDocument = nil
@@ -56,7 +56,7 @@ class PostArrayObject: ObservableObject {
             print("\(error)")
         }
     }
-    
+
     func refreshUpdateMyUserPost(userID: String) async {
         myUserPostArray = []
         lastMyUserDocument = nil
@@ -68,7 +68,7 @@ class PostArrayObject: ObservableObject {
             print("🟥refreshUpdateMyUserPost Error")
         }
     }
-    // TODO: 並び替え
+
     func refreshMyUserPost(userID: String) async -> (Bool) {
         profileViewOn = true
         var isMyLastPost = false
@@ -86,12 +86,12 @@ class PostArrayObject: ObservableObject {
         }
         return isMyLastPost
     }
-    
+
     func resetUserPostArray() {
         userPostArray = []
         lastUserDocument = nil
     }
-    // TODO: 並び替え
+
     func refreshUserPost(userID: String) async -> (Bool) {
         profileViewOn = true
         var isLastPost = false
@@ -109,7 +109,7 @@ class PostArrayObject: ObservableObject {
         }
         return isLastPost
     }
-    
+
     func updateUserCounts(userID: String) {
         userPostCount = ""
         userLikeCount = ""
@@ -124,7 +124,7 @@ class PostArrayObject: ObservableObject {
             }
         }
     }
-    
+
     func updateMyCounts(userID: String) {
         myPostCount = ""
         myLikeCount = ""

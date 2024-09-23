@@ -56,15 +56,15 @@ struct ContentView: View {
 
         .fullScreenCover(isPresented: $showSignInView,
                          onDismiss: {
-            if let userID = currentUserID {
-                Task {
-                    _ = await posts.refreshHomeFirst(hiddenPostIDs: hiddenPostIDs, myUserID: userID)
-                }
-            }
-        },
+                            if let userID = currentUserID {
+                                Task {
+                                    _ = await posts.refreshHomeFirst(hiddenPostIDs: hiddenPostIDs, myUserID: userID)
+                                }
+                            }
+                         },
                          content: {
-            AuthenticationView(showSignInView: $showSignInView)
-        })
+                            AuthenticationView(showSignInView: $showSignInView)
+                         })
     }
 }
 

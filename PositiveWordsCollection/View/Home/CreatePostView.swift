@@ -12,8 +12,8 @@ struct CreatePostView: View {
     @StateObject var posts: PostArrayObject
     @State var contentText = ""
     @State var showSelectStampView = false
-    @State var selectedImage: UIImage = UIImage(named: "noImage")!
-    @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
+    @State var selectedImage = UIImage(named: "noImage")!
+    @State var sourceType = UIImagePickerController.SourceType.photoLibrary
     @State private var disableButton: Bool = false
     @State var showImagePicker: Bool = false
     @State var showPostContentError = false
@@ -134,9 +134,9 @@ struct CreatePostView: View {
                 }
             }
         }
-        .alert(isPresented: $showPostContentError, content: {
-            return Alert(title: Text("投稿するには画像と文字を入力する必要があります。"))
-        })
+        .alert(isPresented: $showPostContentError) {
+            Alert(title: Text("投稿するには画像と文字を入力する必要があります。"))
+        }
         .onTapGesture {
             focusedField = false
         }

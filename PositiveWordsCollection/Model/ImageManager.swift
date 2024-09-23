@@ -14,7 +14,7 @@ class ImageManager {
     private var storageREF = Storage.storage()
     let imageCache = NSCache<StorageReference, UIImage>()
     let fileManager = FileManager.default
-    
+
     func createdProfileImage(userID: String, image: UIImage) async throws {
         let path = getProfileImagePath(userID: userID)
         try await uploadImage(path: path, image: image)
@@ -32,19 +32,19 @@ class ImageManager {
         let storagePath = storageREF.reference(withPath: userPath)
         return storagePath
     }
-    
+
     func uploadPostImage(postID: String, image: UIImage) async throws {
         let path = getPostImagePath(postID: postID)
         try await uploadImage(path: path, image: image)
     }
-    
+
     private func getPostImagePath(postID: String) -> StorageReference {
         // 写真が複数投稿できる場合
         let postPath = "posts/\(postID)/1"
         let storagePath = storageREF.reference(withPath: postPath)
         return storagePath
     }
-    
+
     func downloadProfileImage(userID: String, handler: @escaping (_ image: UIImage?) -> Void) {
         // Where the image is saved
         let path = getProfileImagePath(userID: userID)
@@ -57,7 +57,7 @@ class ImageManager {
             }
         }
     }
-    
+
     func downloadPostImage(postID: String, handler: @escaping (_ image: UIImage?) -> Void) {
         // Where the image is saved
         let path = getPostImagePath(postID: postID)
@@ -70,13 +70,13 @@ class ImageManager {
             }
         }
     }
-    
+
     private func chashRemove(key: String) throws {
         let cacheDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-            let fileURL = cacheDirectory.appendingPathComponent(key)
-            try FileManager.default.removeItem(at: fileURL)
+        let fileURL = cacheDirectory.appendingPathComponent(key)
+        try FileManager.default.removeItem(at: fileURL)
     }
-    
+
     private func downloadDiskCacheImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
         let key = path.fullPath.data(using: .utf8)?.base64EncodedString() ?? UUID().uuidString
         let cacheDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
@@ -103,7 +103,7 @@ class ImageManager {
             }
         }
     }
-    
+
     private func downloadMemoryCacheImage(path: StorageReference, handler: @escaping (_ image: UIImage?) -> Void) {
         if let cachedImage = imageCache.object(forKey: path) {
             // キャッシュされている画像を使用
@@ -121,14 +121,14 @@ class ImageManager {
             }
         }
     }
-    
+
     // 指定したパスに画像をアプロードする
     private func uploadImage(path: StorageReference, image: UIImage) async throws {
-        
+
         var compression: CGFloat = 1.0
         let maxFileSize = 240 * 240
         let maxCompression = 0.05
-        
+
         // get image data
         guard var originalData = image.jpegData(compressionQuality: compression) else {
             print("Error getting originalData from image")
@@ -142,7 +142,7 @@ class ImageManager {
             }
             print(compression)
         }
-        
+
         // get image data
         guard let finalData = image.jpegData(compressionQuality: compression) else {
             print("Error getting data from image")

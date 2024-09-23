@@ -13,7 +13,7 @@ struct BalloonText: View {
     let mirrored: Bool
 
     init(_ text: String,
-         color: Color = Color(UIColor(red: 109/255, green: 230/255, blue: 123/255, alpha: 1.0)),
+         color: Color = Color(UIColor(red: 109 / 255, green: 230 / 255, blue: 123 / 255, alpha: 1.0)),
          mirrored: Bool = false
     ) {
         self.text = text
@@ -29,9 +29,9 @@ struct BalloonText: View {
             .padding(.trailing, 4 + (!mirrored ? cornerRadius / 2 : 0))
             .padding(.vertical, 6)
             .background(BalloonShape(
-                cornerRadius: cornerRadius,
-                color: color,
-                mirrored: mirrored)
+                            cornerRadius: cornerRadius,
+                            color: color,
+                            mirrored: mirrored)
             )
     }
 }
