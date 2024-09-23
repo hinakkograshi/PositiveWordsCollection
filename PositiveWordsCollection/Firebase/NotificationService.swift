@@ -15,7 +15,7 @@ class NotificationService {
     private func subCollection(userId: String) -> CollectionReference {
         notificationsCollection.document(userId).collection("user_notifications")
     }
-    
+
     func downloadNotification( myUserID: String) async throws -> ([Notification]) {
         let notifications = try await subCollection(userId: myUserID)
             .order(by: DatabaseHelperField.dateCreated, descending: true).limit(to: 10).getDocuments()

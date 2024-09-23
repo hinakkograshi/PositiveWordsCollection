@@ -41,29 +41,29 @@ final class SignInAppleHelper: NSObject {
     }
 
     func startSignInWithAppleFlow(completion: @escaping (Result<SignInAppleResult, Error>) -> Void) {
-      let nonce = randomNonceString()
-      currentNonce = nonce
-      completionHandler = completion
-      let appleIDProvider = ASAuthorizationAppleIDProvider()
-      let request = appleIDProvider.createRequest()
-      request.requestedScopes = [.fullName, .email]
-      request.nonce = sha256(nonce)
+        let nonce = randomNonceString()
+        currentNonce = nonce
+        completionHandler = completion
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        let request = appleIDProvider.createRequest()
+        request.requestedScopes = [.fullName, .email]
+        request.nonce = sha256(nonce)
 
-      let authorizationController = ASAuthorizationController(authorizationRequests: [request])
-      // 指示を受け取る側
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        // 指示を受け取る側
         authorizationController.delegate = self
-//      authorizationController.presentationContextProvider = self
-      authorizationController.performRequests()
+        //      authorizationController.presentationContextProvider = self
+        authorizationController.performRequests()
     }
 
     private func sha256(_ input: String) -> String {
-      let inputData = Data(input.utf8)
-      let hashedData = SHA256.hash(data: inputData)
-      let hashString = hashedData.compactMap {
-        String(format: "%02x", $0)
-      }.joined()
+        let inputData = Data(input.utf8)
+        let hashedData = SHA256.hash(data: inputData)
+        let hashString = hashedData.compactMap {
+            String(format: "%02x", $0)
+        }.joined()
 
-      return hashString
+        return hashString
     }
 
     private func randomNonceString(length: Int = 32) -> String {
@@ -76,7 +76,7 @@ final class SignInAppleHelper: NSObject {
             )
         }
         let charset: [Character] =
-        Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+            Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
 
         let nonce = randomBytes.map { byte in
             // Pick a random character from the set, wrapping around if needed.
@@ -95,26 +95,26 @@ extension SignInAppleHelper: ASAuthorizationControllerDelegate {
             completionHandler?(.failure(URLError(.badServerResponse)))
             return
         }
-            let email = appleIDCredential.email ?? ""
-            var name = "Your name here"
-            if let fullName = appleIDCredential.fullName {
-                let formatter = PersonNameComponentsFormatter()
-                name = formatter.string(from: fullName)
-            }
-          // Initialize a Firebase credential, including the user's full name.
-          let credential = OAuthProvider.appleCredential(withIDToken: idTokenString,
-                                                            rawNonce: nonce,
-                                                            fullName: appleIDCredential.fullName)
+        let email = appleIDCredential.email ?? ""
+        var name = "Your name here"
+        if let fullName = appleIDCredential.fullName {
+            let formatter = PersonNameComponentsFormatter()
+            name = formatter.string(from: fullName)
+        }
+        // Initialize a Firebase credential, including the user's full name.
+        let credential = OAuthProvider.appleCredential(withIDToken: idTokenString,
+                                                       rawNonce: nonce,
+                                                       fullName: appleIDCredential.fullName)
         print("Sign in to Firebase now email:\(email)and with name\(name)")
         let result = SignInAppleResult(token: idTokenString, nonce: nonce, fullName: name, email: email, credential: credential)
         completionHandler?(.success(result))
-        }
+    }
 
-      func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         // Handle error.
         print("Sign in with Apple errored: \(error)")
-          completionHandler?(.failure(URLError(.cannotFindHost)))
-      }
+        completionHandler?(.failure(URLError(.cannotFindHost)))
+    }
 
 }
 

@@ -10,7 +10,7 @@ import Foundation
 struct LikedByModel: Identifiable, Hashable {
     var id = UUID() // identifiableに準拠させるためにすべてのポストモデルアイテムが固有のIDを設定
     var userID: String // データベース内のユーザーのID
-//    var username: String // ユーザーとデータベースのユーザー名
+    //    var username: String // ユーザーとデータベースのユーザー名
     var likeCount: Int
     var dateCreated: Date // 投稿が作成された日付
     var likedByUser: Bool // ユーザーに気に入られているか

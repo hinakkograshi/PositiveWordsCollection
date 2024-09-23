@@ -21,7 +21,7 @@ struct ProfileView: View {
     @Environment(\.colorScheme) var colorScheme
     @State var firstAppear = true
     @State var showBlockAlert = false
-    
+
     var body: some View {
         ProfileHeaderView(profileUserID: profileUserID, profileDisplayName: $profileDisplayName, profileImage: $profileImage, profileBio: profileBio, isMyProfile: isMyProfile, posts: posts)
             .padding(.top, 10)
@@ -33,7 +33,7 @@ struct ProfileView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.colorBeige, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
-        
+
             .toolbar {
                 if isMyProfile {
                     Button(action: {
@@ -62,7 +62,7 @@ struct ProfileView: View {
             }
             .alert("このユーザーをブロックしますか？", isPresented: $showBlockAlert, actions: {
                 Button("戻る", role: .cancel) {
-                    
+
                 }
                 Button("ブロックする", role: .destructive) {
                     // 🟥ブロックする
@@ -93,7 +93,7 @@ struct ProfileView: View {
                     EditProfileView(userDisplayName: $profileDisplayName, userBio: profileBio, userImage: $profileImage)
                 })
     }
-    
+
     // MARK: FUNCTION
     private func blockUser(profileUserID: String) {
         guard let myUserID = currentUserID else { return }
@@ -106,7 +106,7 @@ struct ProfileView: View {
             }
         }
     }
-    
+
     func profileUpdate(userID: String) {
         Task {
             if isMyProfile {

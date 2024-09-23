@@ -13,7 +13,7 @@ struct CommentsView: View {
     @State var submissionText: String = ""
     @State var commentArray = [CommentModel]()
     @Binding var post: PostModel
-    @State var profileImage: UIImage = UIImage(named: "loading")!
+    @State var profileImage = UIImage(named: "loading")!
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
     var body: some View {
@@ -60,10 +60,10 @@ struct CommentsView: View {
         }
         .navigationTitle("Comments")
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear(perform: {
+        .onAppear {
             getComments()
             getProfilePicture()
-        })
+        }
     }
     // MARK: FUNCTIONS
     // 🟩追加
@@ -88,7 +88,7 @@ struct CommentsView: View {
             let comment = Comment(commentId: commentID, userId: userID, displayName: userName, content: submissionText, dateCreated: Date())
             await DataService.instance.uploadComment(comment: comment, postID: post.postID)
             let newComment = CommentModel(commentID: commentID, userID: userID, username: userName, content: submissionText, dateCreated: comment.dateCreated)
-            //通知
+            // 通知
             let notificationID = NotificationService.instance.createNotificationId()
             let notification = Notification(notificationId: notificationID, postId: post.postID, userId: userID, userName: userName, dateCreated: Date(), type: 1)
             if userID != post.userID {
@@ -107,7 +107,7 @@ struct CommentsView: View {
             }
         }
     }
-    
+
     func getComments() {
         // 空の場合、コメント読み込む
         guard self.commentArray.isEmpty else { return }

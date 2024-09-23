@@ -15,7 +15,7 @@ struct PositiveWordsCollectionApp: App {
 
     var body: some Scene {
         WindowGroup {
-                ContentView()
+            ContentView()
                 .preferredColorScheme(.light)
         }
     }
@@ -23,29 +23,24 @@ struct PositiveWordsCollectionApp: App {
 
 class AppDelegate: NSObject, UIApplicationDelegate {
 
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-      // Release Provider
-//      let providerFactory = MyAppCheckProviderFactory()
-//      AppCheck.setAppCheckProviderFactory(providerFactory)
-//      FirebaseApp.configure()
-      // Debug Provider
-#if DEBUG
-      let providerFactory = AppCheckDebugProviderFactory()
-#else
-      let providerFactory = MyAppCheckProviderFactory()
-#endif
-      AppCheck.setAppCheckProviderFactory(providerFactory)
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        #if DEBUG
+        let providerFactory = AppCheckDebugProviderFactory()
+        #else
+        let providerFactory = MyAppCheckProviderFactory()
+        #endif
+        AppCheck.setAppCheckProviderFactory(providerFactory)
 
-      firebaseConfigure() 
-      FirebaseApp.configure()
-    return true
-  }
+        firebaseConfigure()
+        FirebaseApp.configure()
+        return true
+    }
     private func firebaseConfigure() {
         #if DEBUG
-            let filePath = Bundle.main.path(forResource: "GoogleService-Stage-Info", ofType: "plist")
+        let filePath = Bundle.main.path(forResource: "GoogleService-Stage-Info", ofType: "plist")
         #else
-            let filePath = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist")
+        let filePath = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist")
         #endif
 
         guard let filePath = filePath else {

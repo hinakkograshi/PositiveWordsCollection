@@ -139,16 +139,16 @@ struct PostView: View {
                         destination:
                             LazyView {
                                 CommentsView(posts: posts, post: $post)
-                            },
-                        label: {
-                            Image(systemName: "bubble.middle.bottom")
-                                .font(.title3)
-                                .foregroundStyle(.black)
-                        })
+                            }) {
+                        Image(systemName: "bubble.middle.bottom")
+                            .font(.title3)
+                            .foregroundStyle(.black)
+                    }
                     .disabled(comentIsActive)
                     // 🟩Comentの数
                     Text("\(post.comentsCount)")
-                    .font(.subheadline)                }
+                        .font(.subheadline)
+                }
                 //                Image(systemName: "paperplane")
                 //                    .font(.title3)
                 Spacer()
@@ -160,12 +160,11 @@ struct PostView: View {
             Rectangle()
                 .frame(height: 1)
         }
-        .sheet(isPresented: $isPostImageViewShowing,
-               content: {
+        .sheet(isPresented: $isPostImageViewShowing) {
             NavigationStack {
                 PostImageView(displayingPostImage: postImage)
             }
-        })
+        }
         .alert("投稿を削除", isPresented: $showDeleteAlert, actions: {
             Button("戻る", role: .cancel) {
 

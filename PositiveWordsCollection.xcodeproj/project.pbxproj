@@ -64,6 +64,7 @@
 		53A6555D2BF787D400D915B5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53A6555C2BF787D400D915B5 /* Assets.xcassets */; };
 		53A655602BF787D400D915B5 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53A6555F2BF787D400D915B5 /* Preview Assets.xcassets */; };
 		53AAEE0C2C35762500B3AA7A /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 53AAEE0B2C35762500B3AA7A /* Launch Screen.storyboard */; };
+		53B807C72CA0A72400B76A7C /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 53B807C62CA0A72400B76A7C /* Settings.bundle */; };
 		53C157C32BF90997003776CB /* SignInGoogleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C157C22BF90997003776CB /* SignInGoogleHelper.swift */; };
 		53C157C52BF91494003776CB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C157C42BF91494003776CB /* SettingsView.swift */; };
 		53C8C23C2C26608500FCE34F /* AppCheckProviderFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C8C23B2C26608500FCE34F /* AppCheckProviderFactory.swift */; };
@@ -123,6 +124,7 @@
 		53A6555C2BF787D400D915B5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		53A6555F2BF787D400D915B5 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		53AAEE0B2C35762500B3AA7A /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		53B807C62CA0A72400B76A7C /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		53C0E0332BF994B9008CE2AF /* PositiveWordsCollection.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PositiveWordsCollection.entitlements; sourceTree = "<group>"; };
 		53C157C22BF90997003776CB /* SignInGoogleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInGoogleHelper.swift; sourceTree = "<group>"; };
 		53C157C42BF91494003776CB /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -289,6 +291,7 @@
 		53A6554C2BF787D200D915B5 = {
 			isa = PBXGroup;
 			children = (
+				53B807C62CA0A72400B76A7C /* Settings.bundle */,
 				532E3B322C9737AB006A7531 /* ci_scripts */,
 				53A655572BF787D200D915B5 /* PositiveWordsCollection */,
 				53A655562BF787D200D915B5 /* Products */,
@@ -426,6 +429,7 @@
 				AD1FFC082C533403007926F7 /* InfoPlist.xcstrings in Resources */,
 				53AAEE0C2C35762500B3AA7A /* Launch Screen.storyboard in Resources */,
 				53A6555D2BF787D400D915B5 /* Assets.xcassets in Resources */,
+				53B807C72CA0A72400B76A7C /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -448,7 +452,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if test -d /opt/homebrew/bin; then\n    PATH=/opt/homebrew/bin/:$PATH\nfi\n\nif which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)\nexport MINT_PATH=./.mint/lib\nexport MINT_LINK_PATH=./.mint/bin\n\n# M1 Mac\nif [ \"$(uname -m)\" = \"arm64\" ]; then\n  export HOMEBREW_HOME=/opt/homebrew\n# Intel Mac\nelse\n  export HOMEBREW_HOME=/usr/local\nfi\nif [ -d \"${HOMEBREW_HOME}\" ]; then\n  export PATH=\"${HOMEBREW_HOME}/bin:$PATH\"\nfi\n\nif which mint >/dev/null; then\n  mint run realm/SwiftLint swiftlint --fix --format\n  mint run realm/SwiftLint swiftlint\nelse\n  echo \"warning: Mint not installed, please run \\`brew install mint\\` .\"\nfi\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

@@ -14,7 +14,7 @@ struct SignInProfileView: View {
     }
     @FocusState private var focusedField: Field?
     @StateObject var viewModel: AuthenticationViewModel
-    @State var sourceType: UIImagePickerController.SourceType = UIImagePickerController.SourceType.photoLibrary
+    @State var sourceType = UIImagePickerController.SourceType.photoLibrary
     @Environment(\.dismiss) private var dismiss
     @State var showImagePicker: Bool = false
     @State var showCreateProfileError: Bool = false
@@ -70,7 +70,7 @@ struct SignInProfileView: View {
                         .onChange(of: viewModel.displayName) {
                             viewModel.displayNameTotalCount = viewModel.displayName.count
                         }
-                    // 10文字以上の時最後の文字を削除制限
+                        // 10文字以上の時最後の文字を削除制限
                         .onChange(of: viewModel.displayName) {
                             if viewModel.displayName.count > 10 {
                                 viewModel.displayName.removeLast(viewModel.displayName.count - 10)
@@ -100,7 +100,7 @@ struct SignInProfileView: View {
                             .onChange(of: viewModel.bio) {
                                 viewModel.bioTotalCount = viewModel.bio.count
                             }
-                        // 20文字以上の時最後の文字を削除制限
+                            // 20文字以上の時最後の文字を削除制限
                             .onChange(of: viewModel.bio) {
                                 if viewModel.bio.count > 20 {
                                     viewModel.bio.removeLast(viewModel.bio.count - 20)
@@ -146,9 +146,9 @@ struct SignInProfileView: View {
                 }
             }
         }
-        .alert(isPresented: $showCreateProfileError, content: {
-            return Alert(title: Text("ユーザーの画像と名前を入力する必要があります。"))
-        })
+        .alert(isPresented: $showCreateProfileError) {
+            Alert(title: Text("ユーザーの画像と名前を入力する必要があります。"))
+        }
         .onTapGesture {
             focusedField = nil
         }

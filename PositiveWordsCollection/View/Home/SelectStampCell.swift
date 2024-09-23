@@ -11,8 +11,8 @@ struct SelectStampCell: View {
     @Binding var postStamp: UIImage
     @Binding var showSelectStampView: Bool
     var items = [
-            "stamp1", "stamp2", "stamp3", "stamp4", "stamp5", "stamp6"
-        ]
+        "stamp1", "stamp2", "stamp3", "stamp4", "stamp5", "stamp6"
+    ]
     var body: some View {
         VStack {
             HStack {
@@ -27,7 +27,7 @@ struct SelectStampCell: View {
             }
             Spacer()
             Text("今の気持ちに一番近いスタンプを選ぼう！")
-            
+
                 .fontWeight(.bold)
                 .padding(.bottom, 30)
             LazyVGrid(columns: Array(repeating: .init(), count: 3), spacing: 20) {

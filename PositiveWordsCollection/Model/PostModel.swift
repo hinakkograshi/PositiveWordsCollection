@@ -40,14 +40,14 @@ class PostModel: Hashable {
     }
 
     static func == (lhs: PostModel, rhs: PostModel) -> Bool {
-        return lhs.postID == rhs.postID &&
-               lhs.userID == rhs.userID &&
-               lhs.username == rhs.username &&
-               lhs.caption == rhs.caption &&
-               lhs.dateCreated == rhs.dateCreated &&
-               lhs.likeCount == rhs.likeCount &&
-               lhs.likedByUser == rhs.likedByUser &&
-               lhs.comentsCount == rhs.comentsCount
+        lhs.postID == rhs.postID &&
+            lhs.userID == rhs.userID &&
+            lhs.username == rhs.username &&
+            lhs.caption == rhs.caption &&
+            lhs.dateCreated == rhs.dateCreated &&
+            lhs.likeCount == rhs.likeCount &&
+            lhs.likedByUser == rhs.likedByUser &&
+            lhs.comentsCount == rhs.comentsCount
     }
 }
 

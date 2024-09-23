@@ -11,18 +11,18 @@ import SwiftUI
 extension Color {
     struct MyTheme {
         static var iconColor: Color {
-            return Color("ColorIcon")
+            Color("ColorIcon")
         }
         static var purpleColor: Color {
-            return Color("ColorPurple")
+            Color("ColorPurple")
         }
 
         static var yellowColor: Color {
-            return Color("ColorYellow")
+            Color("ColorYellow")
         }
 
         static var beigeColor: Color {
-            return Color("Colorbeige")
+            Color("Colorbeige")
         }
     }
 
