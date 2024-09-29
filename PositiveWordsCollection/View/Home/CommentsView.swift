@@ -12,14 +12,14 @@ struct CommentsView: View {
     @FocusState private var focusedField: Bool
     @State var submissionText: String = ""
     @State var commentArray = [CommentModel]()
-    @Binding var post: PostModel
+    @ObservedObject var post: PostModel
     @State var profileImage = UIImage(named: "loading")!
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
     var body: some View {
         VStack {
             ScrollView {
-                PostView(post: $post, posts: posts, headerIsActive: false, comentIsActive: true)
+                PostView(post: post, posts: posts, headerIsActive: false, comentIsActive: true)
                 LazyVStack {
                     ForEach(commentArray, id: \.self) { comment in
                         MessageView(comment: comment, posts: posts)
@@ -43,7 +43,8 @@ struct CommentsView: View {
                     Button {
                         if submissionText != "" {
                             addComment()
-                            countComment()
+                            guard let userID = currentUserID else { return }
+                            post.countComment(currentUserID: userID)
                         }
                     } label: {
                         Image(systemName: "paperplane.fill")
@@ -66,21 +67,7 @@ struct CommentsView: View {
         }
     }
     // MARK: FUNCTIONS
-    // 🟩追加
-    func countComment() {
-        guard let userID = currentUserID else { return }
-        // Update the local data
-        let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount, likedByUser: post.likedByUser, comentsCount: post.comentsCount + 1)
-        self.post = updatePost
-        // Update Firebase
-        Task {
-            do {
-                try await  DataService.instance.commentPostCount(postID: post.postID, currentUserID: userID)
-            } catch {
-                print("Comment UpdateError")
-            }
-        }
-    }
+
     func addComment() {
         guard let userID = currentUserID, let userName = currentUserName else { return }
         Task {
@@ -127,6 +114,6 @@ struct CommentsView: View {
         @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
         @State var count = [CommentModel(commentID: "", userID: "", username: "", content: "HelloooooooooooooooHelloooooooooooooooHellooooooooooooooo", dateCreated: Date())]
 
-        CommentsView(posts: PostArrayObject(), commentArray: count, post: $post)
+        CommentsView(posts: PostArrayObject(), commentArray: count, post: post)
     }
 }

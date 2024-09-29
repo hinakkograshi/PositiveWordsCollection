@@ -94,7 +94,7 @@ struct NotificationsCell: View {
         .navigationDestination(isPresented: $toCommentView) {
             if postModel != nil {
                 LazyView {
-                    CommentsView(posts: posts, post: Binding($postModel)!)
+                    CommentsView(posts: posts, post: postModel!)
                 }
             }
         }
