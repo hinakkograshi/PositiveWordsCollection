@@ -7,15 +7,15 @@
 
 import Foundation
 
-class PostModel: Hashable {
-    var postID: String // データベース内の投稿のID
-    var userID: String // データベース内のユーザーのID
-    var username: String // ユーザーとデータベースのユーザー名
-    var caption: String // 投稿内容
-    var dateCreated: Date // 投稿が作成された日付
-    var likeCount: Int // いいね数
-    var likedByUser: Bool // ユーザーに気に入られているか
-    var comentsCount: Int // 投稿数
+class PostModel: ObservableObject, Hashable {
+    @Published var postID: String // データベース内の投稿のID
+    @Published var userID: String // データベース内のユーザーのID
+    @Published var username: String // ユーザーとデータベースのユーザー名
+    @Published var caption: String // 投稿内容
+    @Published var dateCreated: Date // 投稿が作成された日付
+    @Published var likeCount: Int // いいね数
+    @Published var likedByUser: Bool // ユーザーに気に入られているか
+    @Published var comentsCount: Int // 投稿数
 
     init(postID: String, userID: String, username: String, caption: String, dateCreated: Date, likeCount: Int, likedByUser: Bool, comentsCount: Int) {
         self.postID = postID
@@ -30,24 +30,64 @@ class PostModel: Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(postID)
-        hasher.combine(userID)
-        hasher.combine(username)
-        hasher.combine(caption)
-        hasher.combine(dateCreated)
-        hasher.combine(likeCount)
-        hasher.combine(likedByUser)
-        hasher.combine(comentsCount)
     }
 
     static func == (lhs: PostModel, rhs: PostModel) -> Bool {
-        lhs.postID == rhs.postID &&
-            lhs.userID == rhs.userID &&
-            lhs.username == rhs.username &&
-            lhs.caption == rhs.caption &&
-            lhs.dateCreated == rhs.dateCreated &&
-            lhs.likeCount == rhs.likeCount &&
-            lhs.likedByUser == rhs.likedByUser &&
-            lhs.comentsCount == rhs.comentsCount
+        lhs.postID == rhs.postID
+    }
+
+    func likePost(post: PostModel, currentUserID: String, userName: String) {
+        if currentUserID != post.userID {
+            // Update the local data
+            likeCount += 1
+            likedByUser = true
+            // Update Firebase
+            Task {
+                do {
+                    let like = Like(userId: userID, dateCreated: Date())
+                    try DataService.instance.uploadLikedPost(postID: post.postID, like: like)
+                    // ⭐️Update Firebase
+                    DataService.instance.likePost(postID: post.postID, currentUserID: userID)
+                    let notificationID = NotificationService.instance.createNotificationId()
+                    let notification = Notification(notificationId: notificationID, postId: post.postID, userId: userID, userName: userName, dateCreated: Date(), type: 0)
+                    if userID != post.userID {
+                        await NotificationService.instance.uploadNotification(postedUserId: post.userID, notification: notification)
+                    }
+                } catch {
+                    print("🟥Like Error")
+                }
+            }
+        }
+    }
+
+    func unLikePost(post: PostModel, currentUserID: String) {
+        if currentUserID != post.userID {
+            // Update the local data
+            likeCount -= 1
+            likedByUser = false
+            // Update Firebase
+            Task {
+                do {
+                    try await DataService.instance.unLikePost(postID: post.postID, myUserID: currentUserID)
+                    // 　⭐️Update Firebase
+                    DataService.instance.unlikePost(postID: post.postID, currentUserID: currentUserID)
+                } catch {
+                    print("unLikePost Error")
+                }
+            }
+        }
+    }
+
+    func countComment(currentUserID: String) {
+        comentsCount += 1
+        // Update Firebase
+        Task {
+            do {
+                try await  DataService.instance.commentPostCount(postID: postID, currentUserID: currentUserID)
+            } catch {
+                print("Comment UpdateError")
+            }
+        }
     }
 }
 

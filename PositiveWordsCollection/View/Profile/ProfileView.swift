@@ -102,7 +102,7 @@ struct ProfileView: View {
                 try await AuthService.instance.addBlockedUser(myUserID: myUserID, blockedUserID: profileUserID)
                 try await AuthService.instance.addBlockingUser(myUserID: myUserID, blockedUserID: profileUserID)
             } catch {
-                print("\(error)")
+                print("🟥blockUserError: \(error)")
             }
         }
     }

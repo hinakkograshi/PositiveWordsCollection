@@ -24,8 +24,8 @@ struct HomeView: View {
                 ZStack {
                     ScrollView(.vertical, showsIndicators: false) {
                         LazyVStack {
-                            ForEach($posts.dataArray) { $post in
-                                PostView(post: $post, posts: posts, headerIsActive: false, comentIsActive: false)
+                            ForEach(posts.dataArray) { post in
+                                PostView(post: post, posts: posts, headerIsActive: false, comentIsActive: false)
                                 if post == posts.dataArray.last, isLastPost == false {
                                     ProgressView()
                                         .onAppear {
@@ -68,20 +68,6 @@ struct HomeView: View {
                 }
             }
         }
-        //        .overlay(alignment: .bottomTrailing) {
-        //            if posts.loadingState != .loading {
-        //                Button(action: {
-        //                    showCreatePostView.toggle()
-        //                }, label: {
-        //                    Image(systemName: "plus")
-        //                        .foregroundStyle(.white)
-        //                        .padding(20)
-        //                        .background(Color.orange)
-        //                        .clipShape(RoundedRectangle(cornerRadius: 100))
-        //                })
-        //                .padding(10)
-        //            }
-        //        }
         .overlay {
             if posts.loadingState.isLoading {
                 ProgressView()

@@ -9,9 +9,8 @@ import SwiftUI
 
 struct PostView: View {
     @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
-    @Binding var post: PostModel
+    @ObservedObject var post: PostModel
     @StateObject var posts: PostArrayObject
-    @State var animateLike: Bool = false
     @State var profileImage = UIImage(named: "loading")!
     @State var postImage = UIImage(named: "loading")!
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
@@ -120,10 +119,13 @@ struct PostView: View {
             HStack {
                 Button(action: {
                     if post.likedByUser {
-                        unLikePost()
+                        guard let userID = currentUserID else { return }
+                        post.unLikePost(post: post, currentUserID: userID)
                     } else {
                         // ❤️+1
-                        likePost()
+                        guard let userID = currentUserID else { return }
+                        guard let userName = currentUserName else { return }
+                        post.likePost(post: post, currentUserID: userID, userName: userName)
                     }
                 }, label: {
                     Image(systemName: post.likedByUser ? "heart.fill" : "heart")
@@ -138,7 +140,7 @@ struct PostView: View {
                     NavigationLink(
                         destination:
                             LazyView {
-                                CommentsView(posts: posts, post: $post)
+                                CommentsView(posts: posts, post: post)
                             }) {
                         Image(systemName: "bubble.middle.bottom")
                             .font(.title3)
@@ -254,60 +256,6 @@ struct PostView: View {
         }
     }
 
-    func likePost() {
-        guard let userID = currentUserID else { return }
-        guard let userName = currentUserName else { return }
-        if userID != post.userID {
-            // Update the local data
-            let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount + 1, likedByUser: true, comentsCount: post.comentsCount)
-            self.post = updatePost
-            print("postの中身\(self.post)")
-            // Animate UI
-            animateLike = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                animateLike = false
-            }
-            // Update Firebase
-            Task {
-                do {
-                    let like = Like(userId: userID, dateCreated: Date())
-                    try DataService.instance.uploadLikedPost(postID: post.postID, like: like)
-                    // ⭐️Update Firebase
-                    DataService.instance.likePost(postID: post.postID, currentUserID: userID)
-                    let notificationID = NotificationService.instance.createNotificationId()
-                    let notification = Notification(notificationId: notificationID, postId: post.postID, userId: userID, userName: userName, dateCreated: Date(), type: 0)
-                    if userID != post.userID {
-                        await NotificationService.instance.uploadNotification(postedUserId: post.userID, notification: notification)
-                    }
-                } catch {
-                    print("🟥Like Error")
-                }
-            }
-        }
-    }
-    // 💛
-    func unLikePost() {
-        guard let userID = currentUserID else {
-            print("Cannot find userID while unliking post")
-            return
-        }
-        if userID != post.userID {
-            // Update the local data
-            let updatePost = PostModel(postID: post.postID, userID: post.userID, username: post.username, caption: post.caption, dateCreated: post.dateCreated, likeCount: post.likeCount - 1, likedByUser: false, comentsCount: post.comentsCount)
-            self.post = updatePost
-            // Update Firebase
-            Task {
-                do {
-                    try await DataService.instance.unLikePost(postID: post.postID, myUserID: userID)
-                    // 　⭐️Update Firebase
-                    DataService.instance.unlikePost(postID: post.postID, currentUserID: userID)
-                } catch {
-                    print("unLikePost Error")
-                }
-            }
-        }
-    }
-
     // X等にコピーする内容
     //    func sharePost() {
     //        let message = "Check out this post on DogGram"
@@ -321,5 +269,5 @@ struct PostView: View {
 
 #Preview {
     @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
-    return PostView(post: $post, posts: PostArrayObject(), headerIsActive: true, comentIsActive: false)
+    return PostView(post: post, posts: PostArrayObject(), headerIsActive: true, comentIsActive: false)
 }
