@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct PostView: View {
+    @Environment(\.colorScheme) var colorScheme
     @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
     @ObservedObject var post: PostModel
     @StateObject var posts: PostArrayObject
@@ -55,7 +56,7 @@ struct PostView: View {
                     Text(post.username)
                         .font(.title2)
                         .fontWeight(.medium)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(colorScheme == .light ? .black : .white)
                         .padding(.leading, 10)
                 })
                 .disabled(headerIsActive)
@@ -144,7 +145,7 @@ struct PostView: View {
                             }) {
                         Image(systemName: "bubble.middle.bottom")
                             .font(.title3)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(colorScheme == .light ? .black : .white)
                     }
                     .disabled(comentIsActive)
                     // 🟩Comentの数
