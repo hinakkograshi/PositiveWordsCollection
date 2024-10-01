@@ -36,7 +36,7 @@ struct CreatePostView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 20))
                             .overlay {
                                 RoundedRectangle(cornerRadius: 20)
-                                    .stroke(Color.orange, lineWidth: 5.0)
+                                    .stroke(.orange, lineWidth: 5.0)
                             }
                     })
                     VStack {
@@ -77,7 +77,7 @@ struct CreatePostView: View {
                             .padding(5)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 16)
-                                    .stroke(Color.orange, lineWidth: 5.0)
+                                    .stroke(.orange, lineWidth: 5.0)
                             }
                             .focused($focusedField)
                         if contentText.isEmpty {

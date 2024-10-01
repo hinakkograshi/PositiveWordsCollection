@@ -28,18 +28,10 @@ struct CommentsView: View {
             }
             HStack {
                 HStack(spacing: 8) {
-                    ZStack {
-                        // 背景
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(Color(red: 239 / 255,
-                                        green: 239 / 255,
-                                        blue: 241 / 255))
-                            .frame(height: 36)
-                        // テキストフィールド
-                        TextField("メッセージを入力", text: $submissionText)
-                            .focused($focusedField)
-                            .padding(.horizontal, 15)
-                    }
+                    // テキストフィールド
+                    TextField("メッセージを入力", text: $submissionText)
+                        .focused($focusedField)
+                        .padding(.horizontal, 15)
                     Button {
                         if submissionText != "" {
                             addComment()

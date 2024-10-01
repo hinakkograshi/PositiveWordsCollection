@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct NotificationsCell: View {
+    @Environment(\.colorScheme) var colorScheme
     let notification: Notification
     @State private var postModel: PostModel?
     @AppStorage(CurrentUserDefaults.displayName) var currentUserName: String?
@@ -58,19 +59,30 @@ struct NotificationsCell: View {
                             case .like:
                                 Text(notification.userName + "さんが")
                                     .font(.subheadline)
+                                    .foregroundStyle(colorScheme == .light ? .black : .white)
                                     + Text("あなたの投稿に")
                                     .font(.subheadline)
-                                    + Text("いいね").fontWeight(.bold)
+                                    .foregroundStyle(colorScheme == .light ? .black : .white)
+                                    + Text("いいね")
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(colorScheme == .light ? .black : .white)
                                     + Text("しました！")
                                     .font(.subheadline)
+                                    .foregroundStyle(colorScheme == .light ? .black : .white)
+
                             case .reply:
                                 Text(notification.userName + "さんが")
                                     .font(.subheadline)
+                                    .foregroundStyle(colorScheme == .light ? .black : .white)
                                     + Text("あなたの投稿に")
                                     .font(.subheadline)
-                                    + Text("返信").fontWeight(.bold)
+                                    .foregroundStyle(colorScheme == .light ? .black : .white)
+                                    + Text("返信")
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(colorScheme == .light ? .black : .white)
                                     + Text("しました！")
                                     .font(.subheadline)
+                                    .foregroundStyle(colorScheme == .light ? .black : .white)
                             }
                         }
                     }
