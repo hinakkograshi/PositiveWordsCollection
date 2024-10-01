@@ -39,6 +39,7 @@ final class SettingsViewModel: ObservableObject {
     //    }
 }
 struct SettingsView: View {
+    @Environment(\.colorScheme) var colorScheme
     @StateObject private var viewModel = SettingsViewModel()
     @State var showUserDelete = false
     @State var showDeleteAccountError = false
@@ -49,22 +50,33 @@ struct SettingsView: View {
         NavigationStack {
             Form {
                 Section {
-                    Button("利用規約") {
+                    Button {
                         if let url = URL(string: "https://royal-wisteria-cf4.notion.site/52a618b0823648db89f024703733045e") {
                             openURL(url)
                         }
+                    } label: {
+                        Text("利用規約")
+                            .foregroundStyle(colorScheme == .light ? .black : .white)
                     }
                     .foregroundStyle(.black)
-                    Button("プライバシーポリシー") {
+
+                    Button {
                         if let url = URL(string: "https://www.notion.so/13be1dd4865f4bdf918b6c3b1a7e3971") {
                             openURL(url)
                         }
+                    } label: {
+                        Text("プライバシーポリシー")
+                            .foregroundStyle(colorScheme == .light ? .black : .white)
                     }
                     .foregroundStyle(.black)
-                    Button("お問い合わせ") {
+
+                    Button {
                         if let url = URL(string: "https://forms.gle/3wn7dAvNAaciAwQj9") {
                             openURL(url)
                         }
+                    } label: {
+                        Text("お問い合わせ")
+                            .foregroundStyle(colorScheme == .light ? .black : .white)
                     }
                     .foregroundStyle(.black)
                 } header: {
@@ -88,7 +100,8 @@ struct SettingsView: View {
             }
             .navigationTitle("設定")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color.colorBeige, for: .navigationBar)
+            .toolbarBackground(colorScheme == .light ? Color.MyTheme.beigeColor : Color.orange
+                               , for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
         }
         .alert(isPresented: $showDeleteAccountError) {

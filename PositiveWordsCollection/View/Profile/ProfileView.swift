@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @Environment(\.colorScheme) var colorScheme
     @AppStorage("hiddenPostIDs") var hiddenPostIDs: [String] = []
     var isMyProfile: Bool
     @StateObject var posts: PostArrayObject
@@ -18,7 +19,6 @@ struct ProfileView: View {
     @State var profileDisplayName: String
     var profileUserID: String
     @State var showEditProfileView: Bool = false
-    @Environment(\.colorScheme) var colorScheme
     @State var firstAppear = true
     @State var showBlockAlert = false
 
@@ -31,7 +31,7 @@ struct ProfileView: View {
         ProfilePostView(posts: posts, isMyProfile: isMyProfile)
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color.colorBeige, for: .navigationBar)
+            .toolbarBackground(colorScheme == .light ? Color.MyTheme.beigeColor : Color.orange, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
 
             .toolbar {
@@ -40,8 +40,9 @@ struct ProfileView: View {
                         showEditProfileView = true
                     }, label: {
                         Text("編集")
+                            .fontWeight(.bold)
+                            .foregroundStyle(colorScheme == .light ? .black : .white)
                     })
-                    .tint(Color.MyTheme.purpleColor)
                 } else {
                     Button(action: {
                         showBlockAlert = true

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    @Environment(\.colorScheme) var colorScheme
     @StateObject var posts: PostArrayObject
     @State var showCreatePostView = false
     @State var firstAppear = true
@@ -45,7 +46,7 @@ struct HomeView: View {
                         Image(systemName: "plus")
                             .foregroundStyle(.white)
                             .padding(20)
-                            .background(Color.orange)
+                            .background(.orange)
                             .clipShape(RoundedRectangle(cornerRadius: 100))
                     }).frame(maxWidth: .infinity,
                              maxHeight: .infinity,
@@ -85,7 +86,8 @@ struct HomeView: View {
         }
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(Color.colorBeige, for: .navigationBar)
+        .toolbarBackground(colorScheme == .light ? Color.MyTheme.beigeColor : Color.orange
+                           , for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
 
         .task {

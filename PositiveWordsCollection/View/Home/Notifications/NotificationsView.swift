@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct NotificationsView: View {
+    @Environment(\.colorScheme) var colorScheme
     @State var notifications = [Notification]()
     @StateObject var posts: PostArrayObject
     @State var isLastPost = false
@@ -22,7 +23,6 @@ struct NotificationsView: View {
                 case .success:
                     ScrollView(.vertical, showsIndicators: false) {
                         LazyVStack {
-
                             ForEach(notifications) { notification in
                                 NotificationsCell(notification: notification, posts: posts)
                             }
@@ -61,7 +61,7 @@ struct NotificationsView: View {
         }
         .navigationTitle("通知")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(Color.colorBeige, for: .navigationBar)
+        .toolbarBackground(colorScheme == .light ? Color.MyTheme.beigeColor : Color.orange, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
     }
     private func notify(myUserID: String) async {
