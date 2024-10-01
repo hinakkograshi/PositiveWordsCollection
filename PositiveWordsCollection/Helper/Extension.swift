@@ -22,7 +22,7 @@ extension Color {
         }
 
         static var beigeColor: Color {
-            Color("Colorbeige")
+            Color("ColorBeige")
         }
     }
 

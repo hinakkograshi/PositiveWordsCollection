@@ -14,7 +14,6 @@ enum DeviceTraitStatus {
     case iPad
 
     init(hSizeClass: UserInterfaceSizeClass?, vSizeClass: UserInterfaceSizeClass?) {
-
         switch (hSizeClass, vSizeClass) {
         case (.compact, .regular):
             self = .iPhoneHeight
