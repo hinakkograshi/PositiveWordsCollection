@@ -45,7 +45,7 @@ struct HomeView: View {
                     VStack {
                         let deviceTraitStatus = DeviceTraitStatus(hSizeClass: hSizeClass, vSizeClass: vSizeClass)
                         switch deviceTraitStatus {
-                        case .iPhoneHeight, .iPhoneWidth, .iPhoneLargeWidth:
+                        case .wChR, .wRhC, .wChC:
                             Button(action: {
                                 showCreatePostView.toggle()
                             }, label: {
@@ -57,7 +57,7 @@ struct HomeView: View {
                             }).frame(maxWidth: .infinity,
                                      maxHeight: .infinity,
                                      alignment: .bottomTrailing)
-                        case .iPad:
+                        case .wRhR:
                             Button(action: {
                                 showCreatePostView.toggle()
                             }, label: {

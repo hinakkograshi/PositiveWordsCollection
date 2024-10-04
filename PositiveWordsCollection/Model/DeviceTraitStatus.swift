@@ -8,23 +8,24 @@
 import SwiftUI
 
 enum DeviceTraitStatus {
-    case iPhoneHeight
-    case iPhoneWidth
-    case iPhoneLargeWidth
-    case iPad
+    case wRhR
+    case wChR
+    case wRhC
+    case wChC
 
     init(hSizeClass: UserInterfaceSizeClass?, vSizeClass: UserInterfaceSizeClass?) {
+
         switch (hSizeClass, vSizeClass) {
-        case (.compact, .regular):
-            self = .iPhoneHeight
-        case (.compact, .compact):
-            self = .iPhoneWidth
-        case (.regular, .compact):
-            self = .iPhoneLargeWidth
         case (.regular, .regular):
-            self = .iPad
+            self = .wRhR
+        case (.compact, .regular):
+            self = .wChR
+        case (.regular, .compact):
+            self = .wRhC
+        case (.compact, .compact):
+            self = .wChC
         default:
-            self = .iPhoneHeight
+            self = .wChR
         }
     }
 }
