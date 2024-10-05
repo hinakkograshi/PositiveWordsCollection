@@ -37,50 +37,42 @@ class PostModel: ObservableObject, Hashable {
     }
 
     func likePost(post: PostModel, currentUserID: String, userName: String) {
-        if currentUserID != post.userID {
-            // Update the local data
-            likeCount += 1
-            likedByUser = true
-            // Update Firebase
-            Task {
-                do {
-                    let like = Like(userId: userID, dateCreated: Date())
-                    try DataService.instance.uploadLikedPost(postID: post.postID, like: like)
-                    // ⭐️Update Firebase
-                    DataService.instance.likePost(postID: post.postID, currentUserID: userID)
-                    let notificationID = NotificationService.instance.createNotificationId()
-                    let notification = Notification(notificationId: notificationID, postId: post.postID, userId: userID, userName: userName, dateCreated: Date(), type: 0)
-                    if userID != post.userID {
-                        await NotificationService.instance.uploadNotification(postedUserId: post.userID, notification: notification)
-                    }
-                } catch {
-                    print("🟥Like Error")
+        likeCount += 1
+        likedByUser = true
+        Task {
+            do {
+                let like = Like(userId: currentUserID, dateCreated: Date())
+                try DataService.instance.uploadLikedPost(postID: post.postID, like: like)
+                // ⭐️Update Firebase
+                DataService.instance.likePost(postID: post.postID, currentUserID: currentUserID)
+                let notificationID = NotificationService.instance.createNotificationId()
+                let notification = Notification(notificationId: notificationID, postId: post.postID, userId: currentUserID, userName: userName, dateCreated: Date(), type: 0)
+                if currentUserID != post.userID {
+
+                    await NotificationService.instance.uploadNotification(postedUserId: post.userID, notification: notification)
                 }
+
+            } catch {
+                print("🟥Like Error")
             }
         }
     }
 
     func unLikePost(post: PostModel, currentUserID: String) {
-        if currentUserID != post.userID {
-            // Update the local data
-            likeCount -= 1
-            likedByUser = false
-            // Update Firebase
-            Task {
-                do {
-                    try await DataService.instance.unLikePost(postID: post.postID, myUserID: currentUserID)
-                    // 　⭐️Update Firebase
-                    DataService.instance.unlikePost(postID: post.postID, currentUserID: currentUserID)
-                } catch {
-                    print("unLikePost Error")
-                }
+        likeCount -= 1
+        likedByUser = false
+        Task {
+            do {
+                try await DataService.instance.unLikePost(postID: post.postID, myUserID: currentUserID)
+                DataService.instance.unlikePost(postID: post.postID, currentUserID: currentUserID)
+            } catch {
+                print("unLikePost Error")
             }
         }
     }
 
     func countComment(currentUserID: String) {
         comentsCount += 1
-        // Update Firebase
         Task {
             do {
                 try await  DataService.instance.commentPostCount(postID: postID, currentUserID: currentUserID)
