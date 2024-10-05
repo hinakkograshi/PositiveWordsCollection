@@ -25,11 +25,14 @@ struct AuthenticationView: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .multilineTextAlignment(.center)
+                    .foregroundStyle(.black)
                 Text("コレクション")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .multilineTextAlignment(.center)
+                    .foregroundStyle(.black)
                 Text("嬉しかった出来事を共有し合うSNS")
+                    .foregroundStyle(.black)
                 Image("homeIcon")
                     .resizable()
                     .scaledToFit()
@@ -69,6 +72,7 @@ struct AuthenticationView: View {
                 Text("サインインすることで、[利用規約](https://royal-wisteria-cf4.notion.site/52a618b0823648db89f024703733045e)と[プライバシーポリシー](https://www.notion.so/13be1dd4865f4bdf918b6c3b1a7e3971)\nに同意したことになります。")
                     .font(.caption)
                     .multilineTextAlignment(.center)
+                    .foregroundStyle(.black)
             }
             .padding()
         }
