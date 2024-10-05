@@ -37,10 +37,8 @@ class PostModel: ObservableObject, Hashable {
     }
 
     func likePost(post: PostModel, currentUserID: String, userName: String) {
-        // Update the local data
         likeCount += 1
         likedByUser = true
-        // Update Firebase
         Task {
             do {
                 let like = Like(userId: currentUserID, dateCreated: Date())
@@ -61,14 +59,11 @@ class PostModel: ObservableObject, Hashable {
     }
 
     func unLikePost(post: PostModel, currentUserID: String) {
-        // Update the local data
         likeCount -= 1
         likedByUser = false
-        // Update Firebase
         Task {
             do {
                 try await DataService.instance.unLikePost(postID: post.postID, myUserID: currentUserID)
-                // 　⭐️Update Firebase
                 DataService.instance.unlikePost(postID: post.postID, currentUserID: currentUserID)
             } catch {
                 print("unLikePost Error")
@@ -78,7 +73,6 @@ class PostModel: ObservableObject, Hashable {
 
     func countComment(currentUserID: String) {
         comentsCount += 1
-        // Update Firebase
         Task {
             do {
                 try await  DataService.instance.commentPostCount(postID: postID, currentUserID: currentUserID)
