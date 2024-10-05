@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HomeView: View {
+    @Environment(\.horizontalSizeClass) var hSizeClass
+    @Environment(\.verticalSizeClass) var vSizeClass
     @Environment(\.colorScheme) var colorScheme
     @StateObject var posts: PostArrayObject
     @State var showCreatePostView = false
@@ -40,17 +42,36 @@ struct HomeView: View {
                             }
                         }
                     }
-                    Button(action: {
-                        showCreatePostView.toggle()
-                    }, label: {
-                        Image(systemName: "plus")
-                            .foregroundStyle(.white)
-                            .padding(20)
-                            .background(.orange)
-                            .clipShape(RoundedRectangle(cornerRadius: 100))
-                    }).frame(maxWidth: .infinity,
-                             maxHeight: .infinity,
-                             alignment: .bottomTrailing)
+                    VStack {
+                        let deviceTraitStatus = DeviceTraitStatus(hSizeClass: hSizeClass, vSizeClass: vSizeClass)
+                        switch deviceTraitStatus {
+                        case .wChR, .wRhC, .wChC:
+                            Button(action: {
+                                showCreatePostView.toggle()
+                            }, label: {
+                                Image(systemName: "plus")
+                                    .foregroundStyle(.white)
+                                    .padding(20)
+                                    .background(.orange)
+                                    .clipShape(RoundedRectangle(cornerRadius: 100))
+                            }).frame(maxWidth: .infinity,
+                                     maxHeight: .infinity,
+                                     alignment: .bottomTrailing)
+                        case .wRhR:
+                            Button(action: {
+                                showCreatePostView.toggle()
+                            }, label: {
+                                Image(systemName: "plus")
+                                    .foregroundStyle(.white)
+                                    .font(.title)
+                                    .padding(20)
+                                    .background(.orange)
+                                    .clipShape(RoundedRectangle(cornerRadius: 100))
+                            }).frame(maxWidth: .infinity,
+                                     maxHeight: .infinity,
+                                     alignment: .bottomTrailing)
+                        }
+                    }
                     .padding(10)
                 }
             case .failure:
