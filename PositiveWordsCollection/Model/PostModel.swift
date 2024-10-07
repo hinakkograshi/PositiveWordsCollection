@@ -36,49 +36,44 @@ class PostModel: ObservableObject, Hashable {
         lhs.postID == rhs.postID
     }
 
-    func likePost(post: PostModel, currentUserID: String, userName: String) {
+    func likePost(post: PostModel, currentUserID: String, userName: String) async {
         likeCount += 1
         likedByUser = true
-        Task {
-            do {
-                let like = Like(userId: currentUserID, dateCreated: Date())
-                try DataService.instance.uploadLikedPost(postID: post.postID, like: like)
-                // ⭐️Update Firebase
-                DataService.instance.likePost(postID: post.postID, currentUserID: currentUserID)
-                let notificationID = NotificationService.instance.createNotificationId()
-                let notification = Notification(notificationId: notificationID, postId: post.postID, userId: currentUserID, userName: userName, dateCreated: Date(), type: 0)
-                if currentUserID != post.userID {
+        do {
+            let like = Like(userId: currentUserID, dateCreated: Date())
+            try DataService.instance.uploadLikedPost(postID: post.postID, like: like)
+            // ⭐️Update Firebase
+            DataService.instance.likePost(postID: post.postID, currentUserID: currentUserID)
+            let notificationID = NotificationService.instance.createNotificationId()
+            let notification = Notification(notificationId: notificationID, postId: post.postID, userId: currentUserID, userName: userName, dateCreated: Date(), type: 0)
+            if currentUserID != post.userID {
 
-                    await NotificationService.instance.uploadNotification(postedUserId: post.userID, notification: notification)
-                }
-
-            } catch {
-                print("🟥Like Error")
+                await NotificationService.instance.uploadNotification(postedUserId: post.userID, notification: notification)
             }
+
+        } catch {
+            print("🟥Like Error")
         }
     }
 
-    func unLikePost(post: PostModel, currentUserID: String) {
+    func unLikePost(post: PostModel, currentUserID: String) async {
         likeCount -= 1
         likedByUser = false
-        Task {
-            do {
-                try await DataService.instance.unLikePost(postID: post.postID, myUserID: currentUserID)
-                DataService.instance.unlikePost(postID: post.postID, currentUserID: currentUserID)
-            } catch {
-                print("unLikePost Error")
-            }
+
+        do {
+            try await DataService.instance.unLikePost(postID: post.postID, myUserID: currentUserID)
+            DataService.instance.unlikePost(postID: post.postID, currentUserID: currentUserID)
+        } catch {
+            print("unLikePost Error")
         }
     }
 
-    func countComment(currentUserID: String) {
+    func countComment(currentUserID: String) async {
         comentsCount += 1
-        Task {
-            do {
-                try await  DataService.instance.commentPostCount(postID: postID, currentUserID: currentUserID)
-            } catch {
-                print("Comment UpdateError")
-            }
+        do {
+            try await  DataService.instance.commentPostCount(postID: postID, currentUserID: currentUserID)
+        } catch {
+            print("Comment UpdateError")
         }
     }
 }

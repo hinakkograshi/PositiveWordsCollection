@@ -121,12 +121,16 @@ struct PostView: View {
                 Button(action: {
                     if post.likedByUser {
                         guard let userID = currentUserID else { return }
-                        post.unLikePost(post: post, currentUserID: userID)
+                        Task {
+                            await post.unLikePost(post: post, currentUserID: userID)
+                        }
                     } else {
                         // ❤️+1
                         guard let userID = currentUserID else { return }
                         guard let userName = currentUserName else { return }
-                        post.likePost(post: post, currentUserID: userID, userName: userName)
+                        Task {
+                            await post.likePost(post: post, currentUserID: userID, userName: userName)
+                        }
                     }
                 }, label: {
                     Image(systemName: post.likedByUser ? "heart.fill" : "heart")

@@ -36,7 +36,9 @@ struct CommentsView: View {
                         if submissionText != "" {
                             addComment()
                             guard let userID = currentUserID else { return }
-                            post.countComment(currentUserID: userID)
+                            Task {
+                                await post.countComment(currentUserID: userID)
+                            }
                         }
                     } label: {
                         Image(systemName: "paperplane.fill")
