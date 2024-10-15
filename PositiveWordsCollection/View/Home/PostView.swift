@@ -90,7 +90,9 @@ struct PostView: View {
                     }
                 } label: {
                     Image(systemName: "ellipsis")
+                        .imageScale(.large)
                         .font(.system(size: 20))
+                        .frame(width: 50, height: 50)
                 }
 
                 .padding(.trailing, 10)
