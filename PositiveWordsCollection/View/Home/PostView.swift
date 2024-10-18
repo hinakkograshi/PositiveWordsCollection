@@ -112,11 +112,10 @@ struct PostView: View {
                         .padding(.horizontal, 10)
                 }
                 // post caption
-                Text(post.caption)
+                TextViewWrapper(text: post.caption)
                     .font(.subheadline)
                     .padding(.leading, 20)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Spacer()
             }
             // Footer
             HStack {

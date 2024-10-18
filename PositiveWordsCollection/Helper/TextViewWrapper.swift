@@ -22,18 +22,11 @@ struct TextViewWrapper: UIViewRepresentable {
         textView.linkTextAttributes = [.foregroundColor: UIColor.systemBlue]
         textView.font = UIFont.systemFont(ofSize: 16)
         textView.textColor = UIColor.label
+        textView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         return textView
     }
 
     func updateUIView(_ uiView: UITextView, context: Context) {
         uiView.text = text
     }
-
-    // iOS16未満では利用不可能
-//    func sizeThatFits(_ proposal: ProposedViewSize, uiView: UIViewType, context: Context) -> CGSize? {
-//        guard let width = proposal.width, let height = proposal.height else {
-//            return nil
-//        }
-//        return .init(width: width, height: height)
-//    }
 }
