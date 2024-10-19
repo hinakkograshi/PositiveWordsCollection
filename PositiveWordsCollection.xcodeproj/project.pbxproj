@@ -406,9 +406,9 @@
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
 				ja,
+				en,
 			);
 			mainGroup = 53A6554C2BF787D200D915B5;
 			packageReferences = (
@@ -669,7 +669,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.8.0;
+				MARKETING_VERSION = 1.9.0;
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinaf0224.PositiveWordsCollection;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -709,7 +709,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.8.0;
+				MARKETING_VERSION = 1.9.0;
 				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinaf0224.PositiveWordsCollection;
 				PRODUCT_NAME = "$(TARGET_NAME)";
