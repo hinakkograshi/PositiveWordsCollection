@@ -90,7 +90,9 @@ struct PostView: View {
                     }
                 } label: {
                     Image(systemName: "ellipsis")
+                        .imageScale(.large)
                         .font(.system(size: 20))
+                        .frame(width: 50, height: 50)
                 }
 
                 .padding(.trailing, 10)
@@ -110,23 +112,26 @@ struct PostView: View {
                         .padding(.horizontal, 10)
                 }
                 // post caption
-                Text(post.caption)
+                TextViewWrapper(text: post.caption)
                     .font(.subheadline)
                     .padding(.leading, 20)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                Spacer()
             }
             // Footer
             HStack {
                 Button(action: {
                     if post.likedByUser {
                         guard let userID = currentUserID else { return }
-                        post.unLikePost(post: post, currentUserID: userID)
+                        Task {
+                            await post.unLikePost(post: post, currentUserID: userID)
+                        }
                     } else {
                         // ❤️+1
                         guard let userID = currentUserID else { return }
                         guard let userName = currentUserName else { return }
-                        post.likePost(post: post, currentUserID: userID, userName: userName)
+                        Task {
+                            await post.likePost(post: post, currentUserID: userID, userName: userName)
+                        }
                     }
                 }, label: {
                     Image(systemName: post.likedByUser ? "heart.fill" : "heart")

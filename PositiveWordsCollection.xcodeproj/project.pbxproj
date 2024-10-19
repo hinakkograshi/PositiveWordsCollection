@@ -34,6 +34,7 @@
 		535C7F9A2BF82FAE00BA33D1 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 535C7F992BF82FAE00BA33D1 /* FirebaseAuth */; };
 		535CF3C82C97472E00630413 /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535CF3C72C97472E00630413 /* NotificationsView.swift */; };
 		535CF3CA2C97474C00630413 /* NotificationsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535CF3C92C97474C00630413 /* NotificationsCell.swift */; };
+		535F06852CC289F600027263 /* TextViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535F06842CC289F600027263 /* TextViewWrapper.swift */; };
 		5361CF7E2BF7B1E900A35948 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 5361CF7D2BF7B1E900A35948 /* FirebaseAnalytics */; };
 		5361CF802BF7B1E900A35948 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 5361CF7F2BF7B1E900A35948 /* FirebaseAnalyticsOnDeviceConversion */; };
 		5361CF822BF7B1E900A35948 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5361CF812BF7B1E900A35948 /* FirebaseAnalyticsSwift */; };
@@ -101,6 +102,7 @@
 		535C7F962BF82C3200BA33D1 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 		535CF3C72C97472E00630413 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		535CF3C92C97474C00630413 /* NotificationsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsCell.swift; sourceTree = "<group>"; };
+		535F06842CC289F600027263 /* TextViewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewWrapper.swift; sourceTree = "<group>"; };
 		5367F1162C00CD5900A119B7 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		5367F11B2C00E99700A119B7 /* SignInProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInProfileView.swift; sourceTree = "<group>"; };
 		537CB6A42C0AE71C00E3F4F0 /* CurrentUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentUserDefaults.swift; sourceTree = "<group>"; };
@@ -272,6 +274,7 @@
 				5350B3102C2C356C003BDE7F /* DatabaseHelperField.swift */,
 				534261CE2C0E799F0061B9E6 /* LazyView.swift */,
 				5325FE142C396F3900DC5A6E /* Array.swift */,
+				535F06842CC289F600027263 /* TextViewWrapper.swift */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -391,7 +394,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					53A655542BF787D200D915B5 = {
 						CreatedOnToolsVersion = 15.4;
@@ -489,6 +492,7 @@
 				53492A292C97042900D93B25 /* DateManager.swift in Sources */,
 				538BBFC22C28856D005B6A2A /* Post.swift in Sources */,
 				537E8E702CACA44300FAD887 /* DeviceTraitStatus.swift in Sources */,
+				535F06852CC289F600027263 /* TextViewWrapper.swift in Sources */,
 				5308306C2C95A45400F1546C /* Notification.swift in Sources */,
 				539DD11F2BFE2F1700D6BCBC /* Extension.swift in Sources */,
 				53458E782C19D62D0097643C /* BalloonText.swift in Sources */,
@@ -522,6 +526,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -577,6 +582,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = minimal;
 			};
 			name = Debug;
 		};
@@ -585,6 +591,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -632,6 +639,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_STRICT_CONCURRENCY = minimal;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -670,6 +678,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -709,6 +718,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
