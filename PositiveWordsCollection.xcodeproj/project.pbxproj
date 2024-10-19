@@ -403,11 +403,12 @@
 			};
 			buildConfigurationList = 53A655502BF787D200D915B5 /* Build configuration list for PBXProject "PositiveWordsCollection" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = ja;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
 				ja,
+				en,
 			);
 			mainGroup = 53A6554C2BF787D200D915B5;
 			packageReferences = (
