@@ -89,16 +89,16 @@ struct CreatePostView: View {
                     .onChange(of: contentText) {
                         contentTotalCount = contentText.count
                     }
-                    // 200文字以上の時最後の文字を削除制限
+                    // 100文字以上の時最後の文字を削除制限
                     .onChange(of: contentText) {
-                        if contentText.count > 200 {
-                            contentText.removeLast(contentText.count - 200)
+                        if contentText.count > 100 {
+                            contentText.removeLast(contentText.count - 100)
                         }
                     }
                     HStack {
                         Spacer()
                         // 入力文字数の表示
-                        Text(" \(contentTotalCount) / 200")
+                        Text(" \(contentTotalCount) / 100")
                     }
                 }
                 Spacer()

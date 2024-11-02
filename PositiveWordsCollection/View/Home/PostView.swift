@@ -100,7 +100,7 @@ struct PostView: View {
             }
             .padding(.top, 5)
             // Content
-            HStack {
+            HStack(alignment: .center) {
                 Button {
                     isPostImageViewShowing = true
                 } label: {
@@ -109,14 +109,12 @@ struct PostView: View {
                         .scaledToFill()
                         .frame(width: 100, height: 100, alignment: .center)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .padding(.horizontal, 10)
                 }
-                // post caption
+                .padding(.horizontal, 10)
+                .padding(.vertical, 20)
                 TextViewWrapper(text: post.caption)
-                    .font(.subheadline)
-                    .padding(.leading, 20)
-                    .frame(maxWidth: .infinity, alignment: .leading)
             }
+
             // Footer
             HStack {
                 Button(action: {
@@ -274,6 +272,6 @@ struct PostView: View {
 }
 
 #Preview {
-    @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "This is a test caption", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
+    @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "美味しい美味しい美味しい美味しい美味しい美味しい美味しい美味しい美味しいお腹いっぱいお腹いっぱいお腹いっぱい楽しかった楽しかった楽しかった美味しい美味しい美味しい美味しい美味しい美味しい美味しい美味しい美味しいお腹いっぱいお腹いっぱいお腹いっぱい楽しかった楽しかった楽しかった", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
     return PostView(post: post, posts: PostArrayObject(), headerIsActive: true, comentIsActive: false)
 }
