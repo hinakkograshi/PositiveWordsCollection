@@ -107,7 +107,7 @@ struct HomeView: View {
         }
         .navigationTitle("Home")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(colorScheme == .light ? Color.MyTheme.beigeColor : Color.orange
+        .toolbarBackground(colorScheme == .light ? Color.MyTheme.beigeColor : Color.colorYellow
                            , for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
 

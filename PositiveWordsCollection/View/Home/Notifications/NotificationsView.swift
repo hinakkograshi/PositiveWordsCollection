@@ -61,7 +61,8 @@ struct NotificationsView: View {
         }
         .navigationTitle("通知")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(colorScheme == .light ? Color.MyTheme.beigeColor : Color.orange, for: .navigationBar)
+        .toolbarBackground(colorScheme == .light ? Color.MyTheme.beigeColor : Color.colorYellow
+                           , for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
     }
     private func notify(myUserID: String) async {
