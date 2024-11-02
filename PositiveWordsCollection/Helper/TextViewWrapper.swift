@@ -1,8 +1,8 @@
 //
-//  UITextView.swift
+//  TextView.swift
 //  PositiveWordsCollection
 //
-//  Created by Hina on 2024/10/18.
+//  Created by Hina on 2024/11/02.
 //
 
 import UIKit
