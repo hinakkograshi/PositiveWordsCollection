@@ -21,6 +21,7 @@ extension Query {
 
 class DataService {
     static let instance = DataService()
+    let limitCount = 5
     private var postsCollection = Firestore.firestore().collection("posts")
     private var reportsCollection = Firestore.firestore().collection("reports")
     private let userCollection = Firestore.firestore().collection("users")
@@ -70,7 +71,7 @@ class DataService {
             let (postsQuery, lastDoc) = try await postsCollection
                 .whereField(DatabaseHelperField.userID, isEqualTo: userId)
                 .order(by: DatabaseHelperField.dateCreated, descending: true)
-                .limit(to: 5)
+                .limit(to: limitCount)
                 .start(afterDocument: lastDocument)
                 .getDocumentWithSnapshot(as: Post.self)
             let posts = try await getPostsFromSnapshot(posts: postsQuery)
@@ -79,7 +80,7 @@ class DataService {
             let (postsQuery, lastDoc) = try await postsCollection
                 .whereField(DatabaseHelperField.userID, isEqualTo: userId)
                 .order(by: DatabaseHelperField.dateCreated, descending: true)
-                .limit(to: 5)
+                .limit(to: limitCount)
                 .getDocumentWithSnapshot(as: Post.self)
             let posts = try await getPostsFromSnapshot(posts: postsQuery)
             return (posts, lastDoc)
@@ -94,7 +95,7 @@ class DataService {
             if blockedUserIDs == [] {
                 let (posts, lastDoc) = try await postsCollection
                     .order(by: DatabaseHelperField.dateCreated, descending: true)
-                    .limit(to: 5)
+                    .limit(to: limitCount)
                     .start(afterDocument: lastDocument)
                     .getDocumentWithSnapshot(as: Post.self)
                 let filterPosts = try await downloadHiddenPost(hiddenPostIDs: hiddenPostIDs, newPosts: posts)
@@ -104,7 +105,7 @@ class DataService {
                 let (postsQuery, lastDoc) = try await postsCollection
                     .whereField(DatabaseHelperField.userID, notIn: blockedUserIDs)
                     .order(by: DatabaseHelperField.dateCreated, descending: true)
-                    .limit(to: 5)
+                    .limit(to: limitCount)
                     .start(afterDocument: lastDocument)
                     .getDocumentWithSnapshot(as: Post.self)
                 let filterPosts = try await downloadHiddenPost(hiddenPostIDs: hiddenPostIDs, newPosts: postsQuery)
@@ -115,8 +116,7 @@ class DataService {
             if blockedUserIDs == [] {
                 let (posts, lastDoc) = try await postsCollection
                     .order(by: DatabaseHelperField.dateCreated, descending: true)
-                    .limit(to: 5).getDocumentWithSnapshot(as: Post.self)
-                print("🐥🐥POST:\(posts)")
+                    .limit(to: limitCount).getDocumentWithSnapshot(as: Post.self)
                 let filterPosts = try await downloadHiddenPost(hiddenPostIDs: hiddenPostIDs, newPosts: posts)
                 let postModels = try await getPostsFromSnapshot(posts: filterPosts)
                 return (postModels, lastDoc)
@@ -124,7 +124,7 @@ class DataService {
                 let (postsQuery, lastDoc) = try await postsCollection
                     .whereField(DatabaseHelperField.userID, notIn: blockedUserIDs)
                     .order(by: DatabaseHelperField.dateCreated, descending: true)
-                    .limit(to: 5)
+                    .limit(to: limitCount)
                     .getDocumentWithSnapshot(as: Post.self)
                 let filterPosts = try await downloadHiddenPost(hiddenPostIDs: hiddenPostIDs, newPosts: postsQuery)
                 let posts = try await getPostsFromSnapshot(posts: filterPosts)
@@ -150,20 +150,15 @@ class DataService {
     private func downloadHiddenPost(hiddenPostIDs: [String], newPosts: [Post]) async throws -> [Post] {
         var filterPosts = newPosts
         if hiddenPostIDs != [] {
-            // hiddenPostIDsがからじゃなかったら
             for hiddenPostID in hiddenPostIDs {
-                print("⭐️\(hiddenPostID)")
                 do {
                     let hiddenPost = try  await postDocument(postId: hiddenPostID).getDocument().data(as: Post.self)
-                    print(hiddenPost)
                 } catch {
                     print(error)
                 }
                 for post in filterPosts where post.postId == hiddenPostID {
                     filterPosts.removeAll { $0 == post }
-                    print("⭐️\(filterPosts)")
                 }
-                print("⭐️\(filterPosts)")
             }
         }
         return filterPosts
@@ -257,7 +252,6 @@ class DataService {
             .aggregate([.sum("like_count")])
             .getAggregation(source: .server)
             .get(.sum("like_count")) as? Int ?? 0
-        print("🩵\(sum)")
         return sum
     }
 
@@ -277,8 +271,6 @@ class DataService {
     }
 
     func likePost(postID: String, currentUserID: String) {
-        // Update post count
-        // Update who liked
         let increment: Int64 = 1
         let data: [String: Any] = [
             DatabaseHelperField.likeCount: FieldValue.increment(increment)
@@ -311,7 +303,6 @@ class DataService {
     // MARK: UPDATE USER FUNCTION
     func updateDisplayNameOnPosts(userID: String, displayName: String) async throws {
         let posts = try await downloadPostForUser(userID: userID)
-        // 100件あって一部名前変更全部成功かどうか
         for post in posts {
             self.updatePostDisplayName(postID: post.postID, displayName: displayName)
         }
