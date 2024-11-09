@@ -213,7 +213,7 @@ struct EditProfileView: View {
 }
 
 #Preview {
-    @State var name = "Hinakkoです。よろしく"
-    @State var image = UIImage(named: "hiyoko") ?? UIImage()
+    @Previewable @State var name = "Hinakkoです。よろしく"
+    @Previewable @State var image = UIImage(named: "hiyoko") ?? UIImage()
     return EditProfileView(userDisplayName: $name, userBio: name, userImage: $image)
 }

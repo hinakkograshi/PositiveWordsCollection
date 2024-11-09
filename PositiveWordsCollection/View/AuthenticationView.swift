@@ -89,7 +89,7 @@ struct AuthenticationView: View {
 }
 
 #Preview {
-    @State var showSignInView = true
+    @Previewable @State var showSignInView = true
     return NavigationView {
         AuthenticationView(showSignInView: $showSignInView)
     }

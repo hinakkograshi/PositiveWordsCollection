@@ -272,6 +272,6 @@ struct PostView: View {
 }
 
 #Preview {
-    @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "美味しい美味しい美味しい美味しい美味しい美味しい美味しい美味しい美味しいお腹いっぱいお腹いっぱいお腹いっぱい楽しかった楽しかった楽しかった美味しい美味しい美味しい美味しい美味しい美味しい美味しい美味しい美味しいお腹いっぱいお腹いっぱいお腹いっぱい楽しかった楽しかった楽しかった", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
+    @Previewable @State var post = PostModel(postID: "", userID: "", username: "hinakko", caption: "美味しい。お腹いっぱい。", dateCreated: Date(), likeCount: 0, likedByUser: false, comentsCount: 0)
     return PostView(post: post, posts: PostArrayObject(), headerIsActive: true, comentIsActive: false)
 }

@@ -145,7 +145,7 @@ struct ProfileView: View {
 }
 
 #Preview {
-    @State var selectedImage = UIImage(named: "hiyoko")!
+    @Previewable @State var selectedImage = UIImage(named: "hiyoko")!
     return NavigationStack {
         ProfileView(isMyProfile: true, posts: PostArrayObject(), profileBio: "こんちゃ", profileDisplayName: "hina", profileUserID: "")
     }
