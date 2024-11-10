@@ -3,6 +3,7 @@ disabled_rules:
 - function_body_length
 - line_length
 - trailing_whitespace
+- non_optional_string_data_conversion
 
 # チェック対象ファイル
 included:
