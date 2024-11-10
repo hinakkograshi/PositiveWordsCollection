@@ -131,7 +131,7 @@ struct SignInWithAppleButtonViewRepresentable: UIViewRepresentable {
     }
 }
 
-extension UIViewController: ASAuthorizationControllerPresentationContextProviding {
+extension UIViewController: @retroactive ASAuthorizationControllerPresentationContextProviding {
     public func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         self.view.window!
     }
