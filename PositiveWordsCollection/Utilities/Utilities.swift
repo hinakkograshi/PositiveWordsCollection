@@ -9,10 +9,10 @@ import UIKit
 
 final class Utilities {
     static let shared = Utilities()
-    private init() {}
     @MainActor
     func topViewController(controller: UIViewController? = nil) -> UIViewController? {
-        let controller = controller ?? UIApplication.shared.keyWindow?.rootViewController
+        let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
+        let controller = controller ?? windowScene?.windows.first?.rootViewController
         if let navigationController = controller as? UINavigationController {
             return topViewController(controller: navigationController.visibleViewController)
         }
