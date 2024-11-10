@@ -152,7 +152,7 @@ class DataService {
         if hiddenPostIDs != [] {
             for hiddenPostID in hiddenPostIDs {
                 do {
-                    let hiddenPost = try  await postDocument(postId: hiddenPostID).getDocument().data(as: Post.self)
+                    _ = try  await postDocument(postId: hiddenPostID).getDocument().data(as: Post.self)
                 } catch {
                     print(error)
                 }

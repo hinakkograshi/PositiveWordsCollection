@@ -167,6 +167,6 @@ struct SignInProfileView: View {
     }
 }
 #Preview {
-    @State var selectedImage = UIImage(named: "hiyoko")!
+    @Previewable @State var selectedImage = UIImage(named: "hiyoko")!
     return SignInProfileView(viewModel: AuthenticationViewModel())
 }

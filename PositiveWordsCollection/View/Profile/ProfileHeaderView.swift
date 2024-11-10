@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct ProfileHeaderView: View {
-    var profileUserID: String
+    let profileUserID: String
     @Binding var profileDisplayName: String
     @Binding var profileImage: UIImage
     let profileBio: String
-    var isMyProfile: Bool
+    let isMyProfile: Bool
     @StateObject var posts: PostArrayObject
 
     var body: some View {
@@ -93,9 +93,9 @@ struct ProfileHeaderView: View {
 }
 
 #Preview {
-    @State var name: String = "hina"
-    var id: String = "1546332242422"
+    @Previewable @State var image = UIImage(named: "posiIcon")!
+    @Previewable @State var name: String = "hina"
+    let id: String = "1546332242422"
     let bio = "iOSエンジニア目指して学習をしています。"
-    @State var image = UIImage(named: "posiIcon")!
     return ProfileHeaderView(profileUserID: id, profileDisplayName: $name, profileImage: $image, profileBio: bio, isMyProfile: true, posts: PostArrayObject())
 }

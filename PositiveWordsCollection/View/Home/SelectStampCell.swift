@@ -51,7 +51,7 @@ struct SelectStampCell: View {
 }
 
 #Preview {
-    @State var image = UIImage(named: "hiyo")!
-    @State var bool = true
+    @Previewable @State var image = UIImage(named: "hiyo")!
+    @Previewable @State var bool = true
     return SelectStampCell(postStamp: $image, showSelectStampView: $bool)
 }
