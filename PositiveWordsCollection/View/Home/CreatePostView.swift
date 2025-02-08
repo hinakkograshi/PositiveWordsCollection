@@ -133,12 +133,12 @@ struct CreatePostView: View {
                     .disabled(disablePostButton())
                 }
             }
+            .onTapGesture {
+                focusedField = false
+            }
         }
         .alert(isPresented: $showPostContentError) {
             Alert(title: Text("投稿するには画像と文字を入力する必要があります。"))
-        }
-        .onTapGesture {
-            focusedField = false
         }
         .overlay {
             if showSelectStampView == true {
