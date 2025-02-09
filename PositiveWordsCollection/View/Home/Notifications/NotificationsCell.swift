@@ -28,7 +28,7 @@ struct NotificationsCell: View {
                         Image(systemName: "bubble.middle.bottom")
                             .font(.title3)
                             .fontWeight(.bold)
-                            .foregroundStyle(.black)
+                            .foregroundStyle(colorScheme == .light ? .black : .white)
                     }
                 }
                 NavigationLink {

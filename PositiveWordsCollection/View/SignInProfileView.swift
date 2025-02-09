@@ -48,7 +48,7 @@ struct SignInProfileView: View {
                         .tint(.primary)
                         .padding()
                         .frame(width: 230, height: 50)
-                        .background(Color.MyTheme.yellowColor)
+                        .background(.orange)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                 })
                 .sheet(isPresented: $showImagePicker) {

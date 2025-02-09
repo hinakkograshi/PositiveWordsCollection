@@ -31,7 +31,7 @@ struct ProfileView: View {
         ProfilePostView(posts: posts, isMyProfile: isMyProfile)
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(colorScheme == .light ? Color.MyTheme.beigeColor : Color.colorYellow
+            .toolbarBackground(colorScheme == .light ? Color.MyTheme.beigeColor : Color.orange
                                , for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
 

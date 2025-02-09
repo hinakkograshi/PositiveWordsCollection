@@ -48,7 +48,7 @@ struct CreatePostView: View {
                                 .tint(.primary)
                                 .padding()
                                 .frame(minWidth: 140, minHeight: 80)
-                                .background(Color.MyTheme.yellowColor)
+                                .background(.orange)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                                 .padding(.horizontal)
                         }
@@ -60,7 +60,7 @@ struct CreatePostView: View {
                                 .tint(.primary)
                                 .padding()
                                 .frame(minWidth: 140, minHeight: 80)
-                                .background(Color.MyTheme.yellowColor)
+                                .background(Color.orange)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                                 .padding(.horizontal)
                         }
