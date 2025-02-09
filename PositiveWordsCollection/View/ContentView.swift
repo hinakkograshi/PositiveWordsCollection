@@ -15,12 +15,14 @@ struct ContentView: View {
     @AppStorage(CurrentUserDefaults.displayName) var currentDisplayName: String?
     @AppStorage(CurrentUserDefaults.bio) var currentBio: String?
     @StateObject var posts = PostArrayObject()
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         TabView {
             NavigationStack {
                 HomeView(posts: posts)
             }
+            .tint(colorScheme == .light ? .black : .white)
             .tabItem {
                 Image(systemName: "house.fill")
                 Text("Home")
@@ -37,6 +39,7 @@ struct ContentView: View {
             NavigationStack {
                 NotificationsView(posts: posts)
             }
+            .tint(colorScheme == .light ? .black : .white)
             .tabItem {
                 Image(systemName: "bell.fill")
                 Text("Notifications")

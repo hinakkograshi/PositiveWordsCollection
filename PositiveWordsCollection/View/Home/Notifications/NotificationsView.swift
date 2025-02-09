@@ -61,7 +61,7 @@ struct NotificationsView: View {
         }
         .navigationTitle("通知")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(colorScheme == .light ? Color.MyTheme.beigeColor : Color.colorYellow
+        .toolbarBackground(colorScheme == .light ? Color.MyTheme.beigeColor : Color.orange
                            , for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
     }
