@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct SignInProfileView: View {
     enum Field: Hashable {
@@ -14,13 +15,14 @@ struct SignInProfileView: View {
     }
     @FocusState private var focusedField: Field?
     @ObservedObject var viewModel: AuthenticationViewModel
-    @State var sourceType = UIImagePickerController.SourceType.photoLibrary
+    @State var selectedImage: UIImage?
+    @State var selectedItem: PhotosPickerItem?
     @Environment(\.dismiss) private var dismiss
     @State var showImagePicker: Bool = false
     @State var showCreateProfileError: Bool = false
     @State private var disableButton: Bool = false
     @State private var isLoading = false
-    
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
@@ -28,10 +30,8 @@ struct SignInProfileView: View {
                     Text("プロフィール画像")
                         .font(.title2)
                         .fontWeight(.bold)
-                    Button(action: {
-                        showImagePicker.toggle()
-                    }, label: {
-                        Image(uiImage: viewModel.selectedImage)
+                    PhotosPicker(selection: $selectedItem) {
+                        Image(uiImage: viewModel.selectedImage ?? UIImage(named: "noImage")!)
                             .resizable()
                             .scaledToFill()
                             .frame(width: 200, height: 200)
@@ -41,10 +41,8 @@ struct SignInProfileView: View {
                                     .stroke(Color.black, lineWidth: 3.0)
                             }
                             .contentShape(Rectangle())
-                    })
-                    Button(action: {
-                        showImagePicker.toggle()
-                    }, label: {
+                    }
+                    PhotosPicker(selection: $selectedItem) {
                         Text("ライブラリから画像を選択")
                             .font(.headline)
                             .fontWeight(.bold)
@@ -54,9 +52,14 @@ struct SignInProfileView: View {
                             .background(.orange)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                             .contentShape(Rectangle())
-                    })
-                    .sheet(isPresented: $showImagePicker) {
-                        ImagePicker(imageSelection: $viewModel.selectedImage, sourceType: $sourceType)
+                    }
+                    // PhotosPickerItem -> Data -> UIImageに変換
+                    .onChange(of: selectedItem) {
+                        Task {
+                            guard let data = try? await selectedItem?.loadTransferable(type: Data.self) else { return }
+                            guard let uiImage = UIImage(data: data) else { return }
+                            viewModel.selectedImage = uiImage
+                        }
                     }
                 }
                 VStack(alignment: .leading) {
@@ -75,7 +78,7 @@ struct SignInProfileView: View {
                         .onChange(of: viewModel.displayName) {
                             viewModel.displayNameTotalCount = viewModel.displayName.count
                         }
-                    // 10文字以上の時最後の文字を削除制限
+                        // 10文字以上の時最後の文字を削除制限
                         .onChange(of: viewModel.displayName) {
                             if viewModel.displayName.count > 10 {
                                 viewModel.displayName.removeLast(viewModel.displayName.count - 10)
@@ -105,7 +108,7 @@ struct SignInProfileView: View {
                             .onChange(of: viewModel.bio) {
                                 viewModel.bioTotalCount = viewModel.bio.count
                             }
-                        // 20文字以上の時最後の文字を削除制限
+                            // 20文字以上の時最後の文字を削除制限
                             .onChange(of: viewModel.bio) {
                                 if viewModel.bio.count > 20 {
                                     viewModel.bio.removeLast(viewModel.bio.count - 20)
@@ -171,11 +174,11 @@ struct SignInProfileView: View {
             focusedField = nil
         }
     }
-    
+
     var isRegistrationButtonDisabled: Bool {
-        viewModel.selectedImage != UIImage(named: "noImage")! && viewModel.displayName != ""
+        viewModel.selectedImage != nil && viewModel.displayName != ""
     }
-    
+
     private func disablePostButton() -> Bool {
         var isDisabled = false
         if !isRegistrationButtonDisabled || disableButton == true {

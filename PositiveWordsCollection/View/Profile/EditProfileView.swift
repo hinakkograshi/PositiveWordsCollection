@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct EditProfileView: View {
     enum Field: Hashable {
@@ -21,9 +22,9 @@ struct EditProfileView: View {
     @AppStorage(CurrentUserDefaults.userID) var currentUserID: String?
     @State var editProfileName = ""
     @State var editProfileBio = ""
-    @State var selectedImage = UIImage(named: "loading")!
-    @State var sourceType = UIImagePickerController.SourceType.photoLibrary
-    @State var showImagePicker: Bool = false
+    @State var selectedImage: UIImage?
+    @State var selectedItem: PhotosPickerItem?
+    //    @State var showImagePicker: Bool = false
     @State var showEditProfileError = false
     @Environment(\.dismiss) private var dismiss
     @State private var disableButton: Bool = false
@@ -32,11 +33,9 @@ struct EditProfileView: View {
 
     var body: some View {
         NavigationStack {
-            VStack {
-                Button(action: {
-                    showImagePicker.toggle()
-                }, label: {
-                    Image(uiImage: selectedImage)
+            VStack(spacing: 0) {
+                PhotosPicker(selection: $selectedItem) {
+                    Image(uiImage: selectedImage ?? UIImage(named: "loading")!)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 200, height: 200)
@@ -45,10 +44,8 @@ struct EditProfileView: View {
                             RoundedRectangle(cornerRadius: 150)
                                 .stroke(Color.black, lineWidth: 3.0)
                         }
-                })
-                Button(action: {
-                    showImagePicker.toggle()
-                }, label: {
+                }
+                PhotosPicker(selection: $selectedItem) {
                     Text("ライブラリから画像を選択")
                         .font(.headline)
                         .fontWeight(.bold)
@@ -57,9 +54,14 @@ struct EditProfileView: View {
                         .frame(width: 230, height: 50)
                         .background(.orange)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
-                })
-                .sheet(isPresented: $showImagePicker) {
-                    ImagePicker(imageSelection: $selectedImage, sourceType: $sourceType)
+                }
+                // PhotosPickerItem -> Data -> UIImageに変換
+                .onChange(of: selectedItem) {
+                    Task {
+                        guard let data = try? await selectedItem?.loadTransferable(type: Data.self) else { return }
+                        guard let uiImage = UIImage(data: data) else { return }
+                        selectedImage = uiImage
+                    }
                 }
                 .padding(.vertical, 10)
                 Divider()
@@ -196,6 +198,7 @@ struct EditProfileView: View {
         // Update UI
         userDisplayName = editProfileName
         userBio = editProfileBio
+        guard let selectedImage = selectedImage else { return }
         userImage = selectedImage
         // Update  UserDefault
         UserDefaults.standard.setValue(editProfileName, forKey: CurrentUserDefaults.displayName)
