@@ -15,7 +15,7 @@ struct AsyncError: Error {
 
 @MainActor
 final class AuthenticationViewModel: ObservableObject {
-    @Published var selectedImage = UIImage(named: "noImage")!
+    @Published var selectedImage: UIImage?
     @Published var displayName: String = ""
     @Published var email: String = ""
     @Published var providerID: String = ""
@@ -49,7 +49,8 @@ final class AuthenticationViewModel: ObservableObject {
         print("Create profile now: \(currentUserId)")
         let userId = AuthService.instance.createUserId()
         let user = DatabaseUser(userId: userId, displayName: displayName, email: email, providerId: providerID, provider: provider, bio: bio, dateCreated: Date())
-        try await AuthService.instance.createNewUserInDatabase(user: user, profileImage: selectedImage)
+        guard let image = selectedImage else { return }
+        try await AuthService.instance.createNewUserInDatabase(user: user, profileImage: image)
         print("createProfile Success")
         try await AuthService.instance.logInUserToApp(userID: userId)
     }

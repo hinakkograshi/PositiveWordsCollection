@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct SignInProfileView: View {
     enum Field: Hashable {
@@ -13,46 +14,53 @@ struct SignInProfileView: View {
         case bio
     }
     @FocusState private var focusedField: Field?
-    @StateObject var viewModel: AuthenticationViewModel
-    @State var sourceType = UIImagePickerController.SourceType.photoLibrary
+    @ObservedObject var viewModel: AuthenticationViewModel
+    @State var selectedImage: UIImage?
+    @State var selectedItem: PhotosPickerItem?
     @Environment(\.dismiss) private var dismiss
     @State var showImagePicker: Bool = false
     @State var showCreateProfileError: Bool = false
     @State private var disableButton: Bool = false
+    @State private var isLoading = false
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
-                Text("プロフィール画像")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                Button(action: {
-                    showImagePicker.toggle()
-                }, label: {
-                    Image(uiImage: viewModel.selectedImage)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 200, height: 200)
-                        .clipShape(RoundedRectangle(cornerRadius: 150))
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 150)
-                                .stroke(Color.black, lineWidth: 3.0)
-                        }
-                })
-                Button(action: {
-                    showImagePicker.toggle()
-                }, label: {
-                    Text("ライブラリから画像を選択")
-                        .font(.headline)
+                VStack(spacing: 20) {
+                    Text("プロフィール画像")
+                        .font(.title2)
                         .fontWeight(.bold)
-                        .tint(.primary)
-                        .padding()
-                        .frame(width: 230, height: 50)
-                        .background(.orange)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                })
-                .sheet(isPresented: $showImagePicker) {
-                    ImagePicker(imageSelection: $viewModel.selectedImage, sourceType: $sourceType)
+                    PhotosPicker(selection: $selectedItem) {
+                        Image(uiImage: viewModel.selectedImage ?? UIImage(named: "noImage")!)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 200, height: 200)
+                            .clipShape(RoundedRectangle(cornerRadius: 150))
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 150)
+                                    .stroke(Color.black, lineWidth: 3.0)
+                            }
+                            .contentShape(Rectangle())
+                    }
+                    PhotosPicker(selection: $selectedItem) {
+                        Text("ライブラリから画像を選択")
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .tint(.primary)
+                            .padding()
+                            .frame(width: 230, height: 50)
+                            .background(.orange)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .contentShape(Rectangle())
+                    }
+                    // PhotosPickerItem -> Data -> UIImageに変換
+                    .onChange(of: selectedItem) {
+                        Task {
+                            guard let data = try? await selectedItem?.loadTransferable(type: Data.self) else { return }
+                            guard let uiImage = UIImage(data: data) else { return }
+                            viewModel.selectedImage = uiImage
+                        }
+                    }
                 }
                 VStack(alignment: .leading) {
                     Text("名前")
@@ -126,12 +134,14 @@ struct SignInProfileView: View {
                         if viewModel.selectedImage != UIImage(named: "noImage")!, viewModel.displayName != "" {
                             disableButton = true
                             Task {
+                                isLoading = true
                                 do {
                                     try await viewModel.createProfile()
                                     dismiss()
                                 } catch {
                                     print("createProfile Error:\(error)")
                                 }
+                                isLoading = false
                             }
                         } else {
                             showCreateProfileError = true
@@ -141,9 +151,20 @@ struct SignInProfileView: View {
                             .font(.headline)
                             .fontWeight(.bold)
                             .tint(.primary)
+                            .padding(30)
+                            .contentShape(Rectangle())
                     })
                     .disabled(disablePostButton())
                 }
+            }
+            if isLoading {
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .padding(20)
+                    .tint(Color.white)
+                    .background(Color.gray)
+                    .cornerRadius(8)
+                    .scaleEffect(1.6)
             }
         }
         .alert(isPresented: $showCreateProfileError) {
@@ -155,7 +176,7 @@ struct SignInProfileView: View {
     }
 
     var isRegistrationButtonDisabled: Bool {
-        viewModel.selectedImage != UIImage(named: "noImage")! && viewModel.displayName != ""
+        viewModel.selectedImage != nil && viewModel.displayName != ""
     }
 
     private func disablePostButton() -> Bool {

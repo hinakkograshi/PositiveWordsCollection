@@ -6,14 +6,15 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct CreatePostView: View {
     @FocusState private var focusedField: Bool
     @StateObject var posts: PostArrayObject
     @State var contentText = ""
     @State var showSelectStampView = false
-    @State var selectedImage = UIImage(named: "noImage")!
-    @State var sourceType = UIImagePickerController.SourceType.photoLibrary
+    @State var selectedImage: UIImage?
+    @State var selectedItem: PhotosPickerItem?
     @State private var disableButton: Bool = false
     @State var showImagePicker: Bool = false
     @State var showPostContentError = false
@@ -26,10 +27,8 @@ struct CreatePostView: View {
         NavigationStack {
             VStack {
                 HStack {
-                    Button(action: {
-                        showSelectStampView = true
-                    }, label: {
-                        Image(uiImage: selectedImage)
+                    PhotosPicker(selection: $selectedItem) {
+                        Image(uiImage: selectedImage ?? UIImage(named: "noImage")!)
                             .resizable()
                             .scaledToFill()
                             .frame(width: 150, height: 150)
@@ -38,7 +37,7 @@ struct CreatePostView: View {
                                 RoundedRectangle(cornerRadius: 20)
                                     .stroke(.orange, lineWidth: 5.0)
                             }
-                    })
+                    }
                     VStack {
                         Button {
                             showSelectStampView = true
@@ -52,9 +51,7 @@ struct CreatePostView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                                 .padding(.horizontal)
                         }
-                        Button {
-                            showImagePicker = true
-                        } label: {
+                        PhotosPicker(selection: $selectedItem) {
                             Text("写真ライブラリ\nから画像を追加")
                                 .fontWeight(.bold)
                                 .tint(.primary)
@@ -64,8 +61,12 @@ struct CreatePostView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                                 .padding(.horizontal)
                         }
-                        .sheet(isPresented: $showImagePicker) {
-                            ImagePicker(imageSelection: $selectedImage, sourceType: $sourceType)
+                        .onChange(of: selectedItem) {
+                            Task {
+                                guard let data = try? await selectedItem?.loadTransferable(type: Data.self) else { return }
+                                guard let uiImage = UIImage(data: data) else { return }
+                                selectedImage = uiImage
+                            }
                         }
                     }
                 }
@@ -173,7 +174,8 @@ struct CreatePostView: View {
             let postID = DataService.instance.createPostId()
             let date = Date()
             let post = Post(postId: postID, userId: userID, displayName: displayName, caption: contentText, dateCreated: date, likeCount: 0, commentCount: 0)
-            await DataService.instance.uploadPost(post: post, image: selectedImage)
+            guard let image = selectedImage else { return }
+            await DataService.instance.uploadPost(post: post, image: image)
             // 確認
             let postModel = PostModel(postID: postID, userID: userID, username: displayName, caption: contentText, dateCreated: date, likeCount: 0, likedByUser: false, comentsCount: 0)
             posts.dataArray.insert(postModel, at: 0)

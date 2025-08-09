@@ -16,6 +16,8 @@ struct AuthenticationView: View {
     @State var showProfileView: Bool = false
     @State var showError: Bool = false
     @Environment(\.dismiss) private var dismiss
+    @State private var isGoogleSigningIn = false
+    @State private var isAppleSigningIn = false
 
     var body: some View {
         ZStack {
@@ -44,24 +46,29 @@ struct AuthenticationView: View {
                 // MARK: Sign in with Google
                 GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .light, style: .wide, state: .normal)) {
                     Task {
+                        isGoogleSigningIn = true
                         do {
                             try await viewModel.signInGoogle(dissmisAction: dismiss.callAsFunction)
                         } catch {
                             showError = true
                             print(error)
                         }
+                        isGoogleSigningIn = false
                     }
                 }
                 .padding(.vertical, 10)
+                .disabled(isGoogleSigningIn || isAppleSigningIn)
                 // MARK: Sign in with Apple
                 Button(action: {
                     Task {
+                        isAppleSigningIn = true
                         do {
                             try await viewModel.signInApple(dissmisAction: dismiss.callAsFunction)
                         } catch {
                             showError = true
                             print(error)
                         }
+                        isAppleSigningIn = false
                     }
                 }, label: {
                     SignInWithAppleButtonViewRepresentable(type: .default, style: .black)
@@ -69,12 +76,22 @@ struct AuthenticationView: View {
                 })
                 .frame(height: 50)
                 .padding(.bottom, 10)
+                .disabled(isGoogleSigningIn || isAppleSigningIn)
                 Text("サインインすることで、[利用規約](https://royal-wisteria-cf4.notion.site/52a618b0823648db89f024703733045e)と[プライバシーポリシー](https://www.notion.so/13be1dd4865f4bdf918b6c3b1a7e3971)\nに同意したことになります。")
                     .font(.caption)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.black)
             }
             .padding()
+            if isGoogleSigningIn || isAppleSigningIn {
+                ProgressView()
+                    .progressViewStyle(.circular)
+                    .padding(20)
+                    .tint(Color.white)
+                    .background(Color.gray)
+                    .cornerRadius(8)
+                    .scaleEffect(1.6)
+            }
         }
         .fullScreenCover(isPresented: $viewModel.showSignInProfileView,
                          onDismiss: {
@@ -84,6 +101,7 @@ struct AuthenticationView: View {
                          })
         .alert(isPresented: $showError) {
             Alert(title: Text("サインインに失敗しました"))
+
         }
     }
 }
