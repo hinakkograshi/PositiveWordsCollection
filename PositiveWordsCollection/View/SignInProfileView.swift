@@ -24,139 +24,143 @@ struct SignInProfileView: View {
     @State private var isLoading = false
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 20) {
+        ZStack {
+            NavigationStack {
                 VStack(spacing: 20) {
-                    Text("プロフィール画像")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    PhotosPicker(selection: $selectedItem) {
-                        Image(uiImage: viewModel.selectedImage ?? UIImage(named: "noImage")!)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 200, height: 200)
-                            .clipShape(RoundedRectangle(cornerRadius: 150))
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 150)
-                                    .stroke(Color.black, lineWidth: 3.0)
-                            }
-                            .contentShape(Rectangle())
-                    }
-                    PhotosPicker(selection: $selectedItem) {
-                        Text("ライブラリから画像を選択")
-                            .font(.headline)
+                    VStack(spacing: 20) {
+                        Text("プロフィール画像")
+                            .font(.title2)
                             .fontWeight(.bold)
-                            .tint(.primary)
-                            .padding()
-                            .frame(width: 230, height: 50)
-                            .background(.orange)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                            .contentShape(Rectangle())
-                    }
-                    // PhotosPickerItem -> Data -> UIImageに変換
-                    .onChange(of: selectedItem) {
-                        Task {
-                            guard let data = try? await selectedItem?.loadTransferable(type: Data.self) else { return }
-                            guard let uiImage = UIImage(data: data) else { return }
-                            viewModel.selectedImage = uiImage
-                        }
-                    }
-                }
-                VStack(alignment: .leading) {
-                    Text("名前")
-                        .fontWeight(.bold)
-                    TextField("名前(10文字以内)", text: $viewModel.displayName)
-                        .padding(10)
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.black, lineWidth: 2)
-                        }
-                        .focused($focusedField, equals: .name)
-                        .onTapGesture {
-                            focusedField = .name
-                        }
-                        .onChange(of: viewModel.displayName) {
-                            viewModel.displayNameTotalCount = viewModel.displayName.count
-                        }
-                        // 10文字以上の時最後の文字を削除制限
-                        .onChange(of: viewModel.displayName) {
-                            if viewModel.displayName.count > 10 {
-                                viewModel.displayName.removeLast(viewModel.displayName.count - 10)
+
+                        PhotosPicker(selection: $selectedItem) {
+                            VStack(spacing: 12) {
+                                Image(uiImage: viewModel.selectedImage ?? UIImage(named: "noImage")!)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 200, height: 200)
+                                    .clipShape(RoundedRectangle(cornerRadius: 150))
+                                    .overlay {
+                                        RoundedRectangle(cornerRadius: 150)
+                                            .stroke(Color.black, lineWidth: 3.0)
+                                    }
+                                    .contentShape(Rectangle())
+                                Text("ライブラリから画像を選択")
+                                    .font(.headline)
+                                    .fontWeight(.bold)
+                                    .tint(.primary)
+                                    .padding()
+                                    .frame(width: 230, height: 50)
+                                    .background(.orange)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                    .contentShape(Rectangle())
                             }
                         }
-                    HStack {
-                        Spacer()
-                        // 入力文字数の表示
-                        Text(" \(viewModel.displayNameTotalCount) / 10")
+                        // PhotosPickerItem -> Data -> UIImageに変換
+                        .onChange(of: selectedItem) {
+                            Task {
+                                guard let data = try? await selectedItem?.loadTransferable(type: Data.self) else { return }
+                                guard let uiImage = UIImage(data: data) else { return }
+                                viewModel.selectedImage = uiImage
+                            }
+                        }
                     }
-                }
-                VStack(alignment: .leading) {
-                    Text("自己紹介")
-                        .fontWeight(.bold)
-                    ZStack(alignment: .topLeading) {
-                        TextEditor(text: $viewModel.bio)
-                            .frame(height: 100)
-                            .padding(5)
+                    VStack(alignment: .leading) {
+                        Text("名前")
+                            .fontWeight(.bold)
+                        TextField("名前(10文字以内)", text: $viewModel.displayName)
+                            .padding(10)
                             .overlay {
-                                RoundedRectangle(cornerRadius: 16)
+                                RoundedRectangle(cornerRadius: 10)
                                     .stroke(Color.black, lineWidth: 2)
                             }
-                            .focused($focusedField, equals: .bio)
-                            .onTapGesture {
+                            .submitLabel(.next)
+                            .onSubmit(of: .text) {
                                 focusedField = .bio
                             }
-                            .onChange(of: viewModel.bio) {
-                                viewModel.bioTotalCount = viewModel.bio.count
+                            .focused($focusedField, equals: .name)
+                            .onChange(of: viewModel.displayName) {
+                                viewModel.displayNameTotalCount = viewModel.displayName.count
                             }
-                            // 20文字以上の時最後の文字を削除制限
-                            .onChange(of: viewModel.bio) {
-                                if viewModel.bio.count > 20 {
-                                    viewModel.bio.removeLast(viewModel.bio.count - 20)
+                            // 10文字以上の時最後の文字を削除制限
+                            .onChange(of: viewModel.displayName) {
+                                if viewModel.displayName.count > 10 {
+                                    viewModel.displayName.removeLast(viewModel.displayName.count - 10)
                                 }
                             }
-                        if viewModel.bio.isEmpty {
-                            Text("自己紹介(20文字以内)").foregroundStyle(Color(uiColor: .placeholderText))
-                                .padding(8)
-                                .allowsHitTesting(false)
+                        HStack {
+                            Spacer()
+                            // 入力文字数の表示
+                            Text(" \(viewModel.displayNameTotalCount) / 10")
                         }
                     }
-                    HStack {
-                        Spacer()
-                        // 入力文字数の表示
-                        Text(" \(viewModel.bioTotalCount) / 20")
-                    }
-                }
-            }
-            .padding()
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        if viewModel.selectedImage != UIImage(named: "noImage")!, viewModel.displayName != "" {
-                            disableButton = true
-                            Task {
-                                isLoading = true
-                                do {
-                                    try await viewModel.createProfile()
-                                    dismiss()
-                                } catch {
-                                    print("createProfile Error:\(error)")
-                                }
-                                isLoading = false
-                            }
-                        } else {
-                            showCreateProfileError = true
-                        }
-                    }, label: {
-                        Text("登録")
-                            .font(.headline)
+                    VStack(alignment: .leading) {
+                        Text("自己紹介")
                             .fontWeight(.bold)
-                            .tint(.primary)
-                            .padding(30)
-                            .contentShape(Rectangle())
-                    })
-                    .disabled(disablePostButton())
+                        ZStack(alignment: .topLeading) {
+                            TextEditor(text: $viewModel.bio)
+                                .frame(height: 100)
+                                .padding(5)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(Color.black, lineWidth: 2)
+                                }
+                                .focused($focusedField, equals: .bio)
+                                .onChange(of: viewModel.bio) {
+                                    viewModel.bioTotalCount = viewModel.bio.count
+                                }
+                                // 20文字以上の時最後の文字を削除制限
+                                .onChange(of: viewModel.bio) {
+                                    if viewModel.bio.count > 20 {
+                                        viewModel.bio.removeLast(viewModel.bio.count - 20)
+                                    }
+                                }
+                            if viewModel.bio.isEmpty {
+                                Text("自己紹介(20文字以内)").foregroundStyle(Color(uiColor: .placeholderText))
+                                    .padding(8)
+                            }
+                        }
+                        HStack {
+                            Spacer()
+                            // 入力文字数の表示
+                            Text(" \(viewModel.bioTotalCount) / 20")
+                        }
+                    }
+                    .padding(.bottom, 40)
+                }
+                .padding()
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(action: {
+                            if viewModel.selectedImage != UIImage(named: "noImage")!, viewModel.displayName != "" {
+                                disableButton = true
+                                Task {
+                                    isLoading = true
+                                    do {
+                                        try await viewModel.createProfile()
+                                        dismiss()
+                                    } catch {
+                                        print("createProfile Error:\(error)")
+                                    }
+                                    isLoading = false
+                                }
+                            } else {
+                                showCreateProfileError = true
+                            }
+                        }, label: {
+                            Text("登録")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .tint(.primary)
+                                .padding(30)
+                                .contentShape(Rectangle())
+                        })
+                        .disabled(disablePostButton())
+                    }
                 }
             }
+            //            .onTapGesture {
+            //                focusedField = nil
+            //            }
             if isLoading {
                 ProgressView()
                     .progressViewStyle(.circular)
@@ -169,9 +173,6 @@ struct SignInProfileView: View {
         }
         .alert(isPresented: $showCreateProfileError) {
             Alert(title: Text("ユーザーの画像と名前を入力する必要があります。"))
-        }
-        .onTapGesture {
-            focusedField = nil
         }
     }
 

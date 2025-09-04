@@ -84,7 +84,6 @@ struct CreatePostView: View {
                         if contentText.isEmpty {
                             Text("今日はどんな良いことがありましたか？").foregroundStyle(Color(uiColor: .placeholderText))
                                 .padding(8)
-                                .allowsHitTesting(false)
                         }
                     }
                     .onChange(of: contentText) {

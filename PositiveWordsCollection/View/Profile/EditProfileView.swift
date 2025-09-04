@@ -78,9 +78,6 @@ struct EditProfileView: View {
                                     .stroke(Color.black, lineWidth: 2)
                             }
                             .focused($focusedField, equals: .name)
-                            .onTapGesture {
-                                focusedField = .name
-                            }
                     }
                     HStack {
                         Spacer()
@@ -113,13 +110,9 @@ struct EditProfileView: View {
                                         .stroke(Color.black, lineWidth: 2)
                                 }
                                 .focused($focusedField, equals: .bio)
-                                .onTapGesture {
-                                    focusedField = .bio
-                                }
                             if editProfileBio.isEmpty {
                                 Text("自己紹介(20文字以内)").foregroundStyle(Color(uiColor: .placeholderText))
                                     .padding(8)
-                                    .allowsHitTesting(false)
                             }
                         }
                     }
