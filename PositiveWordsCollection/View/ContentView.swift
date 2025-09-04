@@ -18,56 +18,53 @@ struct ContentView: View {
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
-        TabView {
-            NavigationStack {
-                HomeView(posts: posts)
-            }
-            .tint(colorScheme == .light ? .black : .white)
-            .tabItem {
-                Image(systemName: "house.fill")
-                Text("Home")
-            }
-            NavigationStack {
-                if let userID = currentUserID, let displayName = currentDisplayName, let myBio = currentBio {
-                    ProfileView(isMyProfile: true, posts: posts, profileBio: myBio, profileDisplayName: displayName, profileUserID: userID)
+        if currentUserID != nil {
+            TabView {
+                NavigationStack {
+                    HomeView(posts: posts)
+                }
+                .tint(colorScheme == .light ? .black : .white)
+                .tabItem {
+                    Image(systemName: "house.fill")
+                    Text("Home")
+                }
+                NavigationStack {
+                    if let userID = currentUserID,
+                       let displayName = currentDisplayName,
+                       let myBio = currentBio {
+                        ProfileView(
+                            isMyProfile: true,
+                            posts: posts,
+                            profileBio: myBio,
+                            profileDisplayName: displayName,
+                            profileUserID: userID
+                        )
+                    }
+                }
+                .tabItem {
+                    Image(systemName: "person.fill")
+                    Text("Profile")
+                }
+                NavigationStack {
+                    NotificationsView(posts: posts)
+                }
+                .tint(colorScheme == .light ? .black : .white)
+                .tabItem {
+                    Image(systemName: "bell.fill")
+                    Text("Notifications")
+                }
+                NavigationStack {
+                    SettingsView()
+                }
+                .tabItem {
+                    Image(systemName: "gearshape")
+                    Text("Settings")
                 }
             }
-            .tabItem {
-                Image(systemName: "person.fill")
-                Text("Profile")
-            }
-            NavigationStack {
-                NotificationsView(posts: posts)
-            }
-            .tint(colorScheme == .light ? .black : .white)
-            .tabItem {
-                Image(systemName: "bell.fill")
-                Text("Notifications")
-            }
-            NavigationStack {
-                SettingsView()
-            }
-            .tabItem {
-                Image(systemName: "gearshape")
-                Text("Settings")
-            }
+            .accentColor(.orange)
+        } else {
+            AuthenticationView(showSignInView: $showSignInView)
         }
-        .accentColor(.orange)
-        .onAppear {
-            self.showSignInView = currentUserID == nil ? true : false
-        }
-
-        .fullScreenCover(isPresented: $showSignInView,
-                         onDismiss: {
-                            if let userID = currentUserID {
-                                Task {
-                                    _ = await posts.refreshHomeFirst(hiddenPostIDs: hiddenPostIDs, myUserID: userID)
-                                }
-                            }
-                         },
-                         content: {
-                            AuthenticationView(showSignInView: $showSignInView)
-                         })
     }
 }
 
