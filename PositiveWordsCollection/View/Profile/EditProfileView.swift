@@ -71,28 +71,35 @@ struct EditProfileView: View {
                             .fontWeight(.bold)
                             .padding()
                             .padding(.trailing, 30)
-                        TextField("名前(10文字以内)", text: $editProfileName)
-                            .padding(10)
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.black, lineWidth: 2)
-                            }
-                            .focused($focusedField, equals: .name)
+                        InputTextField(
+                            inputTxet: $editProfileName,
+                            count: 10,
+                            placeHolderText: "名前",
+                            focused: $focusedField,
+                            equals: .name
+                        )
+                        //                        TextField("名前(10文字以内)", text: $editProfileName)
+                        //                            .padding(10)
+                        //                            .overlay {
+                        //                                RoundedRectangle(cornerRadius: 10)
+                        //                                    .stroke(Color.black, lineWidth: 2)
+                        //                            }
+                        //                            .focused($focusedField, equals: .name)
                     }
-                    HStack {
-                        Spacer()
-                        // 入力文字数の表示
-                        Text(" \(editProfileNameTotalCount) / 10")
-                    }
-                    .onChange(of: editProfileName) {
-                        editProfileNameTotalCount = editProfileName.count
-                    }
+                    //                    HStack {
+                    //                        Spacer()
+                    //                        // 入力文字数の表示
+                    //                        Text(" \(editProfileNameTotalCount) / 10")
+                    //                    }
+                    //                    .onChange(of: editProfileName) {
+                    //                        editProfileNameTotalCount = editProfileName.count
+                    //                    }
                     // 10文字以上の時最後の文字を削除制限
-                    .onChange(of: editProfileName) {
-                        if editProfileName.count > 10 {
-                            editProfileName.removeLast(editProfileName.count - 10)
-                        }
-                    }
+                    //                    .onChange(of: editProfileName) {
+                    //                        if editProfileName.count > 10 {
+                    //                            editProfileName.removeLast(editProfileName.count - 10)
+                    //                        }
+                    //                    }
                 }
                 .padding(.trailing, 10)
                 Divider()

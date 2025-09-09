@@ -67,67 +67,47 @@ struct SignInProfileView: View {
                     VStack(alignment: .leading) {
                         Text("名前")
                             .fontWeight(.bold)
-                        TextField("名前(10文字以内)", text: $viewModel.displayName)
-                            .padding(10)
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.black, lineWidth: 2)
-                            }
-                            .submitLabel(.next)
-                            .onSubmit(of: .text) {
-                                focusedField = .bio
-                            }
-                            .focused($focusedField, equals: .name)
-                            .onChange(of: viewModel.displayName) {
-                                viewModel.displayNameTotalCount = viewModel.displayName.count
-                            }
-                            // 10文字以上の時最後の文字を削除制限
-                            .onChange(of: viewModel.displayName) {
-                                if viewModel.displayName.count > 10 {
-                                    viewModel.displayName.removeLast(viewModel.displayName.count - 10)
-                                }
-                            }
-                        HStack {
-                            Spacer()
-                            // 入力文字数の表示
-                            Text(" \(viewModel.displayNameTotalCount) / 10")
+                        InputTextField(
+                            inputTxet: $viewModel.displayName,
+                            count: 10,
+                            placeHolderText: "名前",
+                            focused: $focusedField,
+                            equals: .name
+                        )
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.black, lineWidth: 2)
+                        }
+                        .onChange(of: viewModel.displayName) {
+                            viewModel.displayNameTotalCount = viewModel.displayName.count
                         }
                     }
                     VStack(alignment: .leading) {
                         Text("自己紹介")
                             .fontWeight(.bold)
                         ZStack(alignment: .topLeading) {
-                            TextEditor(text: $viewModel.bio)
-                                .frame(height: 100)
-                                .padding(5)
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .stroke(Color.black, lineWidth: 2)
-                                }
-                                .focused($focusedField, equals: .bio)
-                                .onChange(of: viewModel.bio) {
-                                    viewModel.bioTotalCount = viewModel.bio.count
-                                }
-                                // 20文字以上の時最後の文字を削除制限
-                                .onChange(of: viewModel.bio) {
-                                    if viewModel.bio.count > 20 {
-                                        viewModel.bio.removeLast(viewModel.bio.count - 20)
-                                    }
-                                }
-                            if viewModel.bio.isEmpty {
-                                Text("自己紹介(20文字以内)").foregroundStyle(Color(uiColor: .placeholderText))
-                                    .padding(8)
+                            InputTextField(
+                                inputTxet: $viewModel.bio,
+                                count: 20,
+                                placeHolderText: "自己紹介",
+                                focused: $focusedField,
+                                equals: .bio
+                            )
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(Color.black, lineWidth: 2)
                             }
-                        }
-                        HStack {
-                            Spacer()
-                            // 入力文字数の表示
-                            Text(" \(viewModel.bioTotalCount) / 20")
+                            .onChange(of: viewModel.bio) {
+                                viewModel.bioTotalCount = viewModel.bio.count
+                            }
                         }
                     }
                     .padding(.bottom, 40)
                 }
                 .padding()
+                .onChange(of: focusedField) {
+                    _ = print("⭐️SignIn: \($0)")
+                }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(action: {
@@ -158,9 +138,9 @@ struct SignInProfileView: View {
                     }
                 }
             }
-            //            .onTapGesture {
-            //                focusedField = nil
-            //            }
+            .onTapGesture {
+                focusedField = nil
+            }
             if isLoading {
                 ProgressView()
                     .progressViewStyle(.circular)
