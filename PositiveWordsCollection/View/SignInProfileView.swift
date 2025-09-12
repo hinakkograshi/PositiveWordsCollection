@@ -27,41 +27,39 @@ struct SignInProfileView: View {
         ZStack {
             NavigationStack {
                 VStack(spacing: 20) {
-                    VStack(spacing: 20) {
+
+                    VStack(spacing: 12) {
                         Text("プロフィール画像")
                             .font(.title2)
                             .fontWeight(.bold)
-
+                        Image(uiImage: viewModel.selectedImage ?? UIImage(named: "noImage")!)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 200, height: 200)
+                            .clipShape(RoundedRectangle(cornerRadius: 150))
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 150)
+                                    .stroke(Color.black, lineWidth: 3.0)
+                            }
+                            .contentShape(Rectangle())
                         PhotosPicker(selection: $selectedItem) {
-                            VStack(spacing: 12) {
-                                Image(uiImage: viewModel.selectedImage ?? UIImage(named: "noImage")!)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 200, height: 200)
-                                    .clipShape(RoundedRectangle(cornerRadius: 150))
-                                    .overlay {
-                                        RoundedRectangle(cornerRadius: 150)
-                                            .stroke(Color.black, lineWidth: 3.0)
-                                    }
-                                    .contentShape(Rectangle())
-                                Text("ライブラリから画像を選択")
-                                    .font(.headline)
-                                    .fontWeight(.bold)
-                                    .tint(.primary)
-                                    .padding()
-                                    .frame(width: 230, height: 50)
-                                    .background(.orange)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                                    .contentShape(Rectangle())
-                            }
+                            Text("ライブラリから画像を選択")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                                .tint(.primary)
+                                .padding()
+                                .frame(width: 230, height: 50)
+                                .background(.orange)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                .contentShape(Rectangle())
                         }
-                        // PhotosPickerItem -> Data -> UIImageに変換
-                        .onChange(of: selectedItem) {
-                            Task {
-                                guard let data = try? await selectedItem?.loadTransferable(type: Data.self) else { return }
-                                guard let uiImage = UIImage(data: data) else { return }
-                                viewModel.selectedImage = uiImage
-                            }
+                    }
+                    // PhotosPickerItem -> Data -> UIImageに変換
+                    .onChange(of: selectedItem) {
+                        Task {
+                            guard let data = try? await selectedItem?.loadTransferable(type: Data.self) else { return }
+                            guard let uiImage = UIImage(data: data) else { return }
+                            viewModel.selectedImage = uiImage
                         }
                     }
                     VStack(alignment: .leading) {
@@ -81,8 +79,6 @@ struct SignInProfileView: View {
                         .onChange(of: viewModel.displayName) {
                             viewModel.displayNameTotalCount = viewModel.displayName.count
                         }
-                    }
-                    VStack(alignment: .leading) {
                         Text("自己紹介")
                             .fontWeight(.bold)
                         ZStack(alignment: .topLeading) {

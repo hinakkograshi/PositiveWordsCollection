@@ -15,7 +15,7 @@ struct InputTextField<FocusedValue: Hashable>: View {
     @State private var inputState: InputState = .before
 
     var body: some View {
-        let _ = print("⭐️InputTextField更新")
+        _ = print("⭐️InputTextField更新")
         VStack(spacing: 4) {
             TextField(
                 "\(placeHolder)(\(maxCount)文字以内)",
