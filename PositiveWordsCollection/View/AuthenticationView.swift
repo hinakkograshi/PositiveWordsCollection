@@ -72,7 +72,6 @@ struct AuthenticationView: View {
                     }
                 }, label: {
                     SignInWithAppleButtonViewRepresentable(type: .default, style: .black)
-                        .allowsHitTesting(false)
                 })
                 .frame(height: 50)
                 .padding(.bottom, 10)

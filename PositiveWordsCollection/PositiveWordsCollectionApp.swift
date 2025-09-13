@@ -36,12 +36,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         return true
     }
     private func firebaseConfigure() {
-        #if DEBUG
-        let filePath = Bundle.main.path(forResource: "GoogleService-Stage-Info", ofType: "plist")
-        #else
-        let filePath = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist")
-        #endif
 
+        let filePath = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist")
         guard let filePath = filePath else {
             return
         }

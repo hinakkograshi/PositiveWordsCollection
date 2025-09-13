@@ -71,32 +71,17 @@ struct EditProfileView: View {
                             .fontWeight(.bold)
                             .padding()
                             .padding(.trailing, 30)
-                        TextField("名前(10文字以内)", text: $editProfileName)
-                            .padding(10)
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color.black, lineWidth: 2)
-                            }
-                            .focused($focusedField, equals: .name)
-                            .onTapGesture {
-                                focusedField = .name
-                            }
-                    }
-                    HStack {
-                        Spacer()
-                        // 入力文字数の表示
-                        Text(" \(editProfileNameTotalCount) / 10")
-                    }
-                    .onChange(of: editProfileName) {
-                        editProfileNameTotalCount = editProfileName.count
-                    }
-                    // 10文字以上の時最後の文字を削除制限
-                    .onChange(of: editProfileName) {
-                        if editProfileName.count > 10 {
-                            editProfileName.removeLast(editProfileName.count - 10)
-                        }
+                        InputTextField(
+                            inputTxet: $editProfileName,
+                            count: 10,
+                            placeHolderText: "名前",
+                            focused: $focusedField,
+                            equals: .name
+                        )
+                        .padding(8)
                     }
                 }
+                .padding(.vertical, 8)
                 .padding(.trailing, 10)
                 Divider()
                 VStack {
@@ -104,40 +89,17 @@ struct EditProfileView: View {
                         Text("自己紹介")
                             .fontWeight(.bold)
                             .padding()
-                        ZStack(alignment: .topLeading) {
-                            TextEditor(text: $editProfileBio)
-                                .frame(height: 100)
-                                .padding(5)
-                                .overlay {
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .stroke(Color.black, lineWidth: 2)
-                                }
-                                .focused($focusedField, equals: .bio)
-                                .onTapGesture {
-                                    focusedField = .bio
-                                }
-                            if editProfileBio.isEmpty {
-                                Text("自己紹介(20文字以内)").foregroundStyle(Color(uiColor: .placeholderText))
-                                    .padding(8)
-                                    .allowsHitTesting(false)
-                            }
-                        }
-                    }
-                    HStack {
-                        Spacer()
-                        // 入力文字数の表示
-                        Text(" \(editProfileBioTotalCount) / 20")
-                    }
-                    .onChange(of: editProfileBio) {
-                        editProfileBioTotalCount = editProfileBio.count
-                    }
-                    // 10文字以上の時最後の文字を削除制限
-                    .onChange(of: editProfileBio) {
-                        if editProfileBio.count > 20 {
-                            editProfileBio.removeLast(editProfileBio.count - 20)
-                        }
+                        InputTextField(
+                            inputTxet: $editProfileBio,
+                            count: 20,
+                            placeHolderText: "自己紹介",
+                            focused: $focusedField,
+                            equals: .bio
+                        )
+                        .padding(8)
                     }
                 }
+                .padding(.vertical, 8)
                 .padding(.trailing, 10)
             }
             .navigationTitle("編集")
