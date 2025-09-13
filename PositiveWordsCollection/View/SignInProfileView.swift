@@ -72,10 +72,7 @@ struct SignInProfileView: View {
                             focused: $focusedField,
                             equals: .name
                         )
-                        .overlay {
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.black, lineWidth: 2)
-                        }
+
                         .onChange(of: viewModel.displayName) {
                             viewModel.displayNameTotalCount = viewModel.displayName.count
                         }
@@ -89,10 +86,6 @@ struct SignInProfileView: View {
                                 focused: $focusedField,
                                 equals: .bio
                             )
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 16)
-                                    .stroke(Color.black, lineWidth: 2)
-                            }
                             .onChange(of: viewModel.bio) {
                                 viewModel.bioTotalCount = viewModel.bio.count
                             }
@@ -101,9 +94,6 @@ struct SignInProfileView: View {
                     .padding(.bottom, 40)
                 }
                 .padding()
-                .onChange(of: focusedField) {
-                    _ = print("⭐️SignIn: \($0)")
-                }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(action: {
@@ -134,8 +124,12 @@ struct SignInProfileView: View {
                     }
                 }
             }
-            .onTapGesture {
-                focusedField = nil
+            if focusedField != nil {
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        focusedField = nil
+                    }
             }
             if isLoading {
                 ProgressView()

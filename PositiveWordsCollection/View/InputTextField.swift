@@ -15,13 +15,16 @@ struct InputTextField<FocusedValue: Hashable>: View {
     @State private var inputState: InputState = .before
 
     var body: some View {
-        _ = print("⭐️InputTextField更新")
         VStack(spacing: 4) {
             TextField(
                 "\(placeHolder)(\(maxCount)文字以内)",
                 text: $text
             )
-            .textFieldStyle(.roundedBorder)
+            .padding(12)
+            .overlay {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color.primary, lineWidth: 2)
+            }
             HStack {
                 Spacer()
                 // 入力文字数の表示
@@ -35,7 +38,6 @@ struct InputTextField<FocusedValue: Hashable>: View {
             }
         }
         .onChange(of: focused.0.wrappedValue) {
-            _ = print("⭐️\($0)")
             if $0 == focused.1 { // 自身にフォーカスが当たる
                 inputState = .editing
             } else if case .editing = inputState { // 自身からフォーカスが外れる
