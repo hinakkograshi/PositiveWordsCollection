@@ -131,9 +131,12 @@ struct EditProfileView: View {
         .alert(isPresented: $showEditProfileError) {
             Alert(title: Text("名前は空にできません。"))
         }
-        .onTapGesture {
-            focusedField = nil
-        }
+        .simultaneousGesture(
+            TapGesture()
+                .onEnded {
+                    focusedField = nil
+                }
+        )
         .onAppear {
             guard let userName = currentUserName else { return }
             guard let userBio = currentBio else { return }

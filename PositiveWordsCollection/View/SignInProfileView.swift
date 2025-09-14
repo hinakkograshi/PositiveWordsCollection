@@ -30,16 +30,18 @@ struct SignInProfileView: View {
                         Text("プロフィール画像")
                             .font(.title2)
                             .fontWeight(.bold)
-                        Image(uiImage: viewModel.selectedImage ?? UIImage(named: "noImage")!)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 200, height: 200)
-                            .clipShape(RoundedRectangle(cornerRadius: 150))
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 150)
-                                    .stroke(Color.black, lineWidth: 3.0)
-                            }
-                            .contentShape(Rectangle())
+                        PhotosPicker(selection: $selectedItem) {
+                            Image(uiImage: viewModel.selectedImage ?? UIImage(named: "noImage")!)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 200, height: 200)
+                                .clipShape(RoundedRectangle(cornerRadius: 150))
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 150)
+                                        .stroke(Color.black, lineWidth: 3.0)
+                                }
+                                .contentShape(Rectangle())
+                        }
                         PhotosPicker(selection: $selectedItem) {
                             Text("ライブラリから画像を選択")
                                 .font(.headline)
@@ -111,13 +113,12 @@ struct SignInProfileView: View {
                     }
                 }
             }
-            if focusedField != nil {
-                Color.clear
-                    .contentShape(Rectangle())
-                    .onTapGesture {
+            .simultaneousGesture(
+                TapGesture()
+                    .onEnded {
                         focusedField = nil
                     }
-            }
+            )
             if isLoading {
                 ProgressView()
                     .progressViewStyle(.circular)
