@@ -12,7 +12,6 @@ struct InputTextField<FocusedValue: Hashable>: View {
     private var maxCount: Int
     private var placeHolder: String
     private var focused: (FocusState<FocusedValue>.Binding, FocusedValue)
-    @State private var inputState: InputState = .before
 
     var body: some View {
         VStack(spacing: 4) {
@@ -37,13 +36,6 @@ struct InputTextField<FocusedValue: Hashable>: View {
                 text.removeLast($0.count - maxCount)
             }
         }
-        .onChange(of: focused.0.wrappedValue) {
-            if $0 == focused.1 { // 自身にフォーカスが当たる
-                inputState = .editing
-            } else if case .editing = inputState { // 自身からフォーカスが外れる
-                inputState = .finished
-            }
-        }
         .ifLet(focused) {
             // ref: https://qiita.com/SNQ-2001/items/4caf34bab15702d3abdf
             $0.focused($1.0.projectedValue, equals: $1.1)
@@ -65,12 +57,6 @@ extension InputTextField {
             placeHolder: placeHolderText,
             focused: (focused, focusedValue)
         )
-    }
-
-    enum InputState {
-        case before
-        case editing
-        case finished
     }
 }
 
