@@ -18,7 +18,6 @@ struct SignInProfileView: View {
     @State var selectedImage: UIImage?
     @State var selectedItem: PhotosPickerItem?
     @Environment(\.dismiss) private var dismiss
-    @State var showImagePicker: Bool = false
     @State var showCreateProfileError: Bool = false
     @State private var disableButton: Bool = false
     @State private var isLoading = false
@@ -27,7 +26,6 @@ struct SignInProfileView: View {
         ZStack {
             NavigationStack {
                 VStack(spacing: 20) {
-
                     VStack(spacing: 12) {
                         Text("プロフィール画像")
                             .font(.title2)
@@ -72,24 +70,15 @@ struct SignInProfileView: View {
                             focused: $focusedField,
                             equals: .name
                         )
-
-                        .onChange(of: viewModel.displayName) {
-                            viewModel.displayNameTotalCount = viewModel.displayName.count
-                        }
                         Text("自己紹介")
                             .fontWeight(.bold)
-                        ZStack(alignment: .topLeading) {
-                            InputTextField(
-                                inputTxet: $viewModel.bio,
-                                count: 20,
-                                placeHolderText: "自己紹介",
-                                focused: $focusedField,
-                                equals: .bio
-                            )
-                            .onChange(of: viewModel.bio) {
-                                viewModel.bioTotalCount = viewModel.bio.count
-                            }
-                        }
+                        InputTextField(
+                            inputTxet: $viewModel.bio,
+                            count: 20,
+                            placeHolderText: "自己紹介",
+                            focused: $focusedField,
+                            equals: .bio
+                        )
                     }
                     .padding(.bottom, 40)
                 }
@@ -109,8 +98,6 @@ struct SignInProfileView: View {
                                     }
                                     isLoading = false
                                 }
-                            } else {
-                                showCreateProfileError = true
                             }
                         }, label: {
                             Text("登録")
@@ -140,9 +127,6 @@ struct SignInProfileView: View {
                     .cornerRadius(8)
                     .scaleEffect(1.6)
             }
-        }
-        .alert(isPresented: $showCreateProfileError) {
-            Alert(title: Text("ユーザーの画像と名前を入力する必要があります。"))
         }
     }
 
